@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Control, FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
@@ -94,7 +95,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
   const currentSedation = watch("sedation");
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg flex flex-col h-full">
       <CardHeader>
         <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
           <FileText className="w-8 h-8" /> Criar Novo Laudo
@@ -103,9 +104,9 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
           Preencha os detalhes abaixo para gerar um laudo de ultrassom.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-8">
-          <ScrollArea className="h-[calc(100vh-20rem)] pr-4">
+      <CardContent className="flex-grow flex flex-col p-0 overflow-y-hidden"> {/* Adjusted for flex layout and internal scroll */}
+        <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col flex-grow p-6 space-y-6"> {/* p-6 for form padding, flex-grow for form to take space */}
+          <ScrollArea className="flex-grow pr-4 report-form-scroll-area"> {/* flex-grow for scroll area, added class for print styles */}
             <div className="space-y-6">
             
             <AccordionSection title="Informações da Clínica">
@@ -230,12 +231,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
             </AccordionSection>
 
             <AccordionSection title="Imagens do Exame">
-              {/* Wrapped file input with FormField to handle potential errors if we add validation for it later */}
               <FormField name="findings" label="Carregar Imagens do Exame (Opcional)" errors={errors}>
-                 {/* Note: The 'name' attribute for FormField here is a bit of a workaround. 
-                     If image validation becomes a direct part of reportFormSchema, this should be adjusted. 
-                     For now, it allows consistent styling and error message placement if needed. 
-                     We are not registering this specific input with react-hook-form directly for files. */}
                 <Input id="imageUpload" type="file" accept="image/*" multiple onChange={handleImageUpload} className="file:text-primary file:font-medium" />
               </FormField>
               {uploadedImages.length > 0 && (
@@ -275,7 +271,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
             </div>
           </ScrollArea>
 
-          <Button type="submit" disabled={isLoading} className="w-full text-lg py-6 bg-accent hover:bg-accent/90 text-accent-foreground">
+          <Button type="submit" disabled={isLoading} className="w-full text-lg py-6 bg-accent hover:bg-accent/90 text-accent-foreground mt-auto"> {/* mt-auto to push button down in flex col */}
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -312,7 +308,23 @@ const ClientOnlyForm: React.FC<ReportFormProps> = (props) => {
     setIsClient(true);
   }, []);
 
-  return isClient ? <ReportForm {...props} /> : <div>Carregando formulário...</div>; // Or a skeleton loader
+  return isClient ? <ReportForm {...props} /> : 
+    (
+      <Card className="shadow-lg flex flex-col h-full">
+        <CardHeader>
+          <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
+            <FileText className="w-8 h-8" /> Carregando...
+          </CardTitle>
+          <CardDescription className="font-body">
+            O formulário está sendo preparado.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
 };
 
 export default ClientOnlyForm;
+

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useCallback } from 'react';
@@ -78,13 +79,13 @@ export default function VetScribePage() {
       <AppHeader />
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start max-h-[calc(100vh-100px)] lg:max-h-[calc(100vh-120px)]">
-          {/* Form Section with its own scroll */}
-          <div className="lg:max-h-[calc(100vh-120px)] overflow-hidden">
+          {/* Form Section */}
+          <div className="lg:max-h-[calc(100vh-120px)]"> {/* Removed overflow-hidden, ReportForm will manage its own scroll */}
              <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
           </div>
 
-          {/* Preview Section with its own scroll */}
-          <div className="lg:sticky lg:top-[calc(theme(spacing.8)+70px)] lg:max-h-[calc(100vh-120px)] overflow-hidden">
+          {/* Preview Section */}
+          <div className="lg:sticky lg:top-[calc(theme(spacing.8)+70px)] lg:max-h-[calc(100vh-120px)] overflow-hidden"> {/* This overflow-hidden is fine as ReportPreview handles internal scroll */}
             <ReportPreview
               formData={currentFormData}
               reportText={generatedReportText}
@@ -123,8 +124,15 @@ export default function VetScribePage() {
           .pr-4 { /* Remove scrollbar padding for print */
             padding-right: 0 !important;
           }
+          /* Ensure ReportForm content is fully visible for print */
+          .report-form-scroll-area > div {
+             max-height: none !important;
+             height: auto !important;
+             overflow: visible !important;
+          }
         }
       `}</style>
     </div>
   );
 }
+
