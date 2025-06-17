@@ -74,20 +74,29 @@ export default function VetScribePage() {
 
   useEffect(() => {
     if (printTrigger > 0 && generatedReportText && !isLoading) {
+      console.log('[VetScribePage] Conditions met for printing. printTrigger:', printTrigger, 'generatedReportText exists:', !!generatedReportText, 'isLoading:', isLoading);
       // Small delay to ensure DOM is updated before printing
       const timer = setTimeout(() => {
+        console.log('[VetScribePage] Calling window.print() now.');
         window.print();
       }, 500); 
-      return () => clearTimeout(timer);
+      return () => {
+        console.log('[VetScribePage] Clearing print timer.');
+        clearTimeout(timer);
+      }
+    } else {
+       if (printTrigger > 0) {
+         console.log('[VetScribePage] Conditions NOT met for printing. printTrigger:', printTrigger, 'generatedReportText exists:', !!generatedReportText, 'isLoading:', isLoading);
+       }
     }
   }, [printTrigger, generatedReportText, isLoading]);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <AppHeader />
+      <AppHeader className="no-print" />
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start max-h-[calc(100vh-100px)] lg:max-h-[calc(100vh-120px)]">
-          <div className="lg:max-h-[calc(100vh-120px)]"> 
+          <div className="lg:max-h-[calc(100vh-120px)] no-print"> 
              <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
           </div>
 
@@ -104,6 +113,9 @@ export default function VetScribePage() {
       </main>
       <style jsx global>{`
         @media print {
+          .no-print {
+            display: none !important;
+          }
           body {
             background-color: #fff !important; 
             -webkit-print-color-adjust: exact; 
@@ -133,6 +145,20 @@ export default function VetScribePage() {
              max-height: none !important;
              height: auto !important;
              overflow: visible !important;
+          }
+           /* Ensure ReportPreview's #printable-area is the only thing visible */
+          body * {
+            visibility: hidden;
+          }
+          #printable-area, #printable-area * {
+            visibility: visible;
+          }
+          #printable-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            font-size: 10pt; 
           }
         }
       `}</style>
