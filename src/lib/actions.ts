@@ -1,7 +1,8 @@
+
 "use server";
 
 import type { ReportFormData } from "@/types";
-import { generateReport, type GenerateReportInput } from "@/ai/flows/generate-report";
+import { generateReport, type GenerateReportInput, type GenerateReportOutput } from "@/ai/flows/generate-report"; // Importar GenerateReportOutput
 import { reportFormSchema } from "@/types";
 
 function formatAge(years: number, months?: number): number {
@@ -9,8 +10,6 @@ function formatAge(years: number, months?: number): number {
   if (months && months > 0) {
     totalAgeInYears += months / 12;
   }
-  // Return age as a number, potentially with decimals for months.
-  // The AI model expects a number for age.
   return parseFloat(totalAgeInYears.toFixed(2));
 }
 
@@ -26,28 +25,39 @@ export async function handleGenerateReportAction(
       animalBreed: validatedData.breed,
       animalSex: validatedData.sex,
       animalAge: formatAge(validatedData.ageYears, validatedData.ageMonths),
-      examDate: validatedData.examDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+      examDate: validatedData.examDate.toISOString().split('T')[0],
       findings: validatedData.findings,
       additionalNotes: validatedData.additionalNotes,
     };
 
-    const result = await generateReport(aiInput);
+    console.log('[handleGenerateReportAction] AI Input:', JSON.stringify(aiInput, null, 2));
 
-    if (result.reportText) {
+    const result: GenerateReportOutput = await generateReport(aiInput);
+
+    console.log('[handleGenerateReportAction] Result from generateReport flow:', JSON.stringify(result, null, 2));
+
+    if (result && result.reportText) {
       return { success: true, reportText: result.reportText };
     } else {
-      return { success: false, error: "A IA falhou em gerar o texto do laudo." };
+      console.error('[handleGenerateReportAction] Flow returned successfully but reportText is missing or empty:', result);
+      return { success: false, error: "A IA retornou uma resposta inesperada (texto do laudo ausente)." };
     }
-  } catch (e) {
+  } catch (e: any) {
+    console.error("[handleGenerateReportAction] Error caught:", e);
+    let errorMessage = "Ocorreu um erro desconhecido ao gerar o laudo.";
+
     if (e instanceof Error) {
-      // Handle Zod errors specifically for better messages if needed
-      if ((e as any).issues) {
+      errorMessage = e.message;
+      if ((e as any).issues) { // Erro Zod
          const zodError = e as any;
-         const errorMessage = zodError.issues.map((issue: any) => `${issue.path.join('.')} - ${issue.message}`).join('; ');
-         return { success: false, error: `Erro de validação: ${errorMessage}` };
+         errorMessage = `Erro de validação: ${zodError.issues.map((issue: any) => `${issue.path.join('.')} - ${issue.message}`).join('; ')}`;
       }
-      return { success: false, error: e.message };
+    } else if (typeof e === 'string') {
+      errorMessage = e;
+    } else if (e && typeof e.message === 'string') {
+      errorMessage = e.message;
     }
-    return { success: false, error: "Ocorreu um erro desconhecido." };
+    
+    return { success: false, error: errorMessage };
   }
 }

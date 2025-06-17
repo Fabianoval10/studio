@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -57,8 +58,35 @@ const generateReportFlow = ai.defineFlow(
     inputSchema: GenerateReportInputSchema,
     outputSchema: GenerateReportOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
+  async (input): Promise<GenerateReportOutput> => {
+    console.log('[generateReportFlow] Input:', JSON.stringify(input, null, 2));
+    try {
+      const response = await prompt(input);
+      const output = response.output;
+
+      console.log('[generateReportFlow] Raw response from prompt:', JSON.stringify(response, null, 2));
+      console.log('[generateReportFlow] Output from prompt:', JSON.stringify(output, null, 2));
+
+      if (!output) {
+        console.error('[generateReportFlow] Prompt returned null or undefined output.');
+        throw new Error('A IA não retornou um resultado estruturado. Verifique o prompt e a configuração do modelo.');
+      }
+      
+      if (typeof output.reportText !== 'string' || output.reportText.trim() === '') {
+          console.error('[generateReportFlow] Output is missing reportText or it is empty:', output);
+          throw new Error('A IA gerou um resultado, mas o texto do laudo está ausente ou vazio.');
+      }
+
+      return output;
+    } catch (flowError: any) {
+      console.error('[generateReportFlow] Error in flow execution:', flowError);
+      let errorMessage = 'Erro desconhecido no fluxo de IA.';
+      if (flowError instanceof Error) {
+        errorMessage = flowError.message;
+      } else if (typeof flowError === 'string') {
+        errorMessage = flowError;
+      }
+      throw new Error(`Falha no fluxo de geração de laudo: ${errorMessage}`);
+    }
   }
 );
