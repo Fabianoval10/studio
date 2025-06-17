@@ -94,4 +94,3 @@ const generateReportFlow = ai.defineFlow(
     }
   }
 );
-

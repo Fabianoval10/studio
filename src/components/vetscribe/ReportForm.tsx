@@ -206,9 +206,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   <FormFieldWrapper name="examType" label="Tipo de Exame (ex: Ultrassom Abdominal)" errors={errors}>
                     <Input id="examType" {...register("examType")} />
                   </FormFieldWrapper>
-                  <FormFieldWrapper name="clinicalHistory" label="Histórico Clínico / Motivo do Exame" errors={errors}>
-                    <Textarea id="clinicalHistory" {...register("clinicalHistory")} rows={3} />
-                  </FormFieldWrapper>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormFieldWrapper name="sedation" label="Sedação" errors={errors}>
                       <Controller

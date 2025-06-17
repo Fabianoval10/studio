@@ -19,7 +19,6 @@ export const reportFormSchema = z.object({
   referringVet: z.string().optional(),
   examDate: z.date({ required_error: "Data do exame é obrigatória" }),
   examType: z.string().min(1, "Tipo de exame é obrigatório (ex: Ultrassom Abdominal, Ecocardiograma)"),
-  clinicalHistory: z.string().min(1, "Histórico clínico é obrigatório"),
   sedation: z.enum(["Nenhuma", "Leve", "Moderada", "Pesada"]),
   sedationAgent: z.string().optional(),
 
