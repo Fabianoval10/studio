@@ -59,8 +59,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
       ageYears: 0,
       ageMonths: 0,
       clinicName: "VETscribe Imagens Avançadas",
-      clinicAddress: "Rua do Bem-Estar, 123, Petville, PV 54321",
-      clinicLogoUrl: "https://placehold.co/200x75.png?text=VETscribe&font=belleza",
       vetName: "Dr(a). AuMiau",
       ...initialData,
       examDate: initialData?.examDate ? new Date(initialData.examDate) : new Date(),
@@ -113,12 +111,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
             <AccordionSection title="Informações da Clínica">
                 <FormField name="clinicName" label="Nome da Clínica" errors={errors}>
                   <Input id="clinicName" {...register("clinicName")} />
-                </FormField>
-                <FormField name="clinicAddress" label="Endereço da Clínica" errors={errors}>
-                  <Input id="clinicAddress" {...register("clinicAddress")} />
-                </FormField>
-                <FormField name="clinicLogoUrl" label="URL da Logo da Clínica" errors={errors}>
-                  <Input id="clinicLogoUrl" {...register("clinicLogoUrl")} placeholder="https://exemplo.com/logo.png"/>
                 </FormField>
                  <FormField name="vetName" label="Nome do Veterinário(a)" errors={errors}>
                   <Input id="vetName" {...register("vetName")} />
@@ -238,7 +230,12 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
             </AccordionSection>
 
             <AccordionSection title="Imagens do Exame">
-              <FormField name="imageUpload" label="Carregar Imagens do Exame (Opcional)" errors={errors}>
+              {/* Wrapped file input with FormField to handle potential errors if we add validation for it later */}
+              <FormField name="findings" label="Carregar Imagens do Exame (Opcional)" errors={errors}>
+                 {/* Note: The 'name' attribute for FormField here is a bit of a workaround. 
+                     If image validation becomes a direct part of reportFormSchema, this should be adjusted. 
+                     For now, it allows consistent styling and error message placement if needed. 
+                     We are not registering this specific input with react-hook-form directly for files. */}
                 <Input id="imageUpload" type="file" accept="image/*" multiple onChange={handleImageUpload} className="file:text-primary file:font-medium" />
               </FormField>
               {uploadedImages.length > 0 && (

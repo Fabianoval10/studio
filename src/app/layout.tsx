@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'VETscribe - Laudos Veterinários por Ultrassom',
-  description: 'Geração de Laudos Veterinários por Ultrassom com IA',
+  title: 'VETLD - Laudos Veterinários por Ultrassom',
+  description: 'Laudos Veterinários por Ultrassom Dra Miriam Barp',
 };
 
 export default function RootLayout({

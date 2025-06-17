@@ -4,7 +4,7 @@ import type { ReportFormData, UploadedImage } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Printer, Image as ImageIcon, AlertTriangle, Info, FileText, Download } from "lucide-react";
-import Image from "next/image";
+import NextImage from "next/image"; // Renamed to avoid conflict with lucide-react Image icon
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -77,18 +77,16 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Header Section */}
         <div className="flex justify-between items-start mb-6 print:mb-4">
           <div>
-            {formData.clinicLogoUrl && (
-              <Image 
-                src={formData.clinicLogoUrl} 
+            {/* Placeholder for logo if we re-add it or use a default one */}
+             <NextImage 
+                src="https://placehold.co/150x50.png?text=VETLD&font=belleza" 
                 alt={`Logo ${formData.clinicName}`}
                 width={150} 
-                height={75} 
+                height={50} 
                 className="mb-2 object-contain print:max-w-[120px]" 
                 data-ai-hint="clinic logo"
               />
-            )}
             <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName}</h1>
-            <p className="text-sm text-foreground/80 print:text-xs">{formData.clinicAddress}</p>
             <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName}</p>
           </div>
           <div className="text-right">
@@ -156,7 +154,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1">
-                  <Image 
+                  <NextImage 
                     src={img.previewUrl} 
                     alt={`Imagem do exame ${index + 1}`}
                     width={400} 

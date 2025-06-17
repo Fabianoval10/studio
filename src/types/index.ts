@@ -3,8 +3,6 @@ import { z } from 'zod';
 export const reportFormSchema = z.object({
   // Clinic Info (can be pre-filled or part of settings later)
   clinicName: z.string().min(1, "Nome da clínica é obrigatório").default("VETscribe Imagens Avançadas"),
-  clinicAddress: z.string().min(1, "Endereço da clínica é obrigatório").default("Rua do Bem-Estar, 123, Petville, PV 54321"),
-  clinicLogoUrl: z.string().url("Deve ser uma URL válida").optional().default("https://placehold.co/200x75.png?text=VETscribe"),
   vetName: z.string().min(1, "Nome do veterinário(a) é obrigatório").default("Dr(a). AuMiau"),
 
   // Pet Info
