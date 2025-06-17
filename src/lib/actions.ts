@@ -36,12 +36,18 @@ export async function handleGenerateReportAction(
     if (result.reportText) {
       return { success: true, reportText: result.reportText };
     } else {
-      return { success: false, error: "AI failed to generate report text." };
+      return { success: false, error: "A IA falhou em gerar o texto do laudo." };
     }
   } catch (e) {
     if (e instanceof Error) {
+      // Handle Zod errors specifically for better messages if needed
+      if ((e as any).issues) {
+         const zodError = e as any;
+         const errorMessage = zodError.issues.map((issue: any) => `${issue.path.join('.')} - ${issue.message}`).join('; ');
+         return { success: false, error: `Erro de validação: ${errorMessage}` };
+      }
       return { success: false, error: e.message };
     }
-    return { success: false, error: "An unknown error occurred." };
+    return { success: false, error: "Ocorreu um erro desconhecido." };
   }
 }

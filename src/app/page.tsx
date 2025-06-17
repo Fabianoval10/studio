@@ -41,23 +41,23 @@ export default function VetScribePage() {
       if (result.success && result.reportText) {
         setGeneratedReportText(result.reportText);
         toast({
-          title: "Report Generated",
-          description: "The AI has successfully generated the report draft.",
+          title: "Laudo Gerado",
+          description: "A IA gerou o rascunho do laudo com sucesso.",
           variant: "default",
         });
       } else {
-        setError(result.error || "Failed to generate report.");
+        setError(result.error || "Falha ao gerar o laudo.");
         toast({
-          title: "Error",
-          description: result.error || "Could not generate the report. Please try again.",
+          title: "Erro",
+          description: result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.",
           variant: "destructive",
         });
       }
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "An unexpected error occurred.";
+      const errorMessage = e instanceof Error ? e.message : "Ocorreu um erro inesperado.";
       setError(errorMessage);
       toast({
-        title: "Error",
+        title: "Erro",
         description: errorMessage,
         variant: "destructive",
       });

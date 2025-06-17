@@ -13,12 +13,12 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const InitialReportInputSchema = z.object({
-  prompt: z.string().describe('A prompt describing the ultrasound report.'),
+  prompt: z.string().describe('Um prompt descrevendo o laudo de ultrassom.'),
 });
 export type InitialReportInput = z.infer<typeof InitialReportInputSchema>;
 
 const InitialReportOutputSchema = z.object({
-  report: z.string().describe('The generated ultrasound report.'),
+  report: z.string().describe('O laudo de ultrassom gerado.'),
 });
 export type InitialReportOutput = z.infer<typeof InitialReportOutputSchema>;
 
@@ -30,8 +30,8 @@ const initialReportPrompt = ai.definePrompt({
   name: 'initialReportPrompt',
   input: {schema: InitialReportInputSchema},
   output: {schema: InitialReportOutputSchema},
-  prompt: `You are an expert veterinary ultrasound report generator.
-  Based on the following prompt, generate a detailed ultrasound report.
+  prompt: `Você é um especialista em geração de laudos de ultrassom veterinário.
+  Baseado no seguinte prompt, gere um laudo de ultrassom detalhado em Português do Brasil.
 
   Prompt: {{{prompt}}}
   `,

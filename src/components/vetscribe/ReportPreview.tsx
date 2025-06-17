@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Printer, Image as ImageIcon, AlertTriangle, Info, FileText, Download } from "lucide-react";
 import Image from "next/image";
 import { format } from "date-fns";
+import { ptBR } from 'date-fns/locale';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
@@ -53,7 +54,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
       return (
         <Alert variant="destructive" className="m-4">
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle className="font-headline">Error Generating Report</AlertTitle>
+          <AlertTitle className="font-headline">Erro ao Gerar Laudo</AlertTitle>
           <AlertDescription className="font-body">{error}</AlertDescription>
         </Alert>
       );
@@ -63,9 +64,9 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
       return (
         <Alert className="m-4 border-primary/50">
           <Info className="h-4 w-4 text-primary" />
-          <AlertTitle className="font-headline text-primary">Report Preview</AlertTitle>
+          <AlertTitle className="font-headline text-primary">Pré-visualização do Laudo</AlertTitle>
           <AlertDescription className="font-body">
-            Fill out the form and click "Generate Report" to see the preview here.
+            Preencha o formulário e clique em "Gerar Laudo" para ver a pré-visualização aqui.
           </AlertDescription>
         </Alert>
       );
@@ -79,7 +80,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             {formData.clinicLogoUrl && (
               <Image 
                 src={formData.clinicLogoUrl} 
-                alt={`${formData.clinicName} Logo`} 
+                alt={`Logo ${formData.clinicName}`}
                 width={150} 
                 height={75} 
                 className="mb-2 object-contain print:max-w-[120px]" 
@@ -88,42 +89,42 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             )}
             <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName}</h1>
             <p className="text-sm text-foreground/80 print:text-xs">{formData.clinicAddress}</p>
-            <p className="text-sm text-foreground/80 print:text-xs">Veterinarian: {formData.vetName}</p>
+            <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-headline text-primary print:text-lg">Ultrasound Report</h2>
-            <DetailItem label="Exam Date" value={format(formData.examDate, "PPP")} />
-            <DetailItem label="Report Date" value={format(new Date(), "PPP")} />
+            <h2 className="text-xl font-headline text-primary print:text-lg">Laudo de Ultrassom</h2>
+            <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} />
+            <DetailItem label="Data do Laudo" value={format(new Date(), "PPP", { locale: ptBR })} />
           </div>
         </div>
 
         <Separator className="my-4 print:my-2" />
 
         {/* Patient Information */}
-        <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Patient Information</h3>
+        <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Informações do Paciente</h3>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-4 text-sm print:text-xs print:gap-y-0">
-          <DetailItem label="Patient Name" value={formData.petName} />
-          <DetailItem label="Patient ID" value={formData.patientId} />
-          <DetailItem label="Species" value={formData.species} />
-          <DetailItem label="Breed" value={formData.breed} />
-          <DetailItem label="Age" value={`${formData.ageYears} yr ${formData.ageMonths ? formData.ageMonths + ' mo' : '' }`} />
-          <DetailItem label="Sex" value={formData.sex} />
-          <DetailItem label="Owner" value={formData.ownerName} />
-          <DetailItem label="Referring Vet" value={formData.referringVet} />
+          <DetailItem label="Nome do Paciente" value={formData.petName} />
+          <DetailItem label="ID do Paciente" value={formData.patientId} />
+          <DetailItem label="Espécie" value={formData.species} />
+          <DetailItem label="Raça" value={formData.breed} />
+          <DetailItem label="Idade" value={`${formData.ageYears} ano(s) ${formData.ageMonths ? formData.ageMonths + ' mes(es)' : '' }`} />
+          <DetailItem label="Sexo" value={formData.sex} />
+          <DetailItem label="Tutor" value={formData.ownerName} />
+          <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
         </div>
 
         <Separator className="my-4 print:my-2" />
 
         {/* Exam Details */}
-        <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Exam Details</h3>
+        <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Detalhes do Exame</h3>
         <div className="space-y-1 mb-4 text-sm print:text-xs">
-          <DetailItem label="Exam Type" value={formData.examType} />
-          <DetailItem label="Clinical History" value={formData.clinicalHistory} />
-          <DetailItem label="Sedation" value={`${formData.sedation}${formData.sedationAgent && formData.sedation !== "None" ? ` (${formData.sedationAgent})` : ''}`} />
+          <DetailItem label="Tipo de Exame" value={formData.examType} />
+          <DetailItem label="Histórico Clínico" value={formData.clinicalHistory} />
+          <DetailItem label="Sedação" value={`${formData.sedation}${formData.sedationAgent && formData.sedation !== "Nenhuma" ? ` (${formData.sedationAgent})` : ''}`} />
         </div>
         
         {/* Findings */}
-        <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Findings</h3>
+        <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Achados</h3>
         <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
           {formData.findings}
         </div>
@@ -131,7 +132,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* AI Generated Report / Impressions */}
         {reportText && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Impressions / Conclusions</h3>
+            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Impressões / Conclusões</h3>
             <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 text-sm print:text-xs print:border-none print:p-0">
               {reportText}
             </div>
@@ -141,7 +142,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Additional Notes */}
         {formData.additionalNotes && (
            <>
-            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Additional Notes</h3>
+            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Observações Adicionais</h3>
             <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
               {formData.additionalNotes}
             </div>
@@ -151,13 +152,13 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Exam Images</h3>
+            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Imagens do Exame</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1">
                   <Image 
                     src={img.previewUrl} 
-                    alt={`Exam image ${index + 1}`} 
+                    alt={`Imagem do exame ${index + 1}`}
                     width={400} 
                     height={300} 
                     className="w-full h-auto object-contain"
@@ -171,7 +172,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         
         {/* Footer / Signature line for print */}
         <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4">
-          <p className="text-sm text-foreground/70 print:text-xs">Signature: ________________________________________</p>
+          <p className="text-sm text-foreground/70 print:text-xs">Assinatura: ________________________________________</p>
           <p className="text-sm text-foreground/70 print:text-xs">{formData.vetName}</p>
         </div>
 
@@ -184,10 +185,10 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     <Card className="shadow-lg h-full flex flex-col">
       <CardHeader className="flex-shrink-0">
         <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
-          <FileText className="w-8 h-8" /> Report Preview
+          <FileText className="w-8 h-8" /> Pré-visualização do Laudo
         </CardTitle>
         <CardDescription className="font-body">
-          Review the generated report below. Use the print button to save as PDF.
+          Revise o laudo gerado abaixo. Use o botão de imprimir para salvar como PDF.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow overflow-y-auto">
@@ -195,7 +196,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
       </CardContent>
       <CardFooter className="flex-shrink-0 border-t pt-6 justify-end">
         <Button onClick={handlePrint} disabled={!formData || isLoading} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          <Printer className="mr-2 h-4 w-4" /> Print to PDF
+          <Printer className="mr-2 h-4 w-4" /> Imprimir para PDF
         </Button>
       </CardFooter>
       <style jsx global>{`

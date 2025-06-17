@@ -12,19 +12,19 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateReportInputSchema = z.object({
-  examType: z.string().describe('Type of ultrasound exam performed.'),
-  animalSpecies: z.string().describe('Species of the animal examined.'),
-  animalBreed: z.string().describe('Breed of the animal examined.'),
-  animalSex: z.string().describe('Sex of the animal examined.'),
-  animalAge: z.number().describe('Age of the animal in years.'),
-  examDate: z.string().describe('Date the ultrasound exam was performed.'),
-  findings: z.string().describe('Structured findings from the ultrasound exam.'),
-  additionalNotes: z.string().optional().describe('Any additional notes or observations.'),
+  examType: z.string().describe('Tipo de exame de ultrassom realizado.'),
+  animalSpecies: z.string().describe('Espécie do animal examinado.'),
+  animalBreed: z.string().describe('Raça do animal examinado.'),
+  animalSex: z.string().describe('Sexo do animal examinado.'),
+  animalAge: z.number().describe('Idade do animal em anos.'),
+  examDate: z.string().describe('Data em que o exame de ultrassom foi realizado.'),
+  findings: z.string().describe('Achados estruturados do exame de ultrassom.'),
+  additionalNotes: z.string().optional().describe('Quaisquer notas ou observações adicionais.'),
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
 
 const GenerateReportOutputSchema = z.object({
-  reportText: z.string().describe('The generated ultrasound report text.'),
+  reportText: z.string().describe('O texto do laudo de ultrassom gerado.'),
 });
 export type GenerateReportOutput = z.infer<typeof GenerateReportOutputSchema>;
 
@@ -36,18 +36,18 @@ const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `You are an experienced veterinary radiologist. Generate a detailed ultrasound report based on the following structured data. Use appropriate veterinary terminology.
+  prompt: `Você é um radiologista veterinário experiente. Gere um laudo de ultrassom detalhado com base nos seguintes dados estruturados. Use terminologia veterinária apropriada. O laudo deve ser gerado em Português do Brasil.
 
-Exam Type: {{{examType}}}
-Animal Species: {{{animalSpecies}}}
-Animal Breed: {{{animalBreed}}}
-Animal Sex: {{{animalSex}}}
-Animal Age: {{{animalAge}}} years
-Exam Date: {{{examDate}}}
-Findings: {{{findings}}}
-Additional Notes: {{{additionalNotes}}}
+Tipo de Exame: {{{examType}}}
+Espécie Animal: {{{animalSpecies}}}
+Raça Animal: {{{animalBreed}}}
+Sexo Animal: {{{animalSex}}}
+Idade Animal: {{{animalAge}}} anos
+Data do Exame: {{{examDate}}}
+Achados: {{{findings}}}
+Notas Adicionais: {{{additionalNotes}}}
 
-Report:
+Laudo:
 `,
 });
 

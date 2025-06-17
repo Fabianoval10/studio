@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { ptBR } from 'date-fns/locale';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
@@ -53,14 +54,14 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
   } = useForm<ReportFormData>({
     resolver: zodResolver(reportFormSchema),
     defaultValues: {
-      sex: "Unknown",
-      sedation: "None",
+      sex: "Desconhecido",
+      sedation: "Nenhuma",
       ageYears: 0,
       ageMonths: 0,
-      clinicName: "VETscribe Advanced Imaging",
-      clinicAddress: "123 Wellness Road, Petville, PV 54321",
+      clinicName: "VETscribe Imagens Avançadas",
+      clinicAddress: "Rua do Bem-Estar, 123, Petville, PV 54321",
       clinicLogoUrl: "https://placehold.co/200x75.png?text=VETscribe&font=belleza",
-      vetName: "Dr. Pawsworth",
+      vetName: "Dr(a). AuMiau",
       ...initialData,
       examDate: initialData?.examDate ? new Date(initialData.examDate) : new Date(),
     },
@@ -98,10 +99,10 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
     <Card className="shadow-lg">
       <CardHeader>
         <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
-          <FileText className="w-8 h-8" /> Create New Report
+          <FileText className="w-8 h-8" /> Criar Novo Laudo
         </CardTitle>
         <CardDescription className="font-body">
-          Fill in the details below to generate an ultrasound report.
+          Preencha os detalhes abaixo para gerar um laudo de ultrassom.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -109,73 +110,73 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
           <ScrollArea className="h-[calc(100vh-20rem)] pr-4">
             <div className="space-y-6">
             
-            <AccordionSection title="Clinic Information">
-                <FormField name="clinicName" label="Clinic Name" errors={errors}>
+            <AccordionSection title="Informações da Clínica">
+                <FormField name="clinicName" label="Nome da Clínica" errors={errors}>
                   <Input id="clinicName" {...register("clinicName")} />
                 </FormField>
-                <FormField name="clinicAddress" label="Clinic Address" errors={errors}>
+                <FormField name="clinicAddress" label="Endereço da Clínica" errors={errors}>
                   <Input id="clinicAddress" {...register("clinicAddress")} />
                 </FormField>
-                <FormField name="clinicLogoUrl" label="Clinic Logo URL" errors={errors}>
-                  <Input id="clinicLogoUrl" {...register("clinicLogoUrl")} placeholder="https://example.com/logo.png"/>
+                <FormField name="clinicLogoUrl" label="URL da Logo da Clínica" errors={errors}>
+                  <Input id="clinicLogoUrl" {...register("clinicLogoUrl")} placeholder="https://exemplo.com/logo.png"/>
                 </FormField>
-                 <FormField name="vetName" label="Veterinarian Name" errors={errors}>
+                 <FormField name="vetName" label="Nome do Veterinário(a)" errors={errors}>
                   <Input id="vetName" {...register("vetName")} />
                 </FormField>
             </AccordionSection>
 
-            <AccordionSection title="Pet Information">
+            <AccordionSection title="Informações do Pet">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField name="petName" label="Pet Name" errors={errors}>
+                <FormField name="petName" label="Nome do Pet" errors={errors}>
                   <Input id="petName" {...register("petName")} />
                 </FormField>
-                <FormField name="ownerName" label="Owner Name" errors={errors}>
+                <FormField name="ownerName" label="Nome do Tutor" errors={errors}>
                   <Input id="ownerName" {...register("ownerName")} />
                 </FormField>
-                <FormField name="species" label="Species" errors={errors}>
+                <FormField name="species" label="Espécie" errors={errors}>
                   <Input id="species" {...register("species")} />
                 </FormField>
-                <FormField name="breed" label="Breed" errors={errors}>
+                <FormField name="breed" label="Raça" errors={errors}>
                   <Input id="breed" {...register("breed")} />
                 </FormField>
                 <div className="grid grid-cols-2 gap-2">
-                  <FormField name="ageYears" label="Age (Years)" errors={errors}>
+                  <FormField name="ageYears" label="Idade (Anos)" errors={errors}>
                     <Input id="ageYears" type="number" {...register("ageYears")} min="0" />
                   </FormField>
-                  <FormField name="ageMonths" label="Age (Months)" errors={errors}>
+                  <FormField name="ageMonths" label="Idade (Meses)" errors={errors}>
                     <Input id="ageMonths" type="number" {...register("ageMonths")} min="0" max="11" />
                   </FormField>
                 </div>
-                <FormField name="sex" label="Sex" errors={errors}>
+                <FormField name="sex" label="Sexo" errors={errors}>
                   <Controller
                     name="sex"
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger id="sex"><SelectValue placeholder="Select sex" /></SelectTrigger>
+                        <SelectTrigger id="sex"><SelectValue placeholder="Selecione o sexo" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Male">Male</SelectItem>
-                          <SelectItem value="Female">Female</SelectItem>
-                          <SelectItem value="Male Neutered">Male Neutered</SelectItem>
-                          <SelectItem value="Female Spayed">Female Spayed</SelectItem>
-                          <SelectItem value="Unknown">Unknown</SelectItem>
+                          <SelectItem value="Macho">Macho</SelectItem>
+                          <SelectItem value="Fêmea">Fêmea</SelectItem>
+                          <SelectItem value="Macho Castrado">Macho Castrado</SelectItem>
+                          <SelectItem value="Fêmea Castrada">Fêmea Castrada</SelectItem>
+                          <SelectItem value="Desconhecido">Desconhecido</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
                   />
                 </FormField>
-                <FormField name="patientId" label="Patient ID (Optional)" errors={errors}>
+                <FormField name="patientId" label="ID do Paciente (Opcional)" errors={errors}>
                   <Input id="patientId" {...register("patientId")} />
                 </FormField>
               </div>
             </AccordionSection>
 
-            <AccordionSection title="Exam Information">
+            <AccordionSection title="Informações do Exame">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField name="referringVet" label="Referring Veterinarian (Optional)" errors={errors}>
+                <FormField name="referringVet" label="Veterinário Solicitante (Opcional)" errors={errors}>
                   <Input id="referringVet" {...register("referringVet")} />
                 </FormField>
-                <FormField name="examDate" label="Exam Date" errors={errors}>
+                <FormField name="examDate" label="Data do Exame" errors={errors}>
                    <Controller
                     name="examDate"
                     control={control}
@@ -187,7 +188,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                             className={`w-full justify-start text-left font-normal ${!field.value && "text-muted-foreground"}`}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                            {field.value ? format(field.value, "PPP", { locale: ptBR }) : <span>Escolha uma data</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -196,6 +197,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                             selected={field.value}
                             onSelect={field.onChange}
                             initialFocus
+                            locale={ptBR}
                           />
                         </PopoverContent>
                       </Popover>
@@ -203,53 +205,53 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   />
                 </FormField>
               </div>
-              <FormField name="examType" label="Exam Type (e.g. Abdominal Ultrasound)" errors={errors}>
+              <FormField name="examType" label="Tipo de Exame (ex: Ultrassom Abdominal)" errors={errors}>
                 <Input id="examType" {...register("examType")} />
               </FormField>
-              <FormField name="clinicalHistory" label="Clinical History / Reason for Exam" errors={errors}>
+              <FormField name="clinicalHistory" label="Histórico Clínico / Motivo do Exame" errors={errors}>
                 <Textarea id="clinicalHistory" {...register("clinicalHistory")} rows={3} />
               </FormField>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField name="sedation" label="Sedation" errors={errors}>
+                <FormField name="sedation" label="Sedação" errors={errors}>
                   <Controller
                     name="sedation"
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger id="sedation"><SelectValue placeholder="Select sedation level" /></SelectTrigger>
+                        <SelectTrigger id="sedation"><SelectValue placeholder="Selecione o nível de sedação" /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="None">None</SelectItem>
-                          <SelectItem value="Light">Light</SelectItem>
-                          <SelectItem value="Moderate">Moderate</SelectItem>
-                          <SelectItem value="Heavy">Heavy</SelectItem>
+                          <SelectItem value="Nenhuma">Nenhuma</SelectItem>
+                          <SelectItem value="Leve">Leve</SelectItem>
+                          <SelectItem value="Moderada">Moderada</SelectItem>
+                          <SelectItem value="Pesada">Pesada</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
                   />
                 </FormField>
-                {currentSedation !== "None" && (
-                  <FormField name="sedationAgent" label="Sedation Agent(s) (Optional)" errors={errors}>
+                {currentSedation !== "Nenhuma" && (
+                  <FormField name="sedationAgent" label="Agente(s) de Sedação (Opcional)" errors={errors}>
                     <Input id="sedationAgent" {...register("sedationAgent")} />
                   </FormField>
                 )}
               </div>
             </AccordionSection>
 
-            <AccordionSection title="Exam Images">
-              <FormField name="imageUpload" label="Upload Exam Images (Optional)" errors={errors}>
+            <AccordionSection title="Imagens do Exame">
+              <FormField name="imageUpload" label="Carregar Imagens do Exame (Opcional)" errors={errors}>
                 <Input id="imageUpload" type="file" accept="image/*" multiple onChange={handleImageUpload} className="file:text-primary file:font-medium" />
               </FormField>
               {uploadedImages.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                   {uploadedImages.map((img) => (
                     <div key={img.id} className="relative group aspect-square border rounded-md overflow-hidden shadow">
-                      <Image src={img.previewUrl} alt="Exam image preview" layout="fill" objectFit="cover" data-ai-hint="ultrasound scan" />
+                      <Image src={img.previewUrl} alt="Pré-visualização da imagem do exame" layout="fill" objectFit="cover" data-ai-hint="ultrasound scan" />
                       <Button
                         variant="destructive"
                         size="icon"
                         className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={() => removeImage(img.id)}
-                        aria-label="Remove image"
+                        aria-label="Remover imagem"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -259,18 +261,18 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
               )}
             </AccordionSection>
 
-            <AccordionSection title="Findings & Report Generation">
-              <FormField name="findings" label="Structured Findings" errors={errors}>
+            <AccordionSection title="Achados & Geração de Laudo">
+              <FormField name="findings" label="Achados Estruturados" errors={errors}>
                 <Textarea
                   id="findings"
                   {...register("findings")}
                   rows={8}
-                  placeholder="Describe all observed structures and any abnormalities in detail. E.g., Liver: Normal size and echogenicity. No focal lesions identified. Spleen: Mildly enlarged with diffuse hypoechoic nodularity..."
+                  placeholder="Descreva todas as estruturas observadas e quaisquer anormalidades em detalhe. Ex: Fígado: Tamanho e ecogenicidade normais. Ausência de lesões focais. Baço: Levemente aumentado com nodularidade hipoecóica difusa..."
                   className="font-body"
                 />
               </FormField>
-              <FormField name="additionalNotes" label="Additional Notes / Impressions (Optional)" errors={errors}>
-                <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Any other comments, differential diagnoses, or recommendations." className="font-body"/>
+              <FormField name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors}>
+                <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações." className="font-body"/>
               </FormField>
             </AccordionSection>
             </div>
@@ -280,12 +282,12 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Generating Report...
+                Gerando Laudo...
               </>
             ) : (
               <>
                 <FileText className="mr-2 h-5 w-5" />
-                Generate Report
+                Gerar Laudo
               </>
             )}
           </Button>
@@ -313,8 +315,7 @@ const ClientOnlyForm: React.FC<ReportFormProps> = (props) => {
     setIsClient(true);
   }, []);
 
-  return isClient ? <ReportForm {...props} /> : <div>Loading form...</div>; // Or a skeleton loader
+  return isClient ? <ReportForm {...props} /> : <div>Carregando formulário...</div>; // Or a skeleton loader
 };
 
 export default ClientOnlyForm;
-
