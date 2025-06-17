@@ -37,7 +37,7 @@ const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `Você é um radiologista veterinário experiente. Gere um laudo de ultrassom detalhado com base nos seguintes dados estruturados. Use terminologia veterinária apropriada. O laudo deve ser gerado em Português do Brasil.
+  prompt: `Você é um radiologista veterinário experiente. Gere um laudo de ultrassom COMPLETO e DETALHADO com base nos seguintes dados estruturados. Use terminologia veterinária apropriada. O laudo deve ser gerado em Português do Brasil. Certifique-se de que todas as informações relevantes sejam incluídas e que a linguagem seja clara e profissional.
 
 Tipo de Exame: {{{examType}}}
 Espécie Animal: {{{animalSpecies}}}
@@ -47,6 +47,8 @@ Idade Animal: {{{animalAge}}} anos
 Data do Exame: {{{examDate}}}
 Achados: {{{findings}}}
 Notas Adicionais: {{{additionalNotes}}}
+
+Elabore sobre os achados e forneça conclusões e impressões diagnósticas consistentes com as informações fornecidas. Evite respostas curtas ou resumidas demais.
 
 Laudo:
 `,
@@ -77,6 +79,8 @@ const generateReportFlow = ai.defineFlow(
           throw new Error('A IA gerou um resultado, mas o texto do laudo está ausente ou vazio.');
       }
 
+      console.log(`[generateReportFlow] Length of generated reportText: ${output.reportText.length}`);
+
       return output;
     } catch (flowError: any) {
       console.error('[generateReportFlow] Error in flow execution:', flowError);
@@ -90,3 +94,4 @@ const generateReportFlow = ai.defineFlow(
     }
   }
 );
+
