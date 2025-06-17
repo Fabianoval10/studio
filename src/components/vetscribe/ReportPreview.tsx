@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -117,7 +118,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Detalhes do Exame</h3>
         <div className="space-y-1 mb-4 text-sm print:text-xs">
           <DetailItem label="Tipo de Exame" value={formData.examType} />
-          <DetailItem label="Sedação" value={`${formData.sedation}${formData.sedationAgent && formData.sedation !== "Nenhuma" ? ` (${formData.sedationAgent})` : ''}`} />
         </div>
         
         {/* Findings */}

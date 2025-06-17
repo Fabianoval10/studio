@@ -54,7 +54,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
     resolver: zodResolver(reportFormSchema),
     defaultValues: {
       sex: "Desconhecido",
-      sedation: "Nenhuma",
       ageYears: 0,
       ageMonths: 0,
       clinicName: "VETscribe Imagens Avançadas",
@@ -90,7 +89,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
     onSubmit(data, imageFiles);
   };
   
-  const currentSedation = watch("sedation");
 
   return (
     <Card className="shadow-lg flex flex-col h-full">
@@ -206,31 +204,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   <FormFieldWrapper name="examType" label="Tipo de Exame (ex: Ultrassom Abdominal)" errors={errors}>
                     <Input id="examType" {...register("examType")} />
                   </FormFieldWrapper>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormFieldWrapper name="sedation" label="Sedação" errors={errors}>
-                      <Controller
-                        name="sedation"
-                        control={control}
-                        render={({ field }) => (
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger id="sedation"><SelectValue placeholder="Selecione o nível de sedação" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Nenhuma">Nenhuma</SelectItem>
-                              <SelectItem value="Leve">Leve</SelectItem>
-                              <SelectItem value="Moderada">Moderada</SelectItem>
-                              <SelectItem value="Pesada">Pesada</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </FormFieldWrapper>
-                    {currentSedation !== "Nenhuma" && (
-                      <FormFieldWrapper name="sedationAgent" label="Agente(s) de Sedação (Opcional)" errors={errors}>
-                        <Input id="sedationAgent" {...register("sedationAgent")} />
-                      </FormFieldWrapper>
-                    )}
-                  </div>
                 </AccordionContent>
               </AccordionItem>
 
