@@ -74,6 +74,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     }
 
     return (
+      // printable-area é o contêiner principal para impressão
       <div id="printable-area" className="p-2 md:p-6 font-body printable-content">
         {/* Header Section */}
         <div className="flex justify-between items-start mb-6 print:mb-4">
@@ -116,8 +117,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
         {/* Findings - Hidden on print */}
         <div className="no-print">
-          <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Achados</h3>
-          <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
+          <h3 className="text-lg font-headline text-primary mt-4 mb-2">Achados</h3>
+          <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm">
             {formData.findings}
           </div>
         </div>
@@ -152,8 +153,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300} // Adjusted from 200
-                    height={225} // Adjusted from 150
+                    width={300}
+                    height={225}
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -162,25 +163,23 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             </div>
           </>
         )}
+        
+        {/* This div is a spacer, only relevant for on-screen view if needed.
+            It's hidden in print because the .print-page-footer is fixed. */}
+        <div className="mt-12 pt-6 border-t print:hidden"></div>
 
-        {/* Placeholder for signature in normal content flow - hidden on print */}
-        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 break-inside-avoid signature-in-flow-placeholder">
-          {/* This div's content (if any) or just its space will be hidden in print,
-              the .print-page-footer will be used instead for printing.
-              If you want something visible on screen here (like a line or placeholder text), add it.
-              Otherwise, it can be empty.
-           */}
-        </div>
 
         {/* Fixed Footer for Print - This will appear on every printed page */}
+        {/* It's placed inside printable-area to be part of the visible content during print */}
         <div className="print-page-footer">
           <NextImage
             src="/ASSINATURA.png"
             alt="Assinatura Digitalizada"
-            width={150}
-            height={60}
-            className="mx-auto" /* For centering */
+            width={150} // Consistent with CSS max-width
+            height={50} // Consistent with CSS max-height
             data-ai-hint="doctor signature"
+            priority
+            style={{ border: '2px solid red' }} // Debug border
           />
         </div>
       </div>
@@ -212,17 +211,22 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           body * {
             visibility: hidden;
           }
-          #printable-area, #printable-area * {
+          #printable-area, #printable-area * { /* Make printable area and its direct children visible */
             visibility: visible;
           }
-          #printable-area {
-            /* position: absolute; /* Removed for better fixed footer compatibility */
-            /* left: 0; */ /* Not needed if not absolute */
-            /* top: 0; */  /* Not needed if not absolute */
-            width: 100%;
-            font-size: 8pt; /* Slightly reduced font size for print */
-            padding-bottom: 70px; /* Space for the fixed footer - adjust if signature height changes */
+           /* Ensure specifically that the footer and its image are visible */
+          .print-page-footer, .print-page-footer * {
+            visibility: visible !important; /* Important to override generic * hidden */
           }
+
+          #printable-area {
+            width: 100%;
+            font-size: 8pt; 
+            padding-bottom: 20mm; /* Space for the fixed footer (e.g., 15mm for footer + 5mm margin) */
+            margin: 0; /* Reset margins for printable area */
+            /* position: relative; /* This is important for fixed children if issues arise, but global page.tsx style should handle this */
+          }
+          
           .page-break-before {
             page-break-before: always;
           }
@@ -232,23 +236,23 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .no-print {
             display: none !important;
           }
-          .signature-in-flow-placeholder {
-            display: none !important; /* Hide the normal flow signature area on print */
-          }
+          
           .print-page-footer {
-            display: block !important; /* Make it visible for print */
+            display: block !important; /* Ensure it's displayed for print */
             position: fixed;
-            bottom: 20px; /* Adjust distance from bottom of the page */
+            bottom: 10mm; /* Adjust distance from bottom of the page */
             left: 0;
-            right: 0; /* Ensures it spans the width */
+            right: 0;
             width: 100%;
-            text-align: center;
+            text-align: center; /* Centers the image */
             z-index: 1000; /* Keep it on top */
+            /* background-color: white; /* Optional: if there are issues with content behind it */
           }
           .print-page-footer img {
-            max-width: 150px; /* Control image size in print */
-            max-height: 50px;
-            height: auto;
+            max-width: 150px; /* Max width for the image */
+            max-height: 50px; /* Max height for the image */
+            height: auto; /* Maintain aspect ratio */
+            /* display: inline-block; /* Default for img, ensures text-align works */
           }
         }
       `}</style>
