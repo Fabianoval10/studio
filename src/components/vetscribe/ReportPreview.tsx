@@ -119,10 +119,12 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <DetailItem label="Tipo de Exame" value={formData.examType} />
         </div>
         
-        {/* Findings */}
-        <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Achados</h3>
-        <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
-          {formData.findings}
+        {/* Findings - Hidden on print */}
+        <div className="no-print">
+          <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Achados</h3>
+          <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
+            {formData.findings}
+          </div>
         </div>
 
         {/* AI Generated Report / Impressions */}
@@ -230,3 +232,4 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
+
