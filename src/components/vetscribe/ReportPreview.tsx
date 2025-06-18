@@ -85,14 +85,14 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           />
         </div>
 
-        <div className="flex justify-between items-start mb-4 print:mb-1 print:pt-0">
+        <div className="flex justify-between items-start mb-4 print:pt-0 print:mb-1">
           <div className="print:max-w-[55%]">
              <NextImage
                 src="/baddha-logo.png"
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={120}
-                height={27} 
-                className="mb-1 print:mb-0.5 object-contain print:w-[120px] print:h-auto"
+                width={120} 
+                height={27}
+                className="mb-1 print:mb-0 object-contain print:w-[100px] print:h-auto print:mt-0"
                 data-ai-hint="baddha ultrasound logo"
                 priority
               />
@@ -124,7 +124,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         
         {reportText && (
           <>
-            <h3 className="text-base font-headline text-primary mt-3 mb-1 print:text-[9pt] print:mt-1 print:mb-0.5">Impressões / Conclusões</h3>
+            <h3 className="text-base font-headline text-primary mt-3 mb-1 print:text-[9pt] print:mt-1 print:mb-0.5">Achados, Impressões e Conclusões</h3>
             <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 text-sm print:text-[8pt] print:border-none print:p-0 print:leading-normal">
               {reportText}
             </div>
@@ -170,7 +170,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             width={150} 
             height={50} 
             data-ai-hint="doctor signature"
-            priority
             style={{ border: 'none' }}
           />
         </div>
@@ -231,8 +230,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             font-size: 8pt; 
             padding: 0; 
             margin: 0; 
-            position: relative;
-            padding-bottom: 20mm; 
+            position: relative; /* Important for z-index context of watermark */
+            padding-bottom: 20mm; /* Space for the footer */
           }
           
           .page-break-before {
@@ -245,18 +244,18 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .print-page-footer {
             display: block !important; 
             position: fixed;
-            bottom: 8mm; 
+            bottom: 5mm; /* Adjusted as per request */
             left: 0;
             right: 0;
-            width: 100%;
             text-align: center; 
-            z-index: 1000; 
+            z-index: 1000; /* Above watermark, below content if overlap */
           }
           .print-page-footer img {
             max-width: 150px; 
             max-height: 50px; 
             height: auto; 
             border: none !important;
+            /* display: inline-block; Already centered by text-align on parent */
           }
 
           .print-watermark {
@@ -268,7 +267,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             height: 15cm;
             transform: translate(-50%, -50%);
             opacity: 0.05 !important; 
-            z-index: -1 !important; 
+            z-index: -1 !important; /* Behind all content */
             pointer-events: none; 
           }
           .print-watermark img {
@@ -277,6 +276,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
              object-fit: contain; 
           }
 
+          /* Print-specific typography and spacing refinement */
           #printable-area .print\\:text-\\[10pt\\] { font-size: 10pt !important; }
           #printable-area .print\\:text-\\[9pt\\] { font-size: 9pt !important; }
           #printable-area .print\\:text-\\[8pt\\] { font-size: 8pt !important; }
@@ -286,18 +286,21 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           #printable-area .print\\:leading-snug { line-height: 1.375 !important; }
           #printable-area .print\\:leading-normal { line-height: 1.5 !important; }
           
-          #printable-area .print\\:mb-1 { margin-bottom: 0.15rem !important; }
+          #printable-area .print\\:mb-0 { margin-bottom: 0 !important; }
           #printable-area .print\\:mb-0\\.5 { margin-bottom: 0.1rem !important; }
+          #printable-area .print\\:mb-1 { margin-bottom: 0.15rem !important; }
+          
           #printable-area .print\\:mt-0 { margin-top: 0 !important; }
           #printable-area .print\\:mt-1 { margin-top: 0.15rem !important; }
           #printable-area .print\\:mt-2 { margin-top: 0.3rem !important; }
+
           #printable-area .print\\:my-1 { margin-top: 0.15rem !important; margin-bottom: 0.15rem !important; }
           #printable-area .print\\:pt-0 { padding-top: 0 !important; }
           
           #printable-area .print\\:gap-1 { gap: 0.15rem !important; }
           #printable-area .print\\:gap-y-px { row-gap: 1px !important; }
           #printable-area .print\\:p-0\\.5 { padding: 0.125rem !important; }
-          #printable-area .print\\:w-\\[120px\\] { width: 120px !important; }
+          #printable-area .print\\:w-\\[100px\\] { width: 100px !important; }
         }
       `}</style>
     </>
