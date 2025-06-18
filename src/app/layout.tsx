@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'VETLD - Laudos Veterinários por Ultrassom',
-  description: 'Laudos Veterinários por Ultrassom Dra Miriam Barp',
+  title: 'Baddha Ultrassonografia Veterinária',
+  description: 'Laudos Veterinários por Ultrassom - Baddha Ultrassonografia',
 };
 
 export default function RootLayout({

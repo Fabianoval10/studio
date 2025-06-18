@@ -79,12 +79,12 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <div className="flex justify-between items-start mb-6 print:mb-4">
           <div>
              <NextImage 
-                src="https://placehold.co/150x50.png?text=VETLD&font=belleza" 
-                alt={`Logo ${formData.clinicName}`}
-                width={150} 
+                src="https://placehold.co/220x50.png?text=baddha+ULTRASSONOGRAFIA&font=belleza" 
+                alt={`${formData.clinicName} Logo`}
+                width={220} 
                 height={50} 
-                className="mb-2 object-contain print:max-w-[120px]" 
-                data-ai-hint="clinic logo"
+                className="mb-2 object-contain print:max-w-[180px]" 
+                data-ai-hint="baddha ultrasound logo"
               />
             <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName}</h1>
             <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName}</p>
@@ -148,7 +148,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Imagens do Exame</h3>
+            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4 page-break-before">Imagens do Exame</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1">
@@ -167,7 +167,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         )}
         
         {/* Footer / Signature line for print */}
-        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4">
+        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 page-break-before">
           <div className="mb-8">
             <p className="text-sm text-foreground/70 print:text-xs">Assinatura:</p>
             <div className="h-10 border-b border-foreground/50 print:border-foreground/70 w-3/4 mt-1"></div> {/* Signature line */}
@@ -215,7 +215,10 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             width: 100%;
             font-size: 10pt; /* Smaller font for print */
           }
-          .print-no-break {
+          .page-break-before {
+            page-break-before: always;
+          }
+          .break-inside-avoid {
             page-break-inside: avoid;
           }
            /* Hide buttons and other non-printable elements */
@@ -227,4 +230,3 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
-

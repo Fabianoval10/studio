@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 export const reportFormSchema = z.object({
   // Clinic Info (can be pre-filled or part of settings later)
-  clinicName: z.string().min(1, "Nome da clínica é obrigatório").default("VETscribe Imagens Avançadas"),
-  vetName: z.string().min(1, "Nome do veterinário(a) é obrigatório").default("Dr(a). AuMiau"),
+  clinicName: z.string().min(1, "Nome da clínica é obrigatório").default("Baddha Ultrassonografia"),
+  vetName: z.string().min(1, "Nome do veterinário(a) é obrigatório").default("Dra. Míriam Barp F. da Costa"),
 
   // Pet Info
   petName: z.string().min(1, "Nome do pet é obrigatório"),

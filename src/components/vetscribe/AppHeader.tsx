@@ -11,9 +11,17 @@ export function AppHeader({ className }: AppHeaderProps) {
     <header className={cn("bg-primary text-primary-foreground shadow-md", className)}>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Image src="https://placehold.co/150x50.png?text=VETLD&font=belleza" alt="VETLD Logo" width={150} height={50} data-ai-hint="logo health" className="rounded" />
+          <Image 
+            src="https://placehold.co/220x50.png?text=baddha+ULTRASSONOGRAFIA&font=belleza" 
+            alt="Baddha Ultrassonografia Logo" 
+            width={220} 
+            height={50} 
+            data-ai-hint="baddha ultrasound logo" 
+            className="rounded" 
+            priority
+          />
         </div>
-        <p className="text-sm font-body italic">Laudos Veterinários Ultrassom por Miriam Barp</p>
+        <p className="text-sm font-body italic text-primary-foreground/80">Ultrassonografia Veterinária</p>
       </div>
     </header>
   );
