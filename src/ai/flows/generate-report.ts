@@ -48,6 +48,8 @@ Notas Adicionais: {{{additionalNotes}}}
 
 Elabore sobre os achados e forneça conclusões e impressões diagnósticas consistentes com as informações fornecidas. Evite respostas curtas ou resumidas demais.
 
+IMPORTANTE: NÃO inclua uma seção "Veterinário Responsável" nem placeholders como "[Nome do Veterinário Radiologista]" ou "[Número de Registro Profissional]" no texto do laudo gerado. A assinatura e informações do veterinário responsável já estão no cabeçalho e rodapé do documento.
+
 Laudo:
 `,
 });
