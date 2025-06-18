@@ -94,13 +94,13 @@ export default function VetScribePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader className="no-print" />
-      <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start max-h-[calc(100vh-100px)] lg:max-h-[calc(100vh-120px)]">
-          <div className="lg:max-h-[calc(100vh-120px)] no-print"> 
+      <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4"> {/* Reduced vertical padding slightly */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start h-[calc(100vh-85px)] lg:h-[calc(100vh-100px)]"> {/* Adjusted height calc based on new padding + header estimate */}
+          <div className="lg:h-full no-print"> 
              <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
           </div>
 
-          <div className="lg:sticky lg:top-[calc(theme(spacing.8)+70px)] lg:max-h-[calc(100vh-120px)] overflow-hidden"> 
+          <div className="lg:sticky lg:top-[calc(theme(spacing.4)+70px)] lg:h-full"> {/* Adjusted sticky top, use h-full and remove overflow-hidden */}
             <ReportPreview
               formData={currentFormData}
               reportText={generatedReportText}
@@ -129,7 +129,8 @@ export default function VetScribePage() {
           .lg\\:sticky { 
             position: static !important;
           }
-          .lg\\:max-h-\\[calc\\(100vh-120px\\)\\] { 
+          .lg\\:h-full { /* Ensures preview takes full height for print content */
+             height: auto !important; 
              max-height: none !important;
           }
           .overflow-hidden { 
@@ -141,7 +142,7 @@ export default function VetScribePage() {
           .pr-4 { 
             padding-right: 0 !important;
           }
-          .report-form-scroll-area > div {
+          .report-form-scroll-area > div { /* target the viewport of ScrollArea */
              max-height: none !important;
              height: auto !important;
              overflow: visible !important;
