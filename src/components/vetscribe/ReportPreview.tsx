@@ -197,8 +197,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         </CardFooter>
       </Card>
       <style jsx global>{`
-        .print-page-footer { /* Style for screen - hide it */
-          display: none;
+        .print-page-footer {
+          display: none; /* Hide by default for screen */
         }
         @media print {
           @page {
@@ -264,8 +264,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             position: fixed !important;
             top: 50%;
             left: 50%;
-            width: 15cm; 
-            height: 15cm;
+            width: 20cm; /* Enlarged watermark */
+            height: 20cm; /* Enlarged watermark */
             transform: translate(-50%, -50%);
             opacity: 0.05 !important; 
             z-index: -1 !important; 
