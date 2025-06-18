@@ -5,7 +5,7 @@ import type { ReportFormData, UploadedImage } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Printer, Image as ImageIconLucide, AlertTriangle, Info, FileText } from "lucide-react"; // Renamed Image from lucide-react
-import NextImage from "next/image"; 
+import NextImage from "next/image";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -60,7 +60,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         </Alert>
       );
     }
-    
+
     if (!formData) {
       return (
         <Alert className="m-4 border-primary/50">
@@ -78,12 +78,12 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Header Section */}
         <div className="flex justify-between items-start mb-6 print:mb-4">
           <div>
-             <NextImage 
-                src="/baddha-logo.png" 
+             <NextImage
+                src="/baddha-logo.png"
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={224} 
-                height={50} 
-                className="mb-2 object-contain print:max-w-[180px]" 
+                width={224}
+                height={50}
+                className="mb-2 object-contain print:max-w-[180px]"
                 data-ai-hint="baddha ultrasound logo"
               />
             <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
@@ -112,7 +112,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         </div>
 
         <Separator className="my-4 print:my-2" />
-        
+
         {/* Findings - Hidden on print */}
         <div className="no-print">
           <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Achados</h3>
@@ -140,19 +140,20 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             </div>
           </>
         )}
-        
+
         {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4 page-break-before">Imagens do Exame</h3>
+            {/* Removido page-break-before para fluxo natural */}
+            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Imagens do Exame</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-3 print:gap-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1 print:p-0.5 print:border-gray-300">
-                  <NextImage 
-                    src={img.previewUrl} 
+                  <NextImage
+                    src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300} 
-                    height={225} 
+                    width={300}
+                    height={225}
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -161,17 +162,18 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             </div>
           </>
         )}
-        
+
         {/* Footer / Signature */}
-        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 page-break-before">
+        {/* Removido page-break-before, adicionado break-inside-avoid */}
+        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 break-inside-avoid">
           <div className="flex flex-col items-center text-center">
-            <NextImage 
-              src="https://placehold.co/200x80.png?text=Assinatura+Digitalizada" 
+            <NextImage
+              src="/ASSINATURA.png"
               alt="Assinatura Digitalizada"
-              width={180} 
-              height={70} 
+              width={180}
+              height={70}
               className="mb-2 print:max-w-[150px] object-contain"
-              data-ai-hint="signature professional"
+              data-ai-hint="doctor signature"
             />
             <p className="text-sm text-foreground/80 print:text-xs font-semibold">Míriam Barp F. da Costa</p>
             <p className="text-sm text-foreground/80 print:text-xs">Médica veterinária ultrassonografista</p>
@@ -223,7 +225,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .break-inside-avoid {
             page-break-inside: avoid;
           }
-           
+
           .no-print {
             display: none !important;
           }
@@ -232,3 +234,4 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
+
