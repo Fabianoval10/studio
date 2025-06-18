@@ -80,14 +80,14 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <div>
              <NextImage 
                 src="https://placehold.co/220x50.png?text=baddha+ULTRASSONOGRAFIA&font=belleza" 
-                alt={`${formData.clinicName} Logo`}
+                alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
                 width={220} 
                 height={50} 
                 className="mb-2 object-contain print:max-w-[180px]" 
                 data-ai-hint="baddha ultrasound logo"
               />
-            <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName}</h1>
-            <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName}</p>
+            <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
+            <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
           </div>
           <div className="text-right">
             <h2 className="text-xl font-headline text-primary print:text-lg">Laudo de Ultrassom</h2>
@@ -151,14 +151,14 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {uploadedImages.length > 0 && (
           <>
             <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4 page-break-before">Imagens do Exame</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-3 print:gap-2">
               {uploadedImages.map((img, index) => (
-                <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1">
+                <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1 print:p-0.5 print:border-gray-300">
                   <NextImage 
                     src={img.previewUrl} 
                     alt={`Imagem do exame ${index + 1}`}
-                    width={400} 
-                    height={300} 
+                    width={300} // Adjusted for 3-column layout in print
+                    height={225} // Adjusted for 3-column layout in print
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -170,9 +170,9 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         
         {/* Footer / Signature line for print */}
         <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 page-break-before">
-          <div className="mb-8">
+          <div className="mb-8 print:mb-6">
             <p className="text-sm text-foreground/70 print:text-xs">Assinatura:</p>
-            <div className="h-10 border-b border-foreground/50 print:border-foreground/70 w-3/4 mt-1"></div> {/* Signature line */}
+            <div className="h-10 border-b border-foreground/50 print:border-foreground/70 w-3/4 mt-1 print:w-full"></div> {/* Signature line */}
           </div>
           <p className="text-sm text-foreground/80 print:text-xs font-semibold">Míriam Barp F. da Costa</p>
           <p className="text-sm text-foreground/80 print:text-xs">Médica veterinária ultrassonografista</p>
@@ -215,7 +215,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             left: 0;
             top: 0;
             width: 100%;
-            font-size: 10pt; /* Smaller font for print */
+            font-size: 9pt; /* Slightly smaller font for print to fit more content */
           }
           .page-break-before {
             page-break-before: always;
@@ -232,4 +232,3 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
-
