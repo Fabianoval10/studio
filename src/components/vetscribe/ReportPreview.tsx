@@ -85,16 +85,15 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           />
         </div>
 
-        <div className="flex justify-between items-start mb-4 print:pt-0 print:mb-1">
+        <div className="flex justify-between items-start mb-4 print:pt-0 print:mb-0.5">
           <div className="print:max-w-[55%]">
              <NextImage
                 src="/baddha-logo.png"
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={120} 
-                height={27}
+                width={100} 
+                height={22}
                 className="mb-1 print:mb-0 object-contain print:w-[100px] print:h-auto print:mt-0"
                 data-ai-hint="baddha ultrasound logo"
-                priority
               />
             <h1 className="text-xl font-headline text-primary print:text-[10pt] print:leading-tight print:mt-0">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
             <p className="text-xs text-foreground/80 print:text-[7pt] print:leading-tight print:mt-0">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
@@ -198,12 +197,15 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         </CardFooter>
       </Card>
       <style jsx global>{`
+        .print-page-footer { /* Style for screen - hide it */
+          display: none;
+        }
         @media print {
           @page {
             margin-top: 5mm; 
             margin-left: 10mm;
             margin-right: 10mm;
-            margin-bottom: 25mm; 
+            margin-bottom: 25mm; /* Ample space for footer */
           }
 
           body * {
@@ -230,8 +232,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             font-size: 8pt; 
             padding: 0; 
             margin: 0; 
-            position: relative; /* Important for z-index context of watermark */
-            padding-bottom: 20mm; /* Space for the footer */
+            position: relative; 
+            padding-bottom: 20mm; /* Space for the footer, must be >= footer height + its bottom offset */
           }
           
           .page-break-before {
@@ -244,18 +246,17 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .print-page-footer {
             display: block !important; 
             position: fixed;
-            bottom: 5mm; /* Adjusted as per request */
+            bottom: 5mm; 
             left: 0;
             right: 0;
             text-align: center; 
-            z-index: 1000; /* Above watermark, below content if overlap */
+            z-index: 1000; 
           }
           .print-page-footer img {
             max-width: 150px; 
             max-height: 50px; 
             height: auto; 
             border: none !important;
-            /* display: inline-block; Already centered by text-align on parent */
           }
 
           .print-watermark {
@@ -267,7 +268,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             height: 15cm;
             transform: translate(-50%, -50%);
             opacity: 0.05 !important; 
-            z-index: -1 !important; /* Behind all content */
+            z-index: -1 !important; 
             pointer-events: none; 
           }
           .print-watermark img {
@@ -276,7 +277,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
              object-fit: contain; 
           }
 
-          /* Print-specific typography and spacing refinement */
           #printable-area .print\\:text-\\[10pt\\] { font-size: 10pt !important; }
           #printable-area .print\\:text-\\[9pt\\] { font-size: 9pt !important; }
           #printable-area .print\\:text-\\[8pt\\] { font-size: 8pt !important; }
