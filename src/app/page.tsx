@@ -21,7 +21,7 @@ export default function VetScribePage() {
   const handleFormSubmit = useCallback(async (data: ReportFormData, images: File[]) => {
     setIsLoading(true);
     setError(null);
-    setGeneratedReportText(null); 
+    setGeneratedReportText(null);
 
     const uploadedImageObjects: UploadedImage[] = images.map(file => ({
       id: crypto.randomUUID(),
@@ -32,7 +32,7 @@ export default function VetScribePage() {
       prevImages.forEach(img => URL.revokeObjectURL(img.previewUrl));
       return uploadedImageObjects;
     });
-    setCurrentFormData(data); 
+    setCurrentFormData(data);
 
 
     try {
@@ -65,7 +65,7 @@ export default function VetScribePage() {
       setIsLoading(false);
     }
   }, [toast]);
-  
+
   useEffect(() => {
     return () => {
       currentUploadedImages.forEach(img => URL.revokeObjectURL(img.previewUrl));
@@ -79,7 +79,7 @@ export default function VetScribePage() {
       const timer = setTimeout(() => {
         console.log('[VetScribePage] Calling window.print() now.');
         window.print();
-      }, 500); 
+      }, 500);
       return () => {
         console.log('[VetScribePage] Clearing print timer.');
         clearTimeout(timer);
@@ -94,13 +94,13 @@ export default function VetScribePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader className="no-print" />
-      <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4"> {/* Reduced vertical padding slightly */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start h-[calc(100vh-85px)] lg:h-[calc(100vh-100px)]"> {/* Adjusted height calc based on new padding + header estimate */}
-          <div className="lg:h-full no-print"> 
+      <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start h-[calc(100vh-85px)] lg:h-[calc(100vh-100px)]">
+          <div className="lg:h-full no-print">
              <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
           </div>
 
-          <div className="lg:sticky lg:top-[calc(theme(spacing.4)+70px)] lg:h-full"> {/* Adjusted sticky top, use h-full and remove overflow-hidden */}
+          <div className="lg:sticky lg:top-[calc(theme(spacing.4)+70px)] lg:h-full">
             <ReportPreview
               formData={currentFormData}
               reportText={generatedReportText}
@@ -117,29 +117,29 @@ export default function VetScribePage() {
             display: none !important;
           }
           body {
-            background-color: #fff !important; 
-            -webkit-print-color-adjust: exact; 
-            color-adjust: exact; 
+            background-color: #fff !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
           }
           main {
             padding: 0 !important;
             margin: 0 !important;
-            max-height: none !important;
+            max-height: none !important; /* Ensure main content can expand */
           }
-          .lg\\:sticky { 
-            position: static !important;
+          .lg\\:sticky {
+            position: static !important; /* Remove stickiness for print */
           }
-          .lg\\:h-full { /* Ensures preview takes full height for print content */
-             height: auto !important; 
-             max-height: none !important;
+          .lg\\:h-full {
+             height: auto !important;
+             max-height: none !important; /* Allow full height for print content */
           }
-          .overflow-hidden { 
+          .overflow-hidden { /* If any parent has overflow-hidden, it might clip print */
             overflow: visible !important;
           }
-           .overflow-y-auto { 
+           .overflow-y-auto {
             overflow-y: visible !important;
           }
-          .pr-4 { 
+          .pr-4 { /* Remove specific padding if it interferes with print layout */
             padding-right: 0 !important;
           }
           .report-form-scroll-area > div { /* target the viewport of ScrollArea */
@@ -151,18 +151,20 @@ export default function VetScribePage() {
           body * {
             visibility: hidden;
           }
-          #printable-area, #printable-area * {
+          #printable-area, #printable-area *, .print-page-footer, .print-page-footer * { /* Ensure footer and its children are visible */
             visibility: visible;
           }
           #printable-area {
-            position: absolute;
-            left: 0;
-            top: 0;
+            position: relative; /* Changed from absolute to relative for better fixed child behavior */
+            left: 0; /* Not strictly needed if relative, but kept for consistency */
+            top: 0; /* Not strictly needed if relative, but kept for consistency */
             width: 100%;
-            font-size: 10pt; 
+            font-size: 10pt; /* Global font size for print */
+             /* padding-bottom will be handled by ReportPreview's print styles */
           }
         }
       `}</style>
     </div>
   );
 }
+    

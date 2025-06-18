@@ -24,7 +24,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   if (value === null || value === undefined || value === "") return null;
   return (
     <div className={className}>
-      <span className="font-semibold text-foreground/80 font-headline">{label}: </span> 
+      <span className="font-semibold text-foreground/80 font-headline">{label}: </span>
       <span className="font-body text-foreground">{String(value)}</span>
     </div>
   );
@@ -85,6 +85,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                 height={50}
                 className="mb-2 object-contain print:max-w-[180px]"
                 data-ai-hint="baddha ultrasound logo"
+                priority
               />
             <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
             <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
@@ -145,14 +146,14 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {uploadedImages.length > 0 && (
           <>
             <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Imagens do Exame</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-3 print:gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-3 gap-4 print:gap-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1 print:p-0.5 print:border-gray-300">
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300}
-                    height={225}
+                    width={300} // Adjusted from 200
+                    height={225} // Adjusted from 150
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -162,23 +163,29 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
 
-        {/* Footer / Signature */}
-        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 break-inside-avoid">
-          <div className="flex flex-col items-center text-center">
-            <NextImage
-              src="/ASSINATURA.png"
-              alt="Assinatura Digitalizada"
-              width={180}
-              height={70}
-              className="mb-2 print:max-w-[150px] object-contain border-2 border-red-500" // Debug border
-              data-ai-hint="doctor signature"
-              priority // Added for debugging
-            />
-          </div>
+        {/* Placeholder for signature in normal content flow - hidden on print */}
+        <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 break-inside-avoid signature-in-flow-placeholder">
+          {/* This div's content (if any) or just its space will be hidden in print,
+              the .print-page-footer will be used instead for printing.
+              If you want something visible on screen here (like a line or placeholder text), add it.
+              Otherwise, it can be empty.
+           */}
         </div>
-      </div> 
+
+        {/* Fixed Footer for Print - This will appear on every printed page */}
+        <div className="print-page-footer">
+          <NextImage
+            src="/ASSINATURA.png"
+            alt="Assinatura Digitalizada"
+            width={150}
+            height={60}
+            className="mx-auto" /* For centering */
+            data-ai-hint="doctor signature"
+          />
+        </div>
+      </div>
     );
-  }; 
+  };
 
   return (
     <>
@@ -209,11 +216,12 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             visibility: visible;
           }
           #printable-area {
-            position: absolute;
-            left: 0;
-            top: 0;
+            /* position: absolute; /* Removed for better fixed footer compatibility */
+            /* left: 0; */ /* Not needed if not absolute */
+            /* top: 0; */  /* Not needed if not absolute */
             width: 100%;
             font-size: 8pt; /* Slightly reduced font size for print */
+            padding-bottom: 70px; /* Space for the fixed footer - adjust if signature height changes */
           }
           .page-break-before {
             page-break-before: always;
@@ -221,14 +229,30 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .break-inside-avoid {
             page-break-inside: avoid;
           }
-
           .no-print {
             display: none !important;
+          }
+          .signature-in-flow-placeholder {
+            display: none !important; /* Hide the normal flow signature area on print */
+          }
+          .print-page-footer {
+            display: block !important; /* Make it visible for print */
+            position: fixed;
+            bottom: 20px; /* Adjust distance from bottom of the page */
+            left: 0;
+            right: 0; /* Ensures it spans the width */
+            width: 100%;
+            text-align: center;
+            z-index: 1000; /* Keep it on top */
+          }
+          .print-page-footer img {
+            max-width: 150px; /* Control image size in print */
+            max-height: 50px;
+            height: auto;
           }
         }
       `}</style>
     </>
   );
 }
-
     
