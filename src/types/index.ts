@@ -18,8 +18,7 @@ export const reportFormSchema = z.object({
   // Exam Info
   referringVet: z.string().optional(),
   examDate: z.date({ required_error: "Data do exame é obrigatória" }),
-  examType: z.string().min(1, "Tipo de exame é obrigatório (ex: Ultrassom Abdominal, Ecocardiograma)"),
-
+  
   // Findings & Notes for AI
   findings: z.string().min(10, "Achados detalhados são obrigatórios para geração do laudo (mín 10 caracteres)"),
   additionalNotes: z.string().optional(),

@@ -20,7 +20,6 @@ export async function handleGenerateReportAction(
     const validatedData = reportFormSchema.parse(data);
 
     const aiInput: GenerateReportInput = {
-      examType: validatedData.examType,
       animalSpecies: validatedData.species,
       animalBreed: validatedData.breed,
       animalSex: validatedData.sex,

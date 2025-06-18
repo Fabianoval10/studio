@@ -90,7 +90,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-headline text-primary print:text-lg">Laudo de Ultrassom</h2>
+            <h2 className="text-xl font-headline text-primary print:text-lg">Laudo de Ultrassonografia Veterinária</h2>
             <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} />
             <DetailItem label="Data do Laudo" value={format(new Date(), "PPP", { locale: ptBR })} />
           </div>
@@ -112,12 +112,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         </div>
 
         <Separator className="my-4 print:my-2" />
-
-        {/* Exam Details */}
-        <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Detalhes do Exame</h3>
-        <div className="space-y-1 mb-4 text-sm print:text-xs">
-          <DetailItem label="Tipo de Exame" value={formData.examType} />
-        </div>
         
         {/* Findings - Hidden on print */}
         <div className="no-print">

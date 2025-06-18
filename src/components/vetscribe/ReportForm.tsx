@@ -56,8 +56,8 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
       sex: "Desconhecido",
       ageYears: 0,
       ageMonths: 0,
-      clinicName: "VETscribe Imagens Avançadas",
-      vetName: "Dr(a). AuMiau",
+      clinicName: "Baddha Ultrassonografia",
+      vetName: "Dra Miriam Barp",
       ...initialData,
       examDate: initialData?.examDate ? new Date(initialData.examDate) : new Date(),
     },
@@ -201,9 +201,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                       />
                     </FormFieldWrapper>
                   </div>
-                  <FormFieldWrapper name="examType" label="Tipo de Exame (ex: Ultrassom Abdominal)" errors={errors}>
-                    <Input id="examType" {...register("examType")} />
-                  </FormFieldWrapper>
                 </AccordionContent>
               </AccordionItem>
 

@@ -13,7 +13,6 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateReportInputSchema = z.object({
-  examType: z.string().describe('Tipo de exame de ultrassom realizado.'),
   animalSpecies: z.string().describe('Espécie do animal examinado.'),
   animalBreed: z.string().describe('Raça do animal examinado.'),
   animalSex: z.string().describe('Sexo do animal examinado.'),
@@ -39,7 +38,6 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateReportOutputSchema},
   prompt: `Você é um radiologista veterinário experiente. Gere um laudo de ultrassom COMPLETO e DETALHADO com base nos seguintes dados estruturados. Use terminologia veterinária apropriada. O laudo deve ser gerado em Português do Brasil. Certifique-se de que todas as informações relevantes sejam incluídas e que a linguagem seja clara e profissional.
 
-Tipo de Exame: {{{examType}}}
 Espécie Animal: {{{animalSpecies}}}
 Raça Animal: {{{animalBreed}}}
 Sexo Animal: {{{animalSex}}}
