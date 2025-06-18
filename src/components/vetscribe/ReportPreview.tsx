@@ -4,7 +4,7 @@
 import type { ReportFormData, UploadedImage } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Printer, Image as ImageIconLucide, AlertTriangle, Info, FileText } from "lucide-react"; // Renamed Image from lucide-react
+import { Printer, AlertTriangle, Info, FileText } from "lucide-react";
 import NextImage from "next/image";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
@@ -75,35 +75,46 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
     return (
       <div id="printable-area" className="p-2 md:p-6 font-body printable-content">
+        {/* Watermark - Only visible on print */}
+        <div className="print-watermark">
+          <NextImage
+            src="/baddha-logo.png"
+            alt="Baddha Ultrassonografia Marca D'água"
+            layout="fill"
+            objectFit="contain"
+            data-ai-hint="baddha logo"
+          />
+        </div>
+
         {/* Header Section */}
-        <div className="flex justify-between items-start mb-6 print:mb-3">
-          <div>
+        <div className="flex justify-between items-start mb-4 print:mb-2">
+          <div className="print:max-w-[60%]">
              <NextImage
                 src="/baddha-logo.png"
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={224} 
-                height={50} 
-                className="mb-2 object-contain print:max-w-[160px]"
+                width={180} 
+                height={40} 
+                className="mb-1 object-contain print:w-[150px] print:h-auto"
                 data-ai-hint="baddha ultrasound logo"
                 priority
               />
-            <h1 className="text-2xl font-headline text-primary print:text-xl">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
-            <p className="text-sm text-foreground/80 print:text-xs">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
+            <h1 className="text-xl font-headline text-primary print:text-base">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
+            <p className="text-xs text-foreground/80 print:text-[7pt]">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
           </div>
-          <div className="text-right">
-            <h2 className="text-xl font-headline text-primary print:text-lg">Laudo de Ultrassonografia Veterinária</h2>
-            <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} />
-            <DetailItem label="Data do Laudo" value={format(new Date(), "PPP", { locale: ptBR })} />
+          <div className="text-right print:max-w-[40%]">
+            <h2 className="text-lg font-headline text-primary print:text-sm">Laudo de Ultrassonografia Veterinária</h2>
+            <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} className="print:text-[7pt]" />
+            <DetailItem label="Data do Laudo" value={format(new Date(), "PPP", { locale: ptBR })} className="print:text-[7pt]" />
           </div>
         </div>
 
-        <Separator className="my-4 print:my-2" />
+        <Separator className="my-3 print:my-1" />
 
         {/* Patient Information */}
-        <h3 className="text-lg font-headline text-primary mb-2 print:text-base print:mb-1">Informações do Paciente</h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-4 text-sm print:text-xs print:gap-y-px">
-          <DetailItem label="Nome do Paciente" value={formData.petName} />
-          <DetailItem label="ID do Paciente" value={formData.patientId} />
+        <h3 className="text-base font-headline text-primary mb-1 print:text-xs print:mb-0.5">Informações do Paciente</h3>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 mb-3 text-xs print:text-[7pt] print:gap-y-px">
+          <DetailItem label="Nome" value={formData.petName} />
+          <DetailItem label="ID" value={formData.patientId} />
           <DetailItem label="Espécie" value={formData.species} />
           <DetailItem label="Raça" value={formData.breed} />
           <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`} />
@@ -112,7 +123,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
         </div>
 
-        <Separator className="my-4 print:my-2" />
+        <Separator className="my-3 print:my-1" />
 
         {/* Findings - Hidden on print */}
         <div className="no-print">
@@ -125,8 +136,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* AI Generated Report / Impressions */}
         {reportText && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base print:mt-2 print:mb-1">Impressões / Conclusões</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 text-sm print:text-xs print:border-none print:p-0">
+            <h3 className="text-base font-headline text-primary mt-3 mb-1 print:text-xs print:mt-1.5 print:mb-0.5">Impressões / Conclusões</h3>
+            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 text-sm print:text-[8pt] print:border-none print:p-0">
               {reportText}
             </div>
           </>
@@ -135,8 +146,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Additional Notes */}
         {formData.additionalNotes && (
            <>
-            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base print:mt-2 print:mb-1">Observações Adicionais</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
+            <h3 className="text-base font-headline text-primary mt-3 mb-1 print:text-xs print:mt-1.5 print:mb-0.5">Observações Adicionais</h3>
+            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-[8pt] print:border-none print:p-0">
               {formData.additionalNotes}
             </div>
           </>
@@ -145,16 +156,16 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-3 print:mb-1">Imagens do Exame</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-3 gap-4 print:gap-2">
+            <h3 className="text-base font-headline text-primary mt-4 mb-1 print:text-xs print:mt-2 print:mb-0.5">Imagens do Exame</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-3 gap-2 print:gap-1">
               {uploadedImages.map((img, index) => (
-                <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1 print:p-0.5 print:border-gray-300">
+                <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-0.5 print:border-gray-300">
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={160} 
-                    height={120}
-                    className="w-full h-auto object-contain"
+                    width={200} 
+                    height={150}
+                    style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
                     data-ai-hint="ultrasound medical"
                   />
                 </div>
@@ -163,10 +174,10 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
         
+        {/* Placeholder for signature area on screen, hidden in print */}
         <div className="hide-in-print mt-12 pt-6 border-t">
-          {/* This div was for the old signature placement, now hidden in print */}
+           {/* This div is for potential on-screen signature elements, hidden in print */}
         </div>
-
 
         {/* Fixed Footer for Print - This will appear on every printed page */}
         <div className="print-page-footer">
@@ -177,6 +188,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             height={50} 
             data-ai-hint="doctor signature"
             priority
+            style={{ border: 'none' }}
           />
         </div>
       </div>
@@ -207,20 +219,30 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         @media print {
           body * {
             visibility: hidden;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
           }
-          #printable-area, #printable-area * { 
-            visibility: visible;
+
+          #printable-area, 
+          #printable-area *,
+          .print-page-footer, 
+          .print-page-footer *,
+          .print-watermark,
+          .print-watermark * { 
+            visibility: visible !important;
           }
-          .print-page-footer, .print-page-footer * {
-            visibility: visible !important; 
+          
+          .no-print, .hide-in-print {
+            display: none !important;
           }
 
           #printable-area {
             width: 100%;
             font-size: 8pt; 
+            padding: 0; /* Reset padding for full control */
+            margin: 0;
+            position: relative; /* Important for z-index stacking of watermark */
             padding-bottom: 20mm; /* Space for the fixed footer */
-            margin: 0; 
-            position: relative; 
           }
           
           .page-break-before {
@@ -229,14 +251,11 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .break-inside-avoid {
             page-break-inside: avoid;
           }
-          .no-print, .hide-in-print { /* .hide-in-print added */
-            display: none !important;
-          }
           
           .print-page-footer {
             display: block !important; 
             position: fixed;
-            bottom: 8mm; /* Adjusted distance from bottom of the page */
+            bottom: 8mm;
             left: 0;
             right: 0;
             width: 100%;
@@ -247,7 +266,43 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             max-width: 150px; 
             max-height: 50px; 
             height: auto; 
+            border: none !important; /* Ensure no border on signature image */
           }
+
+          .print-watermark {
+            display: block !important;
+            position: fixed !important;
+            top: 50%;
+            left: 50%;
+            width: 15cm; 
+            height: 15cm;
+            transform: translate(-50%, -50%);
+            opacity: 0.05 !important; /* Very light opacity for watermark */
+            z-index: -1 !important; /* Behind the content */
+            pointer-events: none; /* Ensure it's not interactive */
+          }
+          .print-watermark img {
+             width: 100%;
+             height: 100%;
+             object-fit: contain; /* Ensure logo scales correctly within 15cm box */
+          }
+
+          /* Reduce header size for print */
+          #printable-area .print\\:text-base { font-size: 10pt !important; }
+          #printable-area .print\\:text-sm { font-size: 9pt !important; }
+          #printable-area .print\\:text-xs { font-size: 8pt !important; }
+          #printable-area .print\\:text-\\[7pt\\] { font-size: 7pt !important; }
+          #printable-area .print\\:text-\\[8pt\\] { font-size: 8pt !important; }
+
+          #printable-area .print\\:mb-2 { margin-bottom: 0.5rem !important; }
+          #printable-area .print\\:mb-1 { margin-bottom: 0.25rem !important; }
+          #printable-area .print\\:mb-0\\.5 { margin-bottom: 0.125rem !important; }
+          #printable-area .print\\:mt-2 { margin-top: 0.5rem !important; }
+          #printable-area .print\\:mt-1\\.5 { margin-top: 0.375rem !important; }
+          #printable-area .print\\:my-1 { margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
+          #printable-area .print\\:gap-1 { gap: 0.25rem !important; }
+          #printable-area .print\\:gap-y-px { gap-row: 1px !important; }
+          #printable-area .print\\:p-0\\.5 { padding: 0.125rem !important; }
         }
       `}</style>
     </>

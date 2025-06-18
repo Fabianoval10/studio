@@ -96,11 +96,13 @@ export default function VetScribePage() {
       <AppHeader className="no-print" />
       <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start h-[calc(100vh-85px)] lg:h-[calc(100vh-100px)]">
+          {/* Report Form Column */}
           <div className="lg:h-full no-print">
              <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
           </div>
 
-          <div className="lg:sticky lg:top-[calc(theme(spacing.4)+70px)] lg:h-full">
+          {/* Report Preview Column */}
+          <div className="lg:h-full"> {/* Removed lg:sticky and lg:top styles, removed overflow-hidden */}
             <ReportPreview
               formData={currentFormData}
               reportText={generatedReportText}
@@ -111,56 +113,38 @@ export default function VetScribePage() {
           </div>
         </div>
       </main>
+      {/* Global print styles are now primarily managed within ReportPreview.tsx 
+          to keep component-specific print logic encapsulated.
+          Minimal global styles for printing can remain here if truly global.
+      */}
       <style jsx global>{`
         @media print {
           .no-print {
             display: none !important;
           }
           body {
-            background-color: #fff !important;
-            -webkit-print-color-adjust: exact;
-            color-adjust: exact;
+            background-color: #fff !important; /* Ensure white background for printing */
+            -webkit-print-color-adjust: exact !important; /* Chrome, Safari, Edge */
+            color-adjust: exact !important; /* Firefox */
           }
-          main {
+          main { /* Reset main padding/margin for print if it's not #printable-area */
             padding: 0 !important;
             margin: 0 !important;
-            max-height: none !important; /* Ensure main content can expand */
           }
-          .lg\\:sticky {
-            position: static !important; /* Remove stickiness for print */
+          .lg\\:sticky { /* Ensure sticky elements are not sticky during print */
+            position: static !important;
           }
-          .lg\\:h-full {
-             height: auto !important;
-             max-height: none !important; /* Allow full height for print content */
-          }
-          .overflow-hidden { /* If any parent has overflow-hidden, it might clip print */
+           /* Ensure elements that might clip print content are visible */
+          .overflow-hidden {
             overflow: visible !important;
           }
            .overflow-y-auto {
             overflow-y: visible !important;
           }
-          .pr-4 { /* Remove specific padding if it interferes with print layout */
-            padding-right: 0 !important;
-          }
-          .report-form-scroll-area > div { /* target the viewport of ScrollArea */
-             max-height: none !important;
-             height: auto !important;
-             overflow: visible !important;
-          }
-           /* Ensure ReportPreview's #printable-area is the only thing visible */
-          body * {
-            visibility: hidden;
-          }
-          #printable-area, #printable-area *, .print-page-footer, .print-page-footer * { /* Ensure footer and its children are visible */
-            visibility: visible;
-          }
-          #printable-area {
-            position: relative; 
-            left: 0; 
-            top: 0; 
-            width: 100%;
-            /* font-size is now managed by ReportPreview.tsx for print */
-          }
+          /* 
+            The following detailed print rules are now better managed within ReportPreview.tsx 
+            to ensure #printable-area and its specific children (like footers/watermarks) are handled correctly.
+          */
         }
       `}</style>
     </div>
