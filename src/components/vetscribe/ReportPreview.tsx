@@ -24,7 +24,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   if (value === null || value === undefined || value === "") return null;
   return (
     <div className={className}>
-      <span className="font-semibold text-foreground/80 font-headline">{label}: </span>
+      <span className="font-semibold text-foreground/80 font-headline">{label}: </span> 
       <span className="font-body text-foreground">{String(value)}</span>
     </div>
   );
@@ -151,7 +151,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300} 
+                    width={300}
                     height={225}
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
@@ -166,39 +166,40 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 break-inside-avoid">
           <div className="flex flex-col items-center text-center">
             <NextImage
-              src="/ASSINATURA.png" 
+              src="/ASSINATURA.png"
               alt="Assinatura Digitalizada"
-              width={180} 
+              width={180}
               height={70}
-              className="mb-2 print:max-w-[150px] object-contain"
+              className="mb-2 print:max-w-[150px] object-contain border-2 border-red-500" // Debug border
               data-ai-hint="doctor signature"
+              priority // Added for debugging
             />
           </div>
         </div>
-
-      </div>
+      </div> 
     );
-  };
-
+  }; 
 
   return (
-    <Card className="shadow-lg h-full flex flex-col">
-      <CardHeader className="flex-shrink-0">
-        <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
-          <FileText className="w-8 h-8" /> Pré-visualização do Laudo
-        </CardTitle>
-        <CardDescription className="font-body">
-          Revise o laudo gerado abaixo. Use o botão de imprimir para salvar como PDF.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow overflow-y-auto">
-        {renderContent()}
-      </CardContent>
-      <CardFooter className="flex-shrink-0 border-t pt-6 justify-end">
-        <Button onClick={handlePrint} disabled={!formData || isLoading} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-          <Printer className="mr-2 h-4 w-4" /> Imprimir para PDF
-        </Button>
-      </CardFooter>
+    <>
+      <Card className="shadow-lg h-full flex flex-col">
+        <CardHeader className="flex-shrink-0">
+          <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
+            <FileText className="w-8 h-8" /> Pré-visualização do Laudo
+          </CardTitle>
+          <CardDescription className="font-body">
+            Revise o laudo gerado abaixo. Use o botão de imprimir para salvar como PDF.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow overflow-y-auto">
+          {renderContent()}
+        </CardContent>
+        <CardFooter className="flex-shrink-0 border-t pt-6 justify-end">
+          <Button onClick={handlePrint} disabled={!formData || isLoading} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+            <Printer className="mr-2 h-4 w-4" /> Imprimir para PDF
+          </Button>
+        </CardFooter>
+      </Card>
       <style jsx global>{`
         @media print {
           body * {
@@ -226,7 +227,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           }
         }
       `}</style>
-    </Card>
+    </>
   );
 }
 
+    
