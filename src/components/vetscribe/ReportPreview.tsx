@@ -153,8 +153,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300}
-                    height={225}
+                    width={200} 
+                    height={150}
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -175,11 +175,10 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <NextImage
             src="/ASSINATURA.png"
             alt="Assinatura Digitalizada"
-            width={150} // Consistent with CSS max-width
-            height={50} // Consistent with CSS max-height
+            width={150} 
+            height={50} 
             data-ai-hint="doctor signature"
             priority
-            style={{ border: '2px solid red' }} // Debug border
           />
         </div>
       </div>
