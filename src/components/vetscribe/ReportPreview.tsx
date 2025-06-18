@@ -144,7 +144,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
-            {/* Removido page-break-before para fluxo natural */}
             <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Imagens do Exame</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 print:grid-cols-3 print:gap-2">
               {uploadedImages.map((img, index) => (
@@ -152,7 +151,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300}
+                    width={300} 
                     height={225}
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
@@ -164,20 +163,16 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         )}
 
         {/* Footer / Signature */}
-        {/* Removido page-break-before, adicionado break-inside-avoid */}
         <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 break-inside-avoid">
           <div className="flex flex-col items-center text-center">
             <NextImage
-              src="/ASSINATURA.png"
+              src="/ASSINATURA.png" 
               alt="Assinatura Digitalizada"
-              width={180}
+              width={180} 
               height={70}
               className="mb-2 print:max-w-[150px] object-contain"
               data-ai-hint="doctor signature"
             />
-            <p className="text-sm text-foreground/80 print:text-xs font-semibold">Míriam Barp F. da Costa</p>
-            <p className="text-sm text-foreground/80 print:text-xs">Médica veterinária ultrassonografista</p>
-            <p className="text-sm text-foreground/80 print:text-xs">CRMV RS 12398</p>
           </div>
         </div>
 
