@@ -4,8 +4,8 @@
 import type { ReportFormData, UploadedImage } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Printer, Image as ImageIcon, AlertTriangle, Info, FileText, Download } from "lucide-react";
-import NextImage from "next/image"; // Renamed to avoid conflict with lucide-react Image icon
+import { Printer, Image as ImageIconLucide, AlertTriangle, Info, FileText } from "lucide-react"; // Renamed Image from lucide-react
+import NextImage from "next/image"; 
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from "@/components/ui/skeleton";
@@ -105,7 +105,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <DetailItem label="ID do Paciente" value={formData.patientId} />
           <DetailItem label="Espécie" value={formData.species} />
           <DetailItem label="Raça" value={formData.breed} />
-          <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths ? ' ' + formData.ageMonths + ' mes(es)' : '' }`} />
+          <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`} />
           <DetailItem label="Sexo" value={formData.sex} />
           <DetailItem label="Tutor" value={formData.ownerName} />
           <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
@@ -157,8 +157,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                   <NextImage 
                     src={img.previewUrl} 
                     alt={`Imagem do exame ${index + 1}`}
-                    width={300} // Adjusted for 3-column layout in print
-                    height={225} // Adjusted for 3-column layout in print
+                    width={300} 
+                    height={225} 
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -168,15 +168,21 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
         
-        {/* Footer / Signature line for print */}
+        {/* Footer / Signature */}
         <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4 page-break-before">
-          <div className="mb-8 print:mb-6">
-            <p className="text-sm text-foreground/70 print:text-xs">Assinatura:</p>
-            <div className="h-10 border-b border-foreground/50 print:border-foreground/70 w-3/4 mt-1 print:w-full"></div> {/* Signature line */}
+          <div className="flex flex-col items-center text-center">
+            <NextImage 
+              src="https://placehold.co/200x80.png?text=Assinatura+Digitalizada" 
+              alt="Assinatura Digitalizada"
+              width={180} 
+              height={70} 
+              className="mb-2 print:max-w-[150px] object-contain"
+              data-ai-hint="signature professional"
+            />
+            <p className="text-sm text-foreground/80 print:text-xs font-semibold">Míriam Barp F. da Costa</p>
+            <p className="text-sm text-foreground/80 print:text-xs">Médica veterinária ultrassonografista</p>
+            <p className="text-sm text-foreground/80 print:text-xs">CRMV RS 12398</p>
           </div>
-          <p className="text-sm text-foreground/80 print:text-xs font-semibold">Míriam Barp F. da Costa</p>
-          <p className="text-sm text-foreground/80 print:text-xs">Médica veterinária ultrassonografista</p>
-          <p className="text-sm text-foreground/80 print:text-xs">CRMV RS 12398</p>
         </div>
 
       </div>
@@ -215,7 +221,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             left: 0;
             top: 0;
             width: 100%;
-            font-size: 9pt; /* Slightly smaller font for print to fit more content */
+            font-size: 9pt; 
           }
           .page-break-before {
             page-break-before: always;
@@ -223,7 +229,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .break-inside-avoid {
             page-break-inside: avoid;
           }
-           /* Hide buttons and other non-printable elements */
+           
           .no-print {
             display: none !important;
           }
@@ -232,3 +238,4 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
+
