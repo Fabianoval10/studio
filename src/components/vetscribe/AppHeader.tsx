@@ -12,9 +12,9 @@ export function AppHeader({ className }: AppHeaderProps) {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Image 
-            src="https://placehold.co/220x50.png?text=baddha+ULTRASSONOGRAFIA&font=belleza" 
+            src="/baddha-logo.png" 
             alt="Baddha Ultrassonografia Logo" 
-            width={220} 
+            width={224} 
             height={50} 
             data-ai-hint="baddha ultrasound logo" 
             className="rounded" 

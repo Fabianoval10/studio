@@ -79,9 +79,9 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <div className="flex justify-between items-start mb-6 print:mb-4">
           <div>
              <NextImage 
-                src="https://placehold.co/220x50.png?text=baddha+ULTRASSONOGRAFIA&font=belleza" 
+                src="/baddha-logo.png" 
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={220} 
+                width={224} 
                 height={50} 
                 className="mb-2 object-contain print:max-w-[180px]" 
                 data-ai-hint="baddha ultrasound logo"
@@ -221,7 +221,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             left: 0;
             top: 0;
             width: 100%;
-            font-size: 9pt; 
+            font-size: 8pt; /* Slightly reduced font size for print */
           }
           .page-break-before {
             page-break-before: always;
@@ -238,4 +238,3 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
-
