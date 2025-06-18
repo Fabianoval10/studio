@@ -75,7 +75,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
     return (
       <div id="printable-area" className="p-2 md:p-6 font-body printable-content">
-        {/* Watermark - Only visible on print */}
         <div className="print-watermark">
           <NextImage
             src="/baddha-logo.png"
@@ -86,32 +85,30 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           />
         </div>
 
-        {/* Header Section */}
-        <div className="flex justify-between items-start mb-4 print:mb-1">
+        <div className="flex justify-between items-start mb-4 print:mb-1 print:pt-0">
           <div className="print:max-w-[55%]">
              <NextImage
                 src="/baddha-logo.png"
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={160} 
-                height={36} 
-                className="mb-1 object-contain print:w-[120px] print:h-auto"
+                width={120}
+                height={27} 
+                className="mb-1 print:mb-0.5 object-contain print:w-[120px] print:h-auto"
                 data-ai-hint="baddha ultrasound logo"
                 priority
               />
-            <h1 className="text-xl font-headline text-primary print:text-[10pt] print:leading-tight">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
-            <p className="text-xs text-foreground/80 print:text-[7pt] print:leading-tight">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
+            <h1 className="text-xl font-headline text-primary print:text-[10pt] print:leading-tight print:mt-0">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
+            <p className="text-xs text-foreground/80 print:text-[7pt] print:leading-tight print:mt-0">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
           </div>
           <div className="text-right print:max-w-[45%] print:text-[7pt]">
-            <h2 className="text-lg font-headline text-primary print:text-[9pt] print:leading-tight">Laudo de Ultrassonografia Veterinária</h2>
-            <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} className="print:leading-tight" />
-            <DetailItem label="Data do Laudo" value={format(new Date(), "PPP", { locale: ptBR })} className="print:leading-tight" />
+            <h2 className="text-lg font-headline text-primary print:text-[9pt] print:leading-tight print:mt-0">Laudo de Ultrassonografia Veterinária</h2>
+            <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} className="print:leading-tight print:mt-0" />
+            <DetailItem label="Data do Laudo" value={format(new Date(), "PPP", { locale: ptBR })} className="print:leading-tight print:mt-0" />
           </div>
         </div>
 
         <Separator className="my-3 print:my-1" />
 
-        {/* Patient Information */}
-        <h3 className="text-base font-headline text-primary mb-1 print:text-[9pt] print:mb-0.5">Informações do Paciente</h3>
+        <h3 className="text-base font-headline text-primary mb-1 print:text-[9pt] print:mb-0.5 print:mt-1">Informações do Paciente</h3>
         <div className="grid grid-cols-2 gap-x-3 gap-y-0 text-xs print:text-[7pt] print:gap-y-px print:leading-snug mb-3">
           <DetailItem label="Nome" value={formData.petName} />
           <DetailItem label="ID" value={formData.patientId} />
@@ -125,7 +122,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
         <Separator className="my-3 print:my-1" />
         
-        {/* AI Generated Report / Impressions */}
         {reportText && (
           <>
             <h3 className="text-base font-headline text-primary mt-3 mb-1 print:text-[9pt] print:mt-1 print:mb-0.5">Impressões / Conclusões</h3>
@@ -135,7 +131,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
 
-        {/* Additional Notes */}
         {formData.additionalNotes && (
            <>
             <h3 className="text-base font-headline text-primary mt-3 mb-1 print:text-[9pt] print:mt-1 print:mb-0.5">Observações Adicionais</h3>
@@ -145,7 +140,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
 
-        {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
             <h3 className="text-base font-headline text-primary mt-4 mb-1 print:text-[9pt] print:mt-2 print:mb-0.5">Imagens do Exame</h3>
@@ -166,12 +160,9 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
         
-        {/* Placeholder for signature area on screen, hidden in print */}
         <div className="hide-in-print mt-12 pt-6 border-t">
-           {/* This div is for potential on-screen signature elements, hidden in print */}
         </div>
 
-        {/* Fixed Footer for Print - This will appear on every printed page */}
         <div className="print-page-footer">
           <NextImage
             src="/ASSINATURA.png"
@@ -210,10 +201,10 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
       <style jsx global>{`
         @media print {
           @page {
-            margin-top: 5mm;
+            margin-top: 5mm; 
             margin-left: 10mm;
             margin-right: 10mm;
-            margin-bottom: 25mm; /* Space for footer + breathing room */
+            margin-bottom: 25mm; 
           }
 
           body * {
@@ -239,9 +230,9 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             width: 100%;
             font-size: 8pt; 
             padding: 0; 
-            margin: 0;
+            margin: 0; 
             position: relative;
-            /* padding-bottom is not needed here if @page margin-bottom handles footer space */
+            padding-bottom: 20mm; 
           }
           
           .page-break-before {
@@ -254,7 +245,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .print-page-footer {
             display: block !important; 
             position: fixed;
-            bottom: 8mm; /* Distance from page bottom */
+            bottom: 8mm; 
             left: 0;
             right: 0;
             width: 100%;
@@ -286,7 +277,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
              object-fit: contain; 
           }
 
-          /* Refined print text sizes and spacing */
           #printable-area .print\\:text-\\[10pt\\] { font-size: 10pt !important; }
           #printable-area .print\\:text-\\[9pt\\] { font-size: 9pt !important; }
           #printable-area .print\\:text-\\[8pt\\] { font-size: 8pt !important; }
@@ -296,11 +286,13 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           #printable-area .print\\:leading-snug { line-height: 1.375 !important; }
           #printable-area .print\\:leading-normal { line-height: 1.5 !important; }
           
-          #printable-area .print\\:mb-1 { margin-bottom: 0.15rem !important; } /* Adjusted for tighter layout */
+          #printable-area .print\\:mb-1 { margin-bottom: 0.15rem !important; }
           #printable-area .print\\:mb-0\\.5 { margin-bottom: 0.1rem !important; }
+          #printable-area .print\\:mt-0 { margin-top: 0 !important; }
           #printable-area .print\\:mt-1 { margin-top: 0.15rem !important; }
           #printable-area .print\\:mt-2 { margin-top: 0.3rem !important; }
           #printable-area .print\\:my-1 { margin-top: 0.15rem !important; margin-bottom: 0.15rem !important; }
+          #printable-area .print\\:pt-0 { padding-top: 0 !important; }
           
           #printable-area .print\\:gap-1 { gap: 0.15rem !important; }
           #printable-area .print\\:gap-y-px { row-gap: 1px !important; }
