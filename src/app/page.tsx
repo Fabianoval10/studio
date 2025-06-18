@@ -155,12 +155,11 @@ export default function VetScribePage() {
             visibility: visible;
           }
           #printable-area {
-            position: relative; /* Changed from absolute to relative for better fixed child behavior */
-            left: 0; /* Not strictly needed if relative, but kept for consistency */
-            top: 0; /* Not strictly needed if relative, but kept for consistency */
+            position: relative; 
+            left: 0; 
+            top: 0; 
             width: 100%;
-            font-size: 10pt; /* Global font size for print */
-             /* padding-bottom will be handled by ReportPreview's print styles */
+            /* font-size is now managed by ReportPreview.tsx for print */
           }
         }
       `}</style>

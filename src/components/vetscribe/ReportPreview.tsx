@@ -74,17 +74,16 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     }
 
     return (
-      // printable-area é o contêiner principal para impressão
       <div id="printable-area" className="p-2 md:p-6 font-body printable-content">
         {/* Header Section */}
-        <div className="flex justify-between items-start mb-6 print:mb-4">
+        <div className="flex justify-between items-start mb-6 print:mb-3">
           <div>
              <NextImage
                 src="/baddha-logo.png"
                 alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={224}
-                height={50}
-                className="mb-2 object-contain print:max-w-[180px]"
+                width={224} 
+                height={50} 
+                className="mb-2 object-contain print:max-w-[160px]"
                 data-ai-hint="baddha ultrasound logo"
                 priority
               />
@@ -101,8 +100,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <Separator className="my-4 print:my-2" />
 
         {/* Patient Information */}
-        <h3 className="text-lg font-headline text-primary mb-2 print:text-base">Informações do Paciente</h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-4 text-sm print:text-xs print:gap-y-0">
+        <h3 className="text-lg font-headline text-primary mb-2 print:text-base print:mb-1">Informações do Paciente</h3>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-4 text-sm print:text-xs print:gap-y-px">
           <DetailItem label="Nome do Paciente" value={formData.petName} />
           <DetailItem label="ID do Paciente" value={formData.patientId} />
           <DetailItem label="Espécie" value={formData.species} />
@@ -126,7 +125,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* AI Generated Report / Impressions */}
         {reportText && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Impressões / Conclusões</h3>
+            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base print:mt-2 print:mb-1">Impressões / Conclusões</h3>
             <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 text-sm print:text-xs print:border-none print:p-0">
               {reportText}
             </div>
@@ -136,7 +135,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Additional Notes */}
         {formData.additionalNotes && (
            <>
-            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base">Observações Adicionais</h3>
+            <h3 className="text-lg font-headline text-primary mt-4 mb-2 print:text-base print:mt-2 print:mb-1">Observações Adicionais</h3>
             <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm print:text-xs print:border-none print:p-0">
               {formData.additionalNotes}
             </div>
@@ -146,15 +145,15 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Images Section */}
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-4">Imagens do Exame</h3>
+            <h3 className="text-lg font-headline text-primary mt-6 mb-2 print:text-base print:mt-3 print:mb-1">Imagens do Exame</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-3 gap-4 print:gap-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-1 print:p-0.5 print:border-gray-300">
                   <NextImage
                     src={img.previewUrl}
                     alt={`Imagem do exame ${index + 1}`}
-                    width={200} 
-                    height={150}
+                    width={160} 
+                    height={120}
                     className="w-full h-auto object-contain"
                     data-ai-hint="ultrasound medical"
                   />
@@ -164,13 +163,12 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </>
         )}
         
-        {/* This div is a spacer, only relevant for on-screen view if needed.
-            It's hidden in print because the .print-page-footer is fixed. */}
-        <div className="mt-12 pt-6 border-t print:hidden"></div>
+        <div className="hide-in-print mt-12 pt-6 border-t">
+          {/* This div was for the old signature placement, now hidden in print */}
+        </div>
 
 
         {/* Fixed Footer for Print - This will appear on every printed page */}
-        {/* It's placed inside printable-area to be part of the visible content during print */}
         <div className="print-page-footer">
           <NextImage
             src="/ASSINATURA.png"
@@ -210,20 +208,19 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           body * {
             visibility: hidden;
           }
-          #printable-area, #printable-area * { /* Make printable area and its direct children visible */
+          #printable-area, #printable-area * { 
             visibility: visible;
           }
-           /* Ensure specifically that the footer and its image are visible */
           .print-page-footer, .print-page-footer * {
-            visibility: visible !important; /* Important to override generic * hidden */
+            visibility: visible !important; 
           }
 
           #printable-area {
             width: 100%;
             font-size: 8pt; 
-            padding-bottom: 20mm; /* Space for the fixed footer (e.g., 15mm for footer + 5mm margin) */
-            margin: 0; /* Reset margins for printable area */
-            /* position: relative; /* This is important for fixed children if issues arise, but global page.tsx style should handle this */
+            padding-bottom: 20mm; /* Space for the fixed footer */
+            margin: 0; 
+            position: relative; 
           }
           
           .page-break-before {
@@ -232,26 +229,24 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           .break-inside-avoid {
             page-break-inside: avoid;
           }
-          .no-print {
+          .no-print, .hide-in-print { /* .hide-in-print added */
             display: none !important;
           }
           
           .print-page-footer {
-            display: block !important; /* Ensure it's displayed for print */
+            display: block !important; 
             position: fixed;
-            bottom: 10mm; /* Adjust distance from bottom of the page */
+            bottom: 8mm; /* Adjusted distance from bottom of the page */
             left: 0;
             right: 0;
             width: 100%;
-            text-align: center; /* Centers the image */
-            z-index: 1000; /* Keep it on top */
-            /* background-color: white; /* Optional: if there are issues with content behind it */
+            text-align: center; 
+            z-index: 1000; 
           }
           .print-page-footer img {
-            max-width: 150px; /* Max width for the image */
-            max-height: 50px; /* Max height for the image */
-            height: auto; /* Maintain aspect ratio */
-            /* display: inline-block; /* Default for img, ensures text-align works */
+            max-width: 150px; 
+            max-height: 50px; 
+            height: auto; 
           }
         }
       `}</style>
