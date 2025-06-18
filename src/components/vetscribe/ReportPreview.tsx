@@ -78,7 +78,6 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {/* Header Section */}
         <div className="flex justify-between items-start mb-6 print:mb-4">
           <div>
-            {/* Placeholder for logo if we re-add it or use a default one */}
              <NextImage 
                 src="https://placehold.co/150x50.png?text=VETLD&font=belleza" 
                 alt={`Logo ${formData.clinicName}`}
@@ -106,7 +105,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <DetailItem label="ID do Paciente" value={formData.patientId} />
           <DetailItem label="Espécie" value={formData.species} />
           <DetailItem label="Raça" value={formData.breed} />
-          <DetailItem label="Idade" value={`${formData.ageYears} ano(s) ${formData.ageMonths ? formData.ageMonths + ' mes(es)' : '' }`} />
+          <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths ? ' ' + formData.ageMonths + ' mes(es)' : '' }`} />
           <DetailItem label="Sexo" value={formData.sex} />
           <DetailItem label="Tutor" value={formData.ownerName} />
           <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
@@ -169,8 +168,13 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         
         {/* Footer / Signature line for print */}
         <div className="mt-12 pt-6 border-t print:mt-8 print:pt-4">
-          <p className="text-sm text-foreground/70 print:text-xs">Assinatura: ________________________________________</p>
-          <p className="text-sm text-foreground/70 print:text-xs">{formData.vetName}</p>
+          <div className="mb-8">
+            <p className="text-sm text-foreground/70 print:text-xs">Assinatura:</p>
+            <div className="h-10 border-b border-foreground/50 print:border-foreground/70 w-3/4 mt-1"></div> {/* Signature line */}
+          </div>
+          <p className="text-sm text-foreground/80 print:text-xs font-semibold">Míriam Barp F. da Costa</p>
+          <p className="text-sm text-foreground/80 print:text-xs">Médica veterinária ultrassonografista</p>
+          <p className="text-sm text-foreground/80 print:text-xs">CRMV RS 12398</p>
         </div>
 
       </div>
@@ -223,3 +227,4 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     </Card>
   );
 }
+
