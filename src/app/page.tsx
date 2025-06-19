@@ -9,13 +9,26 @@ import { AppHeader } from "@/components/vetscribe/AppHeader";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
+// Função para converter File para Data URI
+const fileToDataUri = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+
 export default function VetScribePage() {
   const [currentFormData, setCurrentFormData] = useState<ReportFormData | null>(null);
   const [generatedReportText, setGeneratedReportText] = useState<string | null>(null);
   const [currentUploadedImages, setCurrentUploadedImages] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [printTrigger, setPrintTrigger] = useState(0); // State to trigger printing
+  const [printTrigger, setPrintTrigger] = useState(0); 
   const { toast } = useToast();
 
   const handleFormSubmit = useCallback(async (data: ReportFormData, images: File[]) => {
@@ -34,9 +47,27 @@ export default function VetScribePage() {
     });
     setCurrentFormData(data);
 
+    // Converter imagens para Data URIs
+    let imageDataUris: string[] = [];
+    if (images.length > 0) {
+      try {
+        imageDataUris = await Promise.all(images.map(fileToDataUri));
+      } catch (conversionError) {
+        console.error("Erro ao converter imagens para Data URI:", conversionError);
+        setError("Falha ao processar as imagens para análise. Verifique o console para mais detalhes.");
+        toast({
+          title: "Erro de Imagem",
+          description: "Não foi possível processar uma ou mais imagens.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
 
     try {
-      const result = await handleGenerateReportAction(data);
+      // Passar Data URIs para a action
+      const result = await handleGenerateReportAction(data, imageDataUris);
       if (result.success && result.reportText) {
         setGeneratedReportText(result.reportText);
         toast({
@@ -44,7 +75,7 @@ export default function VetScribePage() {
           description: "A IA gerou o rascunho do laudo com sucesso. A caixa de diálogo de impressão será aberta.",
           variant: "default",
         });
-        setPrintTrigger(prev => prev + 1); // Trigger printing
+        setPrintTrigger(prev => prev + 1); 
       } else {
         setError(result.error || "Falha ao gerar o laudo.");
         toast({
@@ -75,7 +106,6 @@ export default function VetScribePage() {
   useEffect(() => {
     if (printTrigger > 0 && generatedReportText && !isLoading) {
       console.log('[VetScribePage] Conditions met for printing. printTrigger:', printTrigger, 'generatedReportText exists:', !!generatedReportText, 'isLoading:', isLoading);
-      // Small delay to ensure DOM is updated before printing
       const timer = setTimeout(() => {
         console.log('[VetScribePage] Calling window.print() now.');
         window.print();
@@ -96,13 +126,13 @@ export default function VetScribePage() {
       <AppHeader className="no-print" />
       <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start h-[calc(100vh-85px)] lg:h-[calc(100vh-100px)]">
-          {/* Report Form Column */}
+          
           <div className="lg:h-full no-print">
              <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
           </div>
 
-          {/* Report Preview Column */}
-          <div className="lg:h-full"> {/* Removed lg:sticky and lg:top styles, removed overflow-hidden */}
+          
+          <div className="lg:h-full"> 
             <ReportPreview
               formData={currentFormData}
               reportText={generatedReportText}
@@ -113,38 +143,31 @@ export default function VetScribePage() {
           </div>
         </div>
       </main>
-      {/* Global print styles are now primarily managed within ReportPreview.tsx 
-          to keep component-specific print logic encapsulated.
-          Minimal global styles for printing can remain here if truly global.
-      */}
+      
       <style jsx global>{`
         @media print {
           .no-print {
             display: none !important;
           }
           body {
-            background-color: #fff !important; /* Ensure white background for printing */
-            -webkit-print-color-adjust: exact !important; /* Chrome, Safari, Edge */
-            color-adjust: exact !important; /* Firefox */
+            background-color: #fff !important; 
+            -webkit-print-color-adjust: exact !important; 
+            color-adjust: exact !important; 
           }
-          main { /* Reset main padding/margin for print if it's not #printable-area */
+          main { 
             padding: 0 !important;
             margin: 0 !important;
           }
-          .lg\\:sticky { /* Ensure sticky elements are not sticky during print */
+          .lg\\:sticky { 
             position: static !important;
           }
-           /* Ensure elements that might clip print content are visible */
+           
           .overflow-hidden {
             overflow: visible !important;
           }
            .overflow-y-auto {
             overflow-y: visible !important;
           }
-          /* 
-            The following detailed print rules are now better managed within ReportPreview.tsx 
-            to ensure #printable-area and its specific children (like footers/watermarks) are handled correctly.
-          */
         }
       `}</style>
     </div>

@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/initial-report-template.ts';
 import '@/ai/flows/generate-report.ts';
+import '@/ai/flows/extract-image-measurements.ts';
