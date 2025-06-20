@@ -9,18 +9,8 @@ import { AppHeader } from "@/components/vetscribe/AppHeader";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
-// Função para converter File para Data URI
-const fileToDataUri = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
-
+// Função para converter File para Data URI foi removida pois não é mais necessária aqui para extração.
+// Apenas para preview, que já é feito no ReportForm com URL.createObjectURL
 
 export default function VetScribePage() {
   const [currentFormData, setCurrentFormData] = useState<ReportFormData | null>(null);
@@ -47,27 +37,9 @@ export default function VetScribePage() {
     });
     setCurrentFormData(data);
 
-    // Converter imagens para Data URIs
-    let imageDataUris: string[] = [];
-    if (images.length > 0) {
-      try {
-        imageDataUris = await Promise.all(images.map(fileToDataUri));
-      } catch (conversionError) {
-        console.error("Erro ao converter imagens para Data URI:", conversionError);
-        setError("Falha ao processar as imagens para análise. Verifique o console para mais detalhes.");
-        toast({
-          title: "Erro de Imagem",
-          description: "Não foi possível processar uma ou mais imagens.",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
-
+    // A conversão de imagens para Data URIs e passagem para a action foi removida.
     try {
-      // Passar Data URIs para a action
-      const result = await handleGenerateReportAction(data, imageDataUris);
+      const result = await handleGenerateReportAction(data); // Chamada simplificada
       if (result.success && result.reportText) {
         setGeneratedReportText(result.reportText);
         toast({

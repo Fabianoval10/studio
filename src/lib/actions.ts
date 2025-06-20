@@ -3,7 +3,6 @@
 
 import type { ReportFormData } from "@/types";
 import { generateReport, type GenerateReportInput, type GenerateReportOutput } from "@/ai/flows/generate-report";
-import { extractImageMeasurements, type ExtractImageMeasurementsInput, type ExtractImageMeasurementsOutput } from "@/ai/flows/extract-image-measurements";
 import { reportFormSchema } from "@/types";
 
 function formatAge(years: number, months?: number): number {
@@ -15,48 +14,10 @@ function formatAge(years: number, months?: number): number {
 }
 
 export async function handleGenerateReportAction(
-  data: ReportFormData,
-  image_data_uris?: string[]
+  data: ReportFormData
 ): Promise<{ success: boolean; reportText?: string; error?: string }> {
   try {
     const validatedData = reportFormSchema.parse(data);
-    let findingsWithMeasurements = validatedData.findings;
-
-    if (image_data_uris && image_data_uris.length > 0) {
-      let allExtractedMeasurementsText = "\n\n--- Medições Extraídas das Imagens ---\n";
-      let measurementsFound = false;
-
-      for (let i = 0; i < image_data_uris.length; i++) {
-        const imageDataUri = image_data_uris[i];
-        const measurementInput: ExtractImageMeasurementsInput = { photoDataUri: imageDataUri };
-        
-        console.log(`[handleGenerateReportAction] Solicitando medições para imagem ${i + 1}`);
-        try {
-          const measurementResult: ExtractImageMeasurementsOutput = await extractImageMeasurements(measurementInput);
-          
-          if (measurementResult && measurementResult.measurements && measurementResult.measurements.length > 0) {
-            measurementsFound = true;
-            allExtractedMeasurementsText += `Imagem ${i + 1}:\n`;
-            measurementResult.measurements.forEach(m => {
-              allExtractedMeasurementsText += `- ${m.label}: ${m.value} ${m.unit}\n`;
-            });
-          } else {
-            allExtractedMeasurementsText += `Imagem ${i + 1}: Nenhuma medição clara extraída.\n`;
-          }
-        } catch (imgError: any) {
-          console.error(`[handleGenerateReportAction] Erro ao extrair medições da imagem ${i + 1}:`, imgError);
-          allExtractedMeasurementsText += `Imagem ${i + 1}: Erro ao processar medições (${imgError.message || 'erro desconhecido'}).\n`;
-        }
-      }
-
-      if (measurementsFound) {
-        findingsWithMeasurements += allExtractedMeasurementsText;
-      } else {
-         findingsWithMeasurements += "\n\nNenhuma medição quantificável foi extraída das imagens fornecidas ou não foram encontradas medições claras.";
-      }
-       console.log("[handleGenerateReportAction] Achados com medições:", findingsWithMeasurements);
-    }
-
 
     const aiInput: GenerateReportInput = {
       animalSpecies: validatedData.species,
@@ -64,7 +25,7 @@ export async function handleGenerateReportAction(
       animalSex: validatedData.sex,
       animalAge: formatAge(validatedData.ageYears, validatedData.ageMonths),
       examDate: validatedData.examDate.toISOString().split('T')[0],
-      findings: findingsWithMeasurements, // Usar os achados com as medições
+      findings: validatedData.findings,
       additionalNotes: validatedData.additionalNotes,
     };
 
