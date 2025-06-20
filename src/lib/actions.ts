@@ -33,20 +33,17 @@ export async function handleGenerateReportAction(
   try {
     const validatedData = reportFormSchema.parse(data);
 
-    let findingsComMedidas = validatedData.findings;
     const medidasAdicionadas: string[] = [];
-
     for (const key in organMeasurementLabels) {
       const typedKey = key as keyof ReportFormData;
-      if (validatedData[typedKey] && typeof validatedData[typedKey] === 'string' && (validatedData[typedKey] as string).trim() !== "") {
+      const measurementValue = validatedData[typedKey];
+      if (measurementValue && typeof measurementValue === 'string' && measurementValue.trim() !== "") {
         const label = organMeasurementLabels[typedKey];
-        medidasAdicionadas.push(`- ${label}: ${validatedData[typedKey]} cm`);
+        medidasAdicionadas.push(`- ${label}: ${measurementValue.trim()}`);
       }
     }
 
-    if (medidasAdicionadas.length > 0) {
-      findingsComMedidas += "\n\nMedidas Anatômicas (cm):\n" + medidasAdicionadas.join("\n");
-    }
+    const organMeasurementsString = medidasAdicionadas.length > 0 ? medidasAdicionadas.join("\n") : undefined;
 
     const aiInput: GenerateReportInput = {
       animalSpecies: validatedData.species,
@@ -54,7 +51,8 @@ export async function handleGenerateReportAction(
       animalSex: validatedData.sex,
       animalAge: formatAge(validatedData.ageYears, validatedData.ageMonths),
       examDate: validatedData.examDate.toISOString().split('T')[0],
-      findings: findingsComMedidas, // Usar os achados com as medidas anexadas
+      findings: validatedData.findings,
+      organMeasurements: organMeasurementsString,
       additionalNotes: validatedData.additionalNotes,
     };
 

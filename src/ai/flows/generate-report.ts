@@ -19,6 +19,7 @@ const GenerateReportInputSchema = z.object({
   animalAge: z.number().describe('Idade do animal em anos.'),
   examDate: z.string().describe('Data em que o exame de ultrassom foi realizado.'),
   findings: z.string().describe('Achados estruturados do exame de ultrassom.'),
+  organMeasurements: z.string().optional().describe('Medidas anatômicas dos órgãos em cm, formatadas como uma lista.'),
   additionalNotes: z.string().optional().describe('Quaisquer notas ou observações adicionais.'),
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
@@ -43,8 +44,19 @@ Raça Animal: {{{animalBreed}}}
 Sexo Animal: {{{animalSex}}}
 Idade Animal: {{{animalAge}}} anos
 Data do Exame: {{{examDate}}}
-Achados: {{{findings}}}
-Notas Adicionais: {{{additionalNotes}}}
+
+Achados:
+{{{findings}}}
+{{#if organMeasurements}}
+
+Medidas Anatômicas (cm):
+{{{organMeasurements}}}
+{{/if}}
+{{#if additionalNotes}}
+
+Notas Adicionais:
+{{{additionalNotes}}}
+{{/if}}
 
 Elabore sobre os achados e forneça conclusões e impressões diagnósticas consistentes com as informações fornecidas. Evite respostas curtas ou resumidas demais.
 
@@ -94,3 +106,4 @@ const generateReportFlow = ai.defineFlow(
     }
   }
 );
+
