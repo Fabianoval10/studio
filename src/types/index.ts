@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const reportFormSchema = z.object({
-  // Clinic Info (can be pre-filled or part of settings later)
+  // Clinic Info
   clinicName: z.string().min(1, "Nome da clínica é obrigatório").default("Baddha Ultrassonografia"),
   vetName: z.string().min(1, "Nome do veterinário(a) é obrigatório").default("Dra. Míriam Barp F. da Costa"),
 
@@ -22,6 +22,24 @@ export const reportFormSchema = z.object({
   // Findings & Notes for AI
   findings: z.string().min(10, "Achados detalhados são obrigatórios para geração do laudo (mín 10 caracteres)"),
   additionalNotes: z.string().optional(),
+
+  // Anatomical Measurements (cm) - all optional strings
+  medidaFigadoCm: z.string().optional(),
+  medidaVesiculaBiliarCm: z.string().optional(),
+  medidaPancreasCm: z.string().optional(),
+  medidaDuodenoCm: z.string().optional(),
+  medidaJejunoCm: z.string().optional(),
+  medidaIleoCm: z.string().optional(),
+  medidaColonCm: z.string().optional(),
+  medidaCavidadeGastricaCm: z.string().optional(),
+  medidaBacoCm: z.string().optional(),
+  medidaRimEsquerdoCm: z.string().optional(),
+  medidaRimDireitoCm: z.string().optional(),
+  medidaAdrenalEsquerdaCranialCm: z.string().optional(),
+  medidaAdrenalEsquerdaCaudalCm: z.string().optional(),
+  medidaAdrenalDireitaCranialCm: z.string().optional(),
+  medidaAdrenalDireitaCaudalCm: z.string().optional(),
+  medidaVesiculaUrinariaCm: z.string().optional(),
 });
 
 export type ReportFormData = z.infer<typeof reportFormSchema>;

@@ -13,11 +13,58 @@ function formatAge(years: number, months?: number): number {
   return parseFloat(totalAgeInYears.toFixed(2));
 }
 
+function formatOrganMeasurements(data: ReportFormData): string | undefined {
+  const measurements: string[] = [];
+
+  if (data.medidaFigadoCm) measurements.push(`- Fígado: ${data.medidaFigadoCm} cm`);
+  if (data.medidaVesiculaBiliarCm) measurements.push(`- Vesícula Biliar: ${data.medidaVesiculaBiliarCm} cm`);
+  if (data.medidaPancreasCm) measurements.push(`- Pâncreas: ${data.medidaPancreasCm} cm`);
+  
+  const alcasIntestinais: string[] = [];
+  if (data.medidaDuodenoCm) alcasIntestinais.push(`  - Duodeno: ${data.medidaDuodenoCm} cm`);
+  if (data.medidaJejunoCm) alcasIntestinais.push(`  - Jejuno: ${data.medidaJejunoCm} cm`);
+  if (data.medidaIleoCm) alcasIntestinais.push(`  - Íleo: ${data.medidaIleoCm} cm`);
+  if (data.medidaColonCm) alcasIntestinais.push(`  - Cólon: ${data.medidaColonCm} cm`);
+  if (alcasIntestinais.length > 0) {
+    measurements.push("- Alças Intestinais:");
+    measurements.push(...alcasIntestinais);
+  }
+
+  if (data.medidaCavidadeGastricaCm) measurements.push(`- Cavidade Gástrica: ${data.medidaCavidadeGastricaCm} cm`);
+  if (data.medidaBacoCm) measurements.push(`- Baço: ${data.medidaBacoCm} cm`);
+
+  const rins: string[] = [];
+  if (data.medidaRimEsquerdoCm) rins.push(`  - Rim Esquerdo: ${data.medidaRimEsquerdoCm} cm`);
+  if (data.medidaRimDireitoCm) rins.push(`  - Rim Direito: ${data.medidaRimDireitoCm} cm`);
+  if (rins.length > 0) {
+    measurements.push("- Rins:");
+    measurements.push(...rins);
+  }
+  
+  const adrenais: string[] = [];
+  if (data.medidaAdrenalEsquerdaCranialCm || data.medidaAdrenalEsquerdaCaudalCm) {
+    adrenais.push(`  - Adrenal Esquerda (Cranial x Caudal): ${data.medidaAdrenalEsquerdaCranialCm || 'N/A'} x ${data.medidaAdrenalEsquerdaCaudalCm || 'N/A'} cm`);
+  }
+  if (data.medidaAdrenalDireitaCranialCm || data.medidaAdrenalDireitaCaudalCm) {
+    adrenais.push(`  - Adrenal Direita (Cranial x Caudal): ${data.medidaAdrenalDireitaCranialCm || 'N/A'} x ${data.medidaAdrenalDireitaCaudalCm || 'N/A'} cm`);
+  }
+  if (adrenais.length > 0) {
+    measurements.push("- Adrenais:");
+    measurements.push(...adrenais);
+  }
+  
+  if (data.medidaVesiculaUrinariaCm) measurements.push(`- Vesícula Urinária: ${data.medidaVesiculaUrinariaCm} cm`);
+
+  if (measurements.length === 0) return undefined;
+  return "Medidas Anatômicas (cm) Fornecidas pelo Usuário:\n" + measurements.join("\n");
+}
+
 export async function handleGenerateReportAction(
   data: ReportFormData
 ): Promise<{ success: boolean; reportText?: string; error?: string }> {
   try {
     const validatedData = reportFormSchema.parse(data);
+    const organMeasurementsString = formatOrganMeasurements(validatedData);
 
     const aiInput: GenerateReportInput = {
       animalSpecies: validatedData.species,
@@ -27,6 +74,7 @@ export async function handleGenerateReportAction(
       examDate: validatedData.examDate.toISOString().split('T')[0],
       findings: validatedData.findings,
       additionalNotes: validatedData.additionalNotes,
+      organMeasurements: organMeasurementsString,
     };
 
     console.log('[handleGenerateReportAction] AI Input para generateReport:', JSON.stringify(aiInput, null, 2));
