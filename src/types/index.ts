@@ -21,6 +21,20 @@ export const reportFormSchema = z.object({
   
   // Findings & Notes for AI
   findings: z.string().min(10, "Achados detalhados são obrigatórios para geração do laudo (mín 10 caracteres)"),
+  
+  // Organ Measurements (all optional strings)
+  medidaFigado: z.string().optional(),
+  medidaVesiculaBiliar: z.string().optional(),
+  medidaPancreas: z.string().optional(),
+  medidaDuodeno: z.string().optional(),
+  medidaJejuno: z.string().optional(),
+  medidaIleo: z.string().optional(),
+  medidaColon: z.string().optional(),
+  medidaCavidadeGastrica: z.string().optional(),
+  medidaBaco: z.string().optional(),
+  medidaAdrenais: z.string().optional(),
+  medidaVesiculaUrinaria: z.string().optional(),
+
   additionalNotes: z.string().optional(),
 });
 

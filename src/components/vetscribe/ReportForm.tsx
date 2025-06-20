@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2 } from "lucide-react";
+import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2, Ruler } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,8 +28,8 @@ interface ReportFormProps {
   initialData?: Partial<ReportFormData>;
 }
 
-const FormFieldWrapper = ({ name, label, errors, children }: { name: keyof ReportFormData, label: string, errors: FieldErrors<ReportFormData>, children: React.ReactNode }) => (
-  <div className="space-y-2">
+const FormFieldWrapper = ({ name, label, errors, children, className }: { name: keyof ReportFormData, label: string, errors: FieldErrors<ReportFormData>, children: React.ReactNode, className?: string }) => (
+  <div className={cn("space-y-2", className)}>
     <Label htmlFor={name} className={errors[name] ? "text-destructive" : ""}>
       {label}
     </Label>
@@ -89,6 +89,19 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
     onSubmit(data, imageFiles);
   };
   
+  const organMeasurementFields: { name: keyof ReportFormData; label: string }[] = [
+    { name: "medidaFigado", label: "Fígado (cm)" },
+    { name: "medidaVesiculaBiliar", label: "Vesícula Biliar (cm)" },
+    { name: "medidaPancreas", label: "Pâncreas (cm)" },
+    { name: "medidaDuodeno", label: "Duodeno (cm)" },
+    { name: "medidaJejuno", label: "Jejuno (cm)" },
+    { name: "medidaIleo", label: "Íleo (cm)" },
+    { name: "medidaColon", label: "Cólon (cm)" },
+    { name: "medidaCavidadeGastrica", label: "Cavidade Gástrica (cm)" },
+    { name: "medidaBaco", label: "Baço (cm)" },
+    { name: "medidaAdrenais", label: "Adrenais (cm)" },
+    { name: "medidaVesiculaUrinaria", label: "Vesícula Urinária (cm)" },
+  ];
 
   return (
     <Card className="shadow-lg flex flex-col h-full">
@@ -243,11 +256,46 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                       className="font-body"
                     />
                   </FormFieldWrapper>
-                  <FormFieldWrapper name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors}>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="organ-measurements">
+                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline flex items-center gap-2">
+                  <Ruler className="w-5 h-5" /> Medidas Anatômicas (cm)
+                </AccordionTrigger>
+                <AccordionContent className="pt-4 space-y-4">
+                  <p className="text-sm text-muted-foreground font-body">
+                    Insira as medidas para cada órgão, se aplicável. Deixe em branco se não medido ou N/A.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4">
+                    {organMeasurementFields.map(field => (
+                      <FormFieldWrapper 
+                        key={field.name} 
+                        name={field.name as keyof ReportFormData} 
+                        label={field.label} 
+                        errors={errors}
+                        className="text-sm"
+                      >
+                        <Input 
+                          id={field.name} 
+                          {...register(field.name as keyof ReportFormData)} 
+                          placeholder="Ex: 5.2 x 3.1 ou N/A" 
+                        />
+                      </FormFieldWrapper>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="additional-notes">
+                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Observações Adicionais</AccordionTrigger>
+                <AccordionContent className="pt-4 space-y-4">
+                   <FormFieldWrapper name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors}>
                     <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações." className="font-body"/>
                   </FormFieldWrapper>
                 </AccordionContent>
               </AccordionItem>
+
             </Accordion>
           </ScrollArea>
 

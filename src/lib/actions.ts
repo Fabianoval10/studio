@@ -13,11 +13,40 @@ function formatAge(years: number, months?: number): number {
   return parseFloat(totalAgeInYears.toFixed(2));
 }
 
+const organMeasurementLabels: { [K in keyof ReportFormData]?: string } = {
+  medidaFigado: "Fígado",
+  medidaVesiculaBiliar: "Vesícula Biliar",
+  medidaPancreas: "Pâncreas",
+  medidaDuodeno: "Duodeno",
+  medidaJejuno: "Jejuno",
+  medidaIleo: "Íleo",
+  medidaColon: "Cólon",
+  medidaCavidadeGastrica: "Cavidade Gástrica",
+  medidaBaco: "Baço",
+  medidaAdrenais: "Adrenais",
+  medidaVesiculaUrinaria: "Vesícula Urinária",
+};
+
 export async function handleGenerateReportAction(
   data: ReportFormData
 ): Promise<{ success: boolean; reportText?: string; error?: string }> {
   try {
     const validatedData = reportFormSchema.parse(data);
+
+    let findingsComMedidas = validatedData.findings;
+    const medidasAdicionadas: string[] = [];
+
+    for (const key in organMeasurementLabels) {
+      const typedKey = key as keyof ReportFormData;
+      if (validatedData[typedKey] && typeof validatedData[typedKey] === 'string' && (validatedData[typedKey] as string).trim() !== "") {
+        const label = organMeasurementLabels[typedKey];
+        medidasAdicionadas.push(`- ${label}: ${validatedData[typedKey]} cm`);
+      }
+    }
+
+    if (medidasAdicionadas.length > 0) {
+      findingsComMedidas += "\n\nMedidas Anatômicas (cm):\n" + medidasAdicionadas.join("\n");
+    }
 
     const aiInput: GenerateReportInput = {
       animalSpecies: validatedData.species,
@@ -25,7 +54,7 @@ export async function handleGenerateReportAction(
       animalSex: validatedData.sex,
       animalAge: formatAge(validatedData.ageYears, validatedData.ageMonths),
       examDate: validatedData.examDate.toISOString().split('T')[0],
-      findings: validatedData.findings,
+      findings: findingsComMedidas, // Usar os achados com as medidas anexadas
       additionalNotes: validatedData.additionalNotes,
     };
 
