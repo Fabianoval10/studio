@@ -3,7 +3,7 @@
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Printer, AlertTriangle, Info, FileText, Mail, PawPrint } from "lucide-react";
 import NextImage from "next/image";
@@ -59,17 +59,6 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 )
 
 export function ReportPreview({ formData, reportText, uploadedImages, isLoading, error }: ReportPreviewProps) {
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleEmail = () => {
-    if (!formData) return;
-    const subject = `Laudo de Ultrassonografia - ${formData.petName}`;
-    const body = `Olá,\n\nSegue em anexo o laudo de ultrassonografia do paciente ${formData.petName}.\n\nPor favor, salve o laudo como PDF e anexe a este e-mail antes de enviar.\n\nAtenciosamente,\n${formData.vetName}`;
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
-  };
 
   const renderContent = () => {
     if (isLoading) {
@@ -180,7 +169,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <footer className="text-center mt-16 info-body-print">
             <p className="font-bold">{formData.clinicName}</p>
             <p>CRMV: {formData.vetName}</p>
-            <p>Data do Exame: {format(formData.examDate, "PPP", { locale: ptBR })}</p>
+            <p>Data do Exame: {format(new Date(formData.examDate), "PPP", { locale: ptBR })}</p>
           </footer>
         </div>
 
@@ -267,7 +256,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
   return (
     <>
-      <Card className="shadow-lg h-full flex flex-col">
+      <Card className="shadow-lg h-full flex flex-col no-print">
         <CardHeader className="flex-shrink-0">
           <CardTitle className="text-3xl font-headline text-primary flex items-center gap-2">
             <FileText className="w-8 h-8" /> Pré-visualização do Laudo
@@ -280,10 +269,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           {renderContent()}
         </CardContent>
         <CardFooter className="flex-shrink-0 border-t pt-6 justify-end">
-           <Button onClick={handleEmail} disabled={!formData || isLoading} variant="outline" className="mr-2">
-              <Mail className="mr-2 h-4 w-4" /> Enviar por Email
-            </Button>
-          <Button onClick={handlePrint} disabled={!formData || isLoading} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+           <Button onClick={() => window.print()} disabled={!formData || isLoading} className="bg-accent hover:bg-accent/90 text-accent-foreground">
             <Printer className="mr-2 h-4 w-4" /> Imprimir para PDF
           </Button>
         </CardFooter>
@@ -319,21 +305,14 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             background-color: white !important;
           }
           
-          body * {
-            visibility: hidden;
-            -webkit-print-color-adjust: exact !important;
-            color-adjust: exact !important;
+          .no-print, .no-print * {
+            display: none !important;
           }
 
           #printable-area, #printable-area * {
             visibility: visible !important;
           }
           
-          .no-print, .hide-in-print, .bg-muted\\/20 {
-            display: none !important;
-            background-color: transparent !important;
-          }
-
           #printable-area {
             position: absolute;
             left: 0;
@@ -367,6 +346,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           
           #stylized-cover-page {
              background-color: white !important;
+             -webkit-print-color-adjust: exact !important;
+             color-adjust: exact !important;
           }
 
           #stylized-cover-page > .bg-accent {
@@ -403,7 +384,11 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           
            .print-report-header {
              display: flex !important;
+             justify-content: space-between;
              padding: 1cm 2cm 0 2cm !important;
+             font-family: 'Montserrat', sans-serif !important;
+             font-size: 9pt;
+             color: #78655B !important;
            }
 
           /* --- FONT STYLES --- */
