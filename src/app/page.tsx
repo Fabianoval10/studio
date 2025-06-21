@@ -1,21 +1,57 @@
 
 "use client";
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { ReportFormData } from "@/types";
 import ClientOnlyReportForm from "@/components/vetscribe/ReportForm";
 import { AppHeader } from "@/components/vetscribe/AppHeader";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
-const fileToDataUri = (file: File): Promise<string> => {
+const resizeImage = (file: File, maxWidth: number, maxHeight: number): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
+    reader.onload = (event) => {
+      if (!event.target?.result) {
+        return reject(new Error("FileReader did not return a result."));
+      }
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          return reject(new Error('Could not get canvas context'));
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Use JPEG format with quality compression for smaller file size.
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.onerror = (err) => reject(err);
+      img.src = event.target.result as string;
+    };
+    reader.onerror = (err) => reject(err);
     reader.readAsDataURL(file);
   });
 };
+
 
 export default function VetScribePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +67,7 @@ export default function VetScribePage() {
         const imageDataForStorage = await Promise.all(
           images.map(async (file) => ({
             id: crypto.randomUUID(),
-            dataUri: await fileToDataUri(file),
+            dataUri: await resizeImage(file, 800, 800), // Resize image before storing
           }))
         );
 
@@ -54,12 +90,20 @@ export default function VetScribePage() {
         });
       }
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Ocorreu um erro inesperado.";
-      toast({
-        title: "Erro Crítico",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          toast({
+            title: "Erro Crítico: Imagens Muito Grandes",
+            description: "O tamanho total das imagens excede o limite do navegador. Por favor, tente com menos imagens ou imagens menores.",
+            variant: "destructive",
+          });
+      } else {
+          const errorMessage = e instanceof Error ? e.message : "Ocorreu um erro inesperado.";
+          toast({
+            title: "Erro Crítico",
+            description: errorMessage,
+            variant: "destructive",
+          });
+      }
     } finally {
       setIsLoading(false);
     }
