@@ -5,13 +5,12 @@ import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Printer, AlertTriangle, Info, FileText, Mail } from "lucide-react";
+import { Printer, AlertTriangle, Info, FileText, Mail, PawPrint } from "lucide-react";
 import NextImage from "next/image";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 
 interface ReportPreviewProps {
   formData: ReportFormData | null;
@@ -25,7 +24,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   if (value === null || value === undefined || value === "") return null;
   return (
     <div className={className}>
-      <span className="font-semibold text-foreground/80">{label}: </span>
+      <span className="font-semibold text-foreground/80">{label}: </span> 
       <span className="font-sans text-foreground">{String(value)}</span>
     </div>
   );
@@ -33,7 +32,6 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
 
 const renderBoldMarkdown = (text: string | null) => {
   if (!text) return null;
-  // Regex to find **bolded text**
   return (
     <React.Fragment>
       {text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
@@ -98,85 +96,123 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     }
 
     return (
-      <div id="printable-area" className="p-2 md:p-6 printable-content">
-        <div className="flex justify-between items-start mb-4">
-          <div className="print:max-w-[55%]">
-            <h1 className="text-xl font-headline font-bold text-primary">{formData.clinicName || "Nome da Clínica"}</h1>
-            <p className="text-sm font-sans text-foreground/80">Veterinário(a): {formData.vetName || "Nome do Veterinário"}</p>
-          </div>
-          <div className="text-right print:max-w-[45%]">
-            <h2 className="text-lg font-headline text-primary">Laudo de Ultrassonografia Veterinária</h2>
-            <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} />
-          </div>
+      <div id="printable-area" className="printable-content bg-gray-100 p-4">
+        {/* --- PAGE 1: COVER --- */}
+        <div className="print-page" id="cover-page">
+          <header className="flex justify-between items-center text-center flex-col mb-16">
+            <div className="flex items-center gap-3 bg-primary text-primary-foreground p-3 rounded-full mb-4">
+              <PawPrint className="w-10 h-10" />
+            </div>
+            <h1 className="text-3xl font-headline text-primary font-bold">VETLD</h1>
+            <p className="text-sm text-muted-foreground">Laudos de Ultrassom Inteligentes</p>
+          </header>
+
+          <main className="flex-grow flex flex-col justify-center items-center text-center">
+            <h2 className="cover-title-print text-4xl font-headline font-light text-primary mb-12">
+              LAUDO DE ULTRASSONOGRAFIA ABDOMINAL
+            </h2>
+            
+            <Card className="w-full max-w-2xl text-left shadow-md border">
+              <CardHeader>
+                <CardTitle className="info-title-print">INFORMAÇÕES DO PACIENTE</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm info-body-print">
+                <DetailItem label="Tutor" value={formData.ownerName} />
+                <DetailItem label="Paciente" value={formData.petName} />
+                <DetailItem label="ID do Paciente" value={formData.patientId} />
+                <DetailItem label="Espécie" value={formData.species} />
+                <DetailItem label="Raça" value={formData.breed} />
+                <DetailItem label="Sexo" value={formData.sex} />
+                <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`} />
+                <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
+              </CardContent>
+            </Card>
+          </main>
+
+          <footer className="text-center mt-16 info-body-print">
+            <p className="font-bold">{formData.clinicName}</p>
+            <p>CRMV: {formData.vetName}</p>
+            <p>Data do Exame: {format(formData.examDate, "PPP", { locale: ptBR })}</p>
+          </footer>
         </div>
 
-        <Separator className="my-3" />
+        <div className="print-page-break"></div>
 
-        <h3 className="text-base font-headline text-primary mb-1">Informações do Paciente</h3>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-0 text-sm mb-3">
-          <DetailItem label="Nome" value={formData.petName} />
-          <DetailItem label="ID" value={formData.patientId} />
-          <DetailItem label="Espécie" value={formData.species} />
-          <DetailItem label="Raça" value={formData.breed} />
-          <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`} />
-          <DetailItem label="Sexo" value={formData.sex} />
-          <DetailItem label="Tutor" value={formData.ownerName} />
-          <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
+        {/* --- PAGE 2: REPORT BODY --- */}
+        <div className="print-page" id="report-body-page">
+          <header className="print-report-header">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-primary">VETLD</span>
+              <span>Paciente: {formData.petName}</span>
+            </div>
+          </header>
+          
+          <main className="report-main-content">
+            {reportText && (
+              <>
+                <h3 className="report-title-print">LAUDO DESCRITIVO</h3>
+                <div className="whitespace-pre-wrap font-sans report-text-block">
+                  {renderBoldMarkdown(reportText)}
+                </div>
+              </>
+            )}
+          </main>
+
+          <footer className="print-report-footer">
+            <NextImage
+              src="/ASSINATURA.png"
+              alt="Assinatura Digitalizada"
+              width={150} 
+              height={50} 
+              data-ai-hint="doctor signature"
+              className="mx-auto"
+            />
+            <p className="text-xs text-center mt-1 info-body-print">{formData.vetName}</p>
+          </footer>
         </div>
 
-        <Separator className="my-3" />
-        
-        {reportText && (
-          <>
-            <h3 className="text-base font-headline text-primary mt-3 mb-1">Achados, Impressões e Conclusões</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 font-sans">
-              {renderBoldMarkdown(reportText)}
-            </div>
-          </>
-        )}
-
-        {formData.additionalNotes && (
-           <>
-            <h3 className="text-base font-headline text-primary mt-3 mb-1">Observações Adicionais</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 font-sans">
-              {formData.additionalNotes}
-            </div>
-          </>
-        )}
-
+        {/* --- PAGE 3: IMAGES --- */}
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-base font-headline text-primary mt-4 mb-1">Imagens do Exame</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-3 gap-2">
-              {uploadedImages.map((img, index) => (
-                <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-0.5 print:border-gray-300">
-                  <NextImage
-                    src={img.previewUrl}
-                    alt={`Imagem do exame ${index + 1}`}
-                    width={200} 
-                    height={150}
-                    style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                    data-ai-hint="ultrasound medical"
-                  />
-                </div>
-              ))}
+            <div className="print-page-break"></div>
+            <div className="print-page" id="images-page">
+              <header className="print-report-header">
+                 <div className="flex justify-between items-center">
+                    <span className="font-bold text-primary">VETLD</span>
+                    <span>Imagens do Exame - Paciente: {formData.petName}</span>
+                 </div>
+              </header>
+              <main className="report-main-content">
+                  <h3 className="report-title-print">IMAGENS DO EXAME</h3>
+                  <div className="print-image-grid">
+                    {uploadedImages.map((img, index) => (
+                      <div key={img.id} className="print-image-item">
+                        <NextImage
+                          src={img.previewUrl}
+                          alt={`Imagem do exame ${index + 1}`}
+                          width={300} 
+                          height={225}
+                          className="w-full h-auto rounded-md"
+                          data-ai-hint="ultrasound medical"
+                        />
+                      </div>
+                    ))}
+                  </div>
+              </main>
+              <footer className="print-report-footer">
+                <NextImage
+                  src="/ASSINATURA.png"
+                  alt="Assinatura Digitalizada"
+                  width={150} 
+                  height={50} 
+                  data-ai-hint="doctor signature"
+                  className="mx-auto"
+                />
+                <p className="text-xs text-center mt-1 info-body-print">{formData.vetName}</p>
+              </footer>
             </div>
           </>
         )}
-        
-        <div className="hide-in-print mt-12 pt-6 border-t">
-        </div>
-
-        <div className="print-page-footer">
-          <NextImage
-            src="/ASSINATURA.png"
-            alt="Assinatura Digitalizada"
-            width={150} 
-            height={50} 
-            data-ai-hint="doctor signature"
-            style={{ border: 'none' }}
-          />
-        </div>
       </div>
     );
   };
@@ -192,7 +228,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             Revise o laudo gerado abaixo. Use o botão de imprimir para salvar como PDF.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex-grow overflow-y-auto">
+        <CardContent className="flex-grow overflow-y-auto bg-muted/20">
           {renderContent()}
         </CardContent>
         <CardFooter className="flex-shrink-0 border-t pt-6 justify-end">
@@ -205,92 +241,125 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         </CardFooter>
       </Card>
       <style jsx global>{`
-        .print-page-footer {
-          display: none; 
+        .print-page {
+          background-color: white;
+          padding: 2rem;
+          margin-bottom: 1rem;
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+          min-height: 1123px; /* A4 height in pixels for screen representation */
         }
+        .print-page-break {
+          display: none;
+        }
+        .print-report-header, .print-report-footer {
+          display: none;
+        }
+
         @media print {
           @page {
-            margin-top: 5mm; 
-            margin-left: 10mm;
-            margin-right: 10mm;
-            margin-bottom: 25mm;
+            size: A4;
+            margin: 1cm;
           }
 
+          body, html {
+            background-color: white !important;
+          }
+          
           body * {
             visibility: hidden;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
 
-          #printable-area, 
-          #printable-area * {
+          #printable-area, #printable-area * {
             visibility: visible !important;
           }
           
-          .no-print, .hide-in-print {
+          .no-print, .hide-in-print, .bg-muted\\/20 {
             display: none !important;
+            background-color: transparent !important;
           }
 
           #printable-area {
+            position: absolute;
+            left: 0;
+            top: 0;
             width: 100%;
-            padding: 0; 
-            margin: 0; 
-            position: relative; 
-            padding-bottom: 20mm; /* Space for footer */
-            font-size: 11pt;
-            font-family: 'Montserrat', sans-serif;
-          }
-           
-          #printable-area h1,
-          #printable-area h2,
-          #printable-area h3 {
-             font-family: 'Montserrat', sans-serif !important;
-             font-weight: 300 !important;
-             font-size: 18pt !important;
-             margin-top: 0.3rem !important;
-             margin-bottom: 0.15rem !important;
-             line-height: 1.2;
-             color: #78655B; /* Principal Brown */
+            padding: 0;
+            margin: 0;
+            background-color: transparent !important;
           }
 
-          #printable-area .text-sm,
-          #printable-area .text-xs,
-          #printable-area .font-sans {
-              font-size: 11pt !important;
-              font-family: 'Montserrat', sans-serif !important;
+          .print-page-break {
+            page-break-after: always !important;
+            display: block;
+            height: 0;
+            visibility: hidden;
           }
 
-          #printable-area .font-headline {
-              font-family: 'Montserrat', sans-serif !important;
-              font-weight: 700 !important;
+          .print-page {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+            display: flex;
+            flex-direction: column;
+            page-break-inside: avoid !important;
           }
 
-          #printable-area .my-3 {
-             margin-top: 0.15rem !important; margin-bottom: 0.15rem !important;
-          }
-
-          .page-break-before {
-            page-break-before: always;
-          }
-          .break-inside-avoid {
-            page-break-inside: avoid;
+          #cover-page {
+             justify-content: space-between;
+             text-align: center;
+             padding: 2cm 0;
           }
           
-          .print-page-footer {
-            visibility: visible !important;
-            display: block !important; 
-            position: fixed;
-            bottom: 5mm; 
-            left: 0;
-            right: 0;
-            text-align: center; 
-            z-index: 1000; 
+          .report-main-content {
+            flex-grow: 1;
           }
-          .print-page-footer img {
-            max-width: 150px; 
-            max-height: 50px; 
-            height: auto; 
-            border: none !important;
+
+          .print-report-footer {
+            display: block !important;
+            margin-top: auto; /* Push to bottom */
+            padding-top: 1rem;
+            width: 100%;
+            text-align: center;
+          }
+
+          /* --- FONT STYLES --- */
+          .cover-title-print, .report-title-print, .info-title-print {
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 300 !important; /* light */
+            font-size: 18pt !important;
+            color: #78655B !important;
+            margin-bottom: 1rem;
+          }
+          .info-body-print, .info-body-print *, .report-text-block, .report-text-block * {
+            font-family: 'Montserrat', sans-serif !important;
+            font-size: 11pt !important;
+            line-height: 1.5;
+            color: black !important;
+          }
+          .report-text-block b {
+             font-weight: 700 !important;
+          }
+          
+          /* --- IMAGE GRID --- */
+          .print-image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5cm;
+            margin-top: 1rem;
+          }
+          .print-image-item {
+            page-break-inside: avoid !important;
+            border: 1px solid #ccc;
+            padding: 2px;
+            border-radius: 4px;
           }
         }
       `}</style>
