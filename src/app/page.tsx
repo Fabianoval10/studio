@@ -2,8 +2,9 @@
 "use client";
 
 import React, { useState, useCallback } from 'react';
-import type { ReportFormData } from "@/types";
+import type { ReportFormData, UploadedImage } from "@/types";
 import ClientOnlyReportForm from "@/components/vetscribe/ReportForm";
+import { ReportPreview } from "@/components/vetscribe/ReportPreview";
 import { AppHeader } from "@/components/vetscribe/AppHeader";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -41,7 +42,6 @@ const resizeImage = (file: File, maxWidth: number, maxHeight: number): Promise<s
         }
         ctx.drawImage(img, 0, 0, width, height);
         
-        // Use JPEG format with quality compression for smaller file size.
         resolve(canvas.toDataURL('image/jpeg', 0.8));
       };
       img.onerror = (err) => reject(err);
@@ -55,55 +55,55 @@ const resizeImage = (file: File, maxWidth: number, maxHeight: number): Promise<s
 
 export default function VetScribePage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [formDataForPreview, setFormDataForPreview] = useState<ReportFormData | null>(null);
+  const [reportTextForPreview, setReportTextForPreview] = useState<string | null>(null);
+  const [imagesForPreview, setImagesForPreview] = useState<UploadedImage[]>([]);
+
   const { toast } = useToast();
 
   const handleFormSubmit = useCallback(async (data: ReportFormData, images: File[]) => {
     setIsLoading(true);
+    setError(null);
+    setReportTextForPreview(null);
 
     try {
+      const resizedImagesPromises = images.map(async (file) => ({
+        id: crypto.randomUUID(),
+        previewUrl: await resizeImage(file, 800, 800),
+      }));
+      const resizedImages = await Promise.all(resizedImagesPromises);
+
+      setFormDataForPreview(data);
+      setImagesForPreview(resizedImages);
+
       const result = await handleGenerateReportAction(data);
+
       if (result.success && result.reportText) {
-        
-        const imageDataForStorage = await Promise.all(
-          images.map(async (file) => ({
-            id: crypto.randomUUID(),
-            dataUri: await resizeImage(file, 800, 800), // Resize image before storing
-          }))
-        );
-
-        sessionStorage.setItem('uploadedImages', JSON.stringify(imageDataForStorage));
-        sessionStorage.setItem('reportFormData', JSON.stringify(data));
-        sessionStorage.setItem('generatedReportText', JSON.stringify(result.reportText));
-        
-        window.open('/laudo', '_blank');
-
+        setReportTextForPreview(result.reportText);
         toast({
           title: "Laudo Gerado com Sucesso",
-          description: "A pré-visualização do laudo foi aberta em uma nova aba.",
+          description: "A pré-visualização foi atualizada. Clique em 'Imprimir para PDF' para salvar.",
           variant: "default",
         });
       } else {
+        const errorMessage = result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.";
+        setError(errorMessage);
         toast({
           title: "Erro ao Gerar Laudo",
-          description: result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.",
+          description: errorMessage,
           variant: "destructive",
         });
       }
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          toast({
-            title: "Erro Crítico: Imagens Muito Grandes",
-            description: "O tamanho total das imagens excede o limite do navegador. Por favor, tente com menos imagens ou imagens menores.",
-            variant: "destructive",
-          });
-      } else {
-          const errorMessage = e instanceof Error ? e.message : "Ocorreu um erro inesperado.";
-          toast({
-            title: "Erro Crítico",
-            description: errorMessage,
-            variant: "destructive",
-          });
-      }
+      const errorMessage = e instanceof Error ? e.message : "Ocorreu um erro inesperado.";
+      setError(errorMessage);
+      toast({
+        title: "Erro Crítico",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -112,9 +112,18 @@ export default function VetScribePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <AppHeader />
-      <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4">
-        <div className="max-w-4xl mx-auto">
-          <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
+      <main className="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+        <div className="lg:col-span-1 lg:h-[calc(100vh-80px)]">
+           <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
+        </div>
+        <div className="lg:col-span-1 lg:h-[calc(100vh-80px)]">
+            <ReportPreview
+                formData={formDataForPreview}
+                reportText={reportTextForPreview}
+                uploadedImages={imagesForPreview}
+                isLoading={isLoading}
+                error={error}
+            />
         </div>
       </main>
     </div>
