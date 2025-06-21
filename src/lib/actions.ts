@@ -56,7 +56,7 @@ function formatOrganMeasurements(data: ReportFormData): string | undefined {
   if (data.medidaVesiculaUrinariaCm) measurements.push(`- Vesícula Urinária: ${data.medidaVesiculaUrinariaCm} cm`);
 
   if (measurements.length === 0) return undefined;
-  return "Medidas Anatômicas (cm) Fornecidas pelo Usuário:\n" + measurements.join("\n");
+  return measurements.join("\n");
 }
 
 export async function handleGenerateReportAction(
@@ -81,7 +81,7 @@ export async function handleGenerateReportAction(
 
     const result: GenerateReportOutput = await generateReport(aiInput);
 
-    console.log('[handleGenerateReportAction] Resultado do fluxo generateReport:', JSON.stringify(result, null, 2));
+    console.log('[handleGenerateReportAction] Resultado BRUTO do fluxo generateReport:', JSON.stringify(result, null, 2));
 
     if (result && result.reportText) {
       return { success: true, reportText: result.reportText };

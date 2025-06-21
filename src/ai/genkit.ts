@@ -30,6 +30,4 @@ export const ai = genkit({
     // GEMINI_API_KEY ou GOOGLE_API_KEY no ambiente por si só.
     googleAI(apiKey ? { apiKey } : undefined) 
   ],
-  model: 'googleai/gemini-2.0-flash', 
 });
-

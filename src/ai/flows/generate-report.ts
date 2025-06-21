@@ -35,6 +35,7 @@ export async function generateReport(input: GenerateReportInput): Promise<Genera
 
 const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
   prompt: `Você é um radiologista veterinário experiente. Gere um laudo de ultrassom COMPLETO e DETALHADO em Português do Brasil.
@@ -115,7 +116,7 @@ const generateReportFlow = ai.defineFlow(
       console.log('[generateReportFlow] Output from prompt:', JSON.stringify(output, null, 2));
 
       if (!output) {
-        console.error('[generateReportFlow] Prompt returned null or undefined output.');
+        console.error('[generateReportFlow] Prompt returned null or undefined output.', {rawResponse: response});
         throw new Error('A IA não retornou um resultado estruturado. Verifique o prompt e a configuração do modelo.');
       }
       
