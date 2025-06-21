@@ -95,15 +95,6 @@ Impressões Diagnósticas / Conclusões / Observações Adicionais:
 {{else}}
 Nada mais digno de nota na data da avaliação.
 {{/if}}
-
-IMPORTANTE - FORMATO DA SAÍDA:
-Sua resposta final DEVE ser um objeto JSON válido que corresponda ao esquema de saída. Este objeto deve conter uma única chave: "reportText".
-O valor da chave "reportText" deve ser uma string contendo o laudo completo, formatado exatamente conforme o modelo acima.
-- O texto do laudo deve começar com 'Fígado:' e terminar com a última frase da conclusão/observação.
-- As informações dos 'Achados' e 'Medidas' devem ser integradas DENTRO das descrições dos órgãos, não como seções separadas.
-- Não inclua dados do paciente, veterinário responsável ou placeholders.
-- Mantenha as quebras de linha duplas (parágrafos) do modelo.
-Sua resposta deve ser apenas o objeto JSON e nada mais.
 `,
 });
 

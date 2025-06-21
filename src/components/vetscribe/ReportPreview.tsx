@@ -125,11 +125,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               </Card>
             </main>
   
-            <footer className="text-center mt-16 info-body-print">
-              <p className="font-bold">{formData.clinicName}</p>
-              <p>CRMV: {formData.vetName}</p>
-              <p>Data do Exame: {format(new Date(formData.examDate), "PPP", { locale: ptBR })}</p>
-            </footer>
+            <CardFooter className="text-center mt-16 info-body-print">
+              <div className="mx-auto">
+                <p className="font-bold">{formData.clinicName}</p>
+                <p>CRMV: {formData.vetName}</p>
+                <p>Data do Exame: {format(new Date(formData.examDate), "PPP", { locale: ptBR })}</p>
+              </div>
+            </CardFooter>
           </div>
   
           <div className="print-page-break"></div>
