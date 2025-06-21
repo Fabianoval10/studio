@@ -17,8 +17,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        headline: ['Belleza', 'sans-serif'],
-        body: ['Alegreya', 'serif'],
+        sans: ['Montserrat', 'sans-serif'],
         code: ['"Source Code Pro"', 'monospace'],
       },
       colors: {
