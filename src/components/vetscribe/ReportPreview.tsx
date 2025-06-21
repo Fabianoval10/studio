@@ -26,13 +26,14 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   return (
     <div className={className}>
       <span className="font-semibold text-foreground/80">{label}: </span>
-      <span className="font-body text-foreground">{String(value)}</span>
+      <span className="font-sans text-foreground">{String(value)}</span>
     </div>
   );
 };
 
 const renderBoldMarkdown = (text: string | null) => {
   if (!text) return null;
+  // Regex to find **bolded text**
   return (
     <React.Fragment>
       {text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
@@ -101,7 +102,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <div className="flex justify-between items-start mb-4">
           <div className="print:max-w-[55%]">
             <h1 className="text-xl font-headline font-bold text-primary">{formData.clinicName || "Nome da Clínica"}</h1>
-            <p className="text-sm font-body text-foreground/80">Veterinário(a): {formData.vetName || "Nome do Veterinário"}</p>
+            <p className="text-sm font-sans text-foreground/80">Veterinário(a): {formData.vetName || "Nome do Veterinário"}</p>
           </div>
           <div className="text-right print:max-w-[45%]">
             <h2 className="text-lg font-headline text-primary">Laudo de Ultrassonografia Veterinária</h2>
@@ -128,7 +129,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {reportText && (
           <>
             <h3 className="text-base font-headline text-primary mt-3 mb-1">Achados, Impressões e Conclusões</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 font-body">
+            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 font-sans">
               {renderBoldMarkdown(reportText)}
             </div>
           </>
@@ -137,7 +138,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         {formData.additionalNotes && (
            <>
             <h3 className="text-base font-headline text-primary mt-3 mb-1">Observações Adicionais</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 font-body">
+            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 font-sans">
               {formData.additionalNotes}
             </div>
           </>
@@ -187,7 +188,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           <CardTitle className="text-3xl font-headline text-primary flex items-center gap-2">
             <FileText className="w-8 h-8" /> Pré-visualização do Laudo
           </CardTitle>
-          <CardDescription className="font-body">
+          <CardDescription className="font-sans">
             Revise o laudo gerado abaixo. Use o botão de imprimir para salvar como PDF.
           </CardDescription>
         </CardHeader>
@@ -237,30 +238,31 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             position: relative; 
             padding-bottom: 20mm; /* Space for footer */
             font-size: 11pt;
-            font-family: 'Alegreya', serif;
+            font-family: 'Montserrat', sans-serif;
           }
            
           #printable-area h1,
           #printable-area h2,
           #printable-area h3 {
-             font-family: 'Belleza', sans-serif !important;
+             font-family: 'Montserrat', sans-serif !important;
              font-weight: 300 !important;
              font-size: 18pt !important;
              margin-top: 0.3rem !important;
              margin-bottom: 0.15rem !important;
              line-height: 1.2;
-             color: #468499; /* Primary color */
+             color: #78655B; /* Principal Brown */
           }
 
           #printable-area .text-sm,
           #printable-area .text-xs,
-          #printable-area .font-body {
+          #printable-area .font-sans {
               font-size: 11pt !important;
-              font-family: 'Alegreya', serif !important;
+              font-family: 'Montserrat', sans-serif !important;
           }
 
           #printable-area .font-headline {
-              font-family: 'Belleza', sans-serif !important;
+              font-family: 'Montserrat', sans-serif !important;
+              font-weight: 700 !important;
           }
 
           #printable-area .my-3 {

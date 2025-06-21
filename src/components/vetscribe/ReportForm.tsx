@@ -97,7 +97,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
         <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
           <FileText className="w-8 h-8" /> Criar Novo Laudo
         </CardTitle>
-        <CardDescription className="font-body">
+        <CardDescription className="font-sans">
           Preencha os detalhes abaixo para gerar um laudo de ultrassom.
         </CardDescription>
       </CardHeader>
@@ -241,7 +241,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                       {...register("findings")}
                       rows={8}
                       placeholder="Descreva todas as estruturas observadas e quaisquer anormalidades em detalhe. Ex: Fígado: Tamanho e ecogenicidade normais. Ausência de lesões focais. Baço: Levemente aumentado com nodularidade hipoecóica difusa..."
-                      className="font-body"
+                      className="font-sans"
                     />
                   </FormFieldWrapper>
                 </AccordionContent>
@@ -339,7 +339,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                 <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Observações Adicionais</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                    <FormFieldWrapper name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors} fieldType="textarea">
-                    <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações." className="font-body"/>
+                    <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações." className="font-sans"/>
                   </FormFieldWrapper>
                 </AccordionContent>
               </AccordionItem>
@@ -379,7 +379,7 @@ const ClientOnlyForm: React.FC<ReportFormProps> = (props) => {
           <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
             <FileText className="w-8 h-8" /> Carregando Formulário...
           </CardTitle>
-          <CardDescription className="font-body">
+          <CardDescription className="font-sans">
             O formulário de criação de laudo está sendo preparado.
           </CardDescription>
         </CardHeader>

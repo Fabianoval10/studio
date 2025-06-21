@@ -16,7 +16,7 @@ export function AppHeader({ className }: AppHeaderProps) {
            </div>
            <h1 className="text-2xl font-headline text-primary font-bold">VETLD</h1>
         </div>
-        <p className="font-body italic text-muted-foreground">Laudos de Ultrassom Inteligentes</p>
+        <p className="font-sans italic text-muted-foreground">Laudos de Ultrassom Inteligentes</p>
       </div>
     </header>
   );
