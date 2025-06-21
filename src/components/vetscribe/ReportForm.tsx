@@ -57,8 +57,8 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
       sex: "Desconhecido",
       ageYears: 0,
       ageMonths: 0,
-      clinicName: "Baddha Ultrassonografia",
-      vetName: "Dra Miriam Barp",
+      clinicName: "",
+      vetName: "",
       ...initialData,
       examDate: initialData?.examDate ? new Date(initialData.examDate) : new Date(),
     },
@@ -86,8 +86,8 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
   };
 
   const onFormSubmit = (data: ReportFormData) => {
-    const imageFiles = uploadedImages.map(img => img.file);
-    onSubmit(data, imageFiles);
+    const imageFiles = uploadedImages.map(img => img.file as File);
+    onSubmit(data, imageFiles.filter(f => f));
   };
   
 

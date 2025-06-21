@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pré-visualização do Laudo - Baddha',
+  title: 'Pré-visualização do Laudo - VETLD',
   description: 'Pré-visualização do laudo de ultrassonografia veterinária.',
 };
 
@@ -10,11 +10,5 @@ export default function LaudoLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="pt-BR">
-      <body>
-        {children}
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }

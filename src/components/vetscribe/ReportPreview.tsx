@@ -26,7 +26,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   return (
     <div className={className}>
       <span className="font-semibold text-foreground/80">{label}: </span>
-      <span className="text-foreground">{String(value)}</span>
+      <span className="font-body text-foreground">{String(value)}</span>
     </div>
   );
 };
@@ -98,39 +98,21 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
     return (
       <div id="printable-area" className="p-2 md:p-6 printable-content">
-        <div className="print-watermark">
-          <NextImage
-            src="/baddha-logo.png"
-            alt="Baddha Ultrassonografia Marca D'água"
-            layout="fill"
-            objectFit="contain"
-            data-ai-hint="baddha logo"
-          />
-        </div>
-
         <div className="flex justify-between items-start mb-4">
           <div className="print:max-w-[55%]">
-             <NextImage
-                src="/baddha-logo.png"
-                alt={`${formData.clinicName || 'Baddha Ultrassonografia'} Logo`}
-                width={100} 
-                height={22}
-                className="mb-1 object-contain"
-                data-ai-hint="baddha ultrasound logo"
-              />
-            <h1 className="text-xl text-primary">{formData.clinicName || "Baddha Ultrassonografia"}</h1>
-            <p className="text-xs text-foreground/80">Veterinário(a): {formData.vetName || "Dra. Míriam Barp F. da Costa"}</p>
+            <h1 className="text-xl font-headline font-bold text-primary">{formData.clinicName || "Nome da Clínica"}</h1>
+            <p className="text-sm font-body text-foreground/80">Veterinário(a): {formData.vetName || "Nome do Veterinário"}</p>
           </div>
           <div className="text-right print:max-w-[45%]">
-            <h2 className="text-lg text-primary">Laudo de Ultrassonografia Veterinária</h2>
+            <h2 className="text-lg font-headline text-primary">Laudo de Ultrassonografia Veterinária</h2>
             <DetailItem label="Data do Exame" value={format(formData.examDate, "PPP", { locale: ptBR })} />
           </div>
         </div>
 
         <Separator className="my-3" />
 
-        <h3 className="text-base text-primary mb-1">Informações do Paciente</h3>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-0 text-xs mb-3">
+        <h3 className="text-base font-headline text-primary mb-1">Informações do Paciente</h3>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-0 text-sm mb-3">
           <DetailItem label="Nome" value={formData.petName} />
           <DetailItem label="ID" value={formData.patientId} />
           <DetailItem label="Espécie" value={formData.species} />
@@ -145,8 +127,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         
         {reportText && (
           <>
-            <h3 className="text-base text-primary mt-3 mb-1">Achados, Impressões e Conclusões</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 text-sm">
+            <h3 className="text-base font-headline text-primary mt-3 mb-1">Achados, Impressões e Conclusões</h3>
+            <div className="whitespace-pre-wrap p-2 border rounded-md bg-primary/5 font-body">
               {renderBoldMarkdown(reportText)}
             </div>
           </>
@@ -154,8 +136,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
         {formData.additionalNotes && (
            <>
-            <h3 className="text-base text-primary mt-3 mb-1">Observações Adicionais</h3>
-            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 text-sm">
+            <h3 className="text-base font-headline text-primary mt-3 mb-1">Observações Adicionais</h3>
+            <div className="whitespace-pre-wrap p-2 border rounded-md bg-muted/30 font-body">
               {formData.additionalNotes}
             </div>
           </>
@@ -163,7 +145,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
         {uploadedImages.length > 0 && (
           <>
-            <h3 className="text-base text-primary mt-4 mb-1">Imagens do Exame</h3>
+            <h3 className="text-base font-headline text-primary mt-4 mb-1">Imagens do Exame</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-3 gap-2">
               {uploadedImages.map((img, index) => (
                 <div key={img.id} className="border rounded-md overflow-hidden shadow-sm break-inside-avoid p-0.5 print:border-gray-300">
@@ -202,10 +184,10 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
     <>
       <Card className="shadow-lg h-full flex flex-col">
         <CardHeader className="flex-shrink-0">
-          <CardTitle className="text-3xl text-primary flex items-center gap-2">
+          <CardTitle className="text-3xl font-headline text-primary flex items-center gap-2">
             <FileText className="w-8 h-8" /> Pré-visualização do Laudo
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-body">
             Revise o laudo gerado abaixo. Use o botão de imprimir para salvar como PDF.
           </CardDescription>
         </CardHeader>
@@ -240,11 +222,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           }
 
           #printable-area, 
-          #printable-area *,
-          .print-page-footer, 
-          .print-page-footer *,
-          .print-watermark,
-          .print-watermark * { 
+          #printable-area * {
             visibility: visible !important;
           }
           
@@ -257,29 +235,32 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             padding: 0; 
             margin: 0; 
             position: relative; 
-            padding-bottom: 20mm;
-            font-family: 'Montserrat', sans-serif;
+            padding-bottom: 20mm; /* Space for footer */
             font-size: 11pt;
-            font-weight: 400;
+            font-family: 'Alegreya', serif;
           }
            
           #printable-area h1,
           #printable-area h2,
           #printable-area h3 {
-             font-family: 'Montserrat', sans-serif;
+             font-family: 'Belleza', sans-serif !important;
              font-weight: 300 !important;
              font-size: 18pt !important;
              margin-top: 0.3rem !important;
              margin-bottom: 0.15rem !important;
              line-height: 1.2;
+             color: #468499; /* Primary color */
           }
 
-          #printable-area .text-xs {
+          #printable-area .text-sm,
+          #printable-area .text-xs,
+          #printable-area .font-body {
               font-size: 11pt !important;
+              font-family: 'Alegreya', serif !important;
           }
 
-          #printable-area .text-sm {
-              font-size: 11pt !important;
+          #printable-area .font-headline {
+              font-family: 'Belleza', sans-serif !important;
           }
 
           #printable-area .my-3 {
@@ -294,6 +275,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           }
           
           .print-page-footer {
+            visibility: visible !important;
             display: block !important; 
             position: fixed;
             bottom: 5mm; 
@@ -308,27 +290,8 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             height: auto; 
             border: none !important;
           }
-
-          .print-watermark {
-            display: block !important;
-            position: fixed !important;
-            top: 50%;
-            left: 50%;
-            width: 20cm;
-            height: 20cm;
-            transform: translate(-50%, -50%);
-            opacity: 0.05 !important; 
-            z-index: -1 !important; 
-            pointer-events: none; 
-          }
-          .print-watermark img {
-             width: 100%;
-             height: 100%;
-             object-fit: contain; 
-          }
         }
       `}</style>
     </>
   );
 }
-    
