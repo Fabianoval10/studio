@@ -90,11 +90,18 @@ export default function VetScribePage() {
       const result = await handleGenerateReportAction(data);
 
       if (result.success && result.reportText) {
-        setReportDataForPrint({
-            formData: data,
-            reportText: result.reportText,
-            uploadedImages: uploadedImagesForPreview,
-        });
+        
+        const reportFormDataWithImages = {
+          ...data,
+          examDate: data.examDate.toISOString(), 
+        };
+        sessionStorage.setItem('reportFormData', JSON.stringify(reportFormDataWithImages));
+        sessionStorage.setItem('generatedReportText', JSON.stringify(result.reportText));
+        const imagesForStorage = uploadedImagesForPreview.map(img => ({ id: img.id, dataUri: img.previewUrl }));
+        sessionStorage.setItem('uploadedImages', JSON.stringify(imagesForStorage));
+
+        window.open('/laudo', '_blank');
+
       } else {
         const errorMessage = result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.";
         toast({

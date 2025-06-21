@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pré-visualização do Laudo - VETLD',
+  title: 'Pré-visualização do Laudo - Baddha Ultrassonografia',
   description: 'Pré-visualização do laudo de ultrassonografia veterinária.',
 };
 

@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'VETLD - Laudos Veterinários',
+  title: 'Baddha Ultrassonografia - Laudos Veterinários',
   description: 'Geração de Laudos de Ultrassom Veterinário com IA',
 };
 

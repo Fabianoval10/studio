@@ -14,7 +14,7 @@ export function AppHeader({ className }: AppHeaderProps) {
            <div className="bg-primary text-primary-foreground p-2 rounded-md">
              <PawPrint className="w-6 h-6" />
            </div>
-           <h1 className="text-2xl font-headline text-primary font-bold">VETLD</h1>
+           <h1 className="text-2xl font-headline text-primary font-bold">Baddha Ultrassonografia</h1>
         </div>
         <p className="font-sans italic text-muted-foreground">Laudos de Ultrassom Inteligentes</p>
       </div>

@@ -115,7 +115,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <div className="print-page" id="stylized-cover-page">
             <div className="flex-grow w-full bg-accent flex flex-col justify-center items-center p-8 text-primary-foreground relative">
                 <div className="text-center space-y-4">
-                    <p className="font-sans tracking-widest uppercase text-lg">VETLD ultrassonografia com essência</p>
+                    <p className="font-sans tracking-widest uppercase text-lg">Baddha ultrassonografia com essência</p>
                     <div className="flex items-center justify-center gap-4">
                         <DogIcon className="w-24 h-24 stroke-current" />
                         <h1 className="font-headline font-bold text-5xl leading-tight">RELATÓRIO<br/>ULTRASSONO-<br/>GRÁFICO</h1>
@@ -126,7 +126,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
                 <div className="flex items-center gap-2">
                     <PawPrint className="h-8 w-8 text-primary" />
                     <div>
-                        <p className="font-bold text-primary">VETLD</p>
+                        <p className="font-bold text-primary">Baddha</p>
                         <p>ULTRASSONOGRAFIA</p>
                     </div>
                 </div>
@@ -151,7 +151,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             <div className="flex items-center gap-3 bg-primary text-primary-foreground p-3 rounded-full mb-4">
               <PawPrint className="w-10 h-10" />
             </div>
-            <h1 className="text-3xl font-headline text-primary font-bold">VETLD</h1>
+            <h1 className="text-3xl font-headline text-primary font-bold">Baddha Ultrassonografia</h1>
             <p className="text-sm text-muted-foreground">Laudos de Ultrassom Inteligentes</p>
           </header>
 
@@ -190,7 +190,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         <div className="print-page" id="report-body-page">
           <header className="print-report-header">
             <div className="flex justify-between items-center">
-              <span className="font-bold text-primary">VETLD</span>
+              <span className="font-bold text-primary">Baddha Ultrassonografia</span>
               <span>Paciente: {formData.petName}</span>
             </div>
           </header>
@@ -226,7 +226,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             <div className="print-page" id="images-page">
               <header className="print-report-header">
                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-primary">VETLD</span>
+                    <span className="font-bold text-primary">Baddha Ultrassonografia</span>
                     <span>Imagens do Exame - Paciente: {formData.petName}</span>
                  </div>
               </header>
