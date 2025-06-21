@@ -46,6 +46,6 @@ export type ReportFormData = z.infer<typeof reportFormSchema>;
 
 export interface UploadedImage {
   id: string;
-  file: File;
-  previewUrl: string;
+  file?: File; // File is optional now
+  previewUrl: string; // This can be a blob URL or a data URI
 }

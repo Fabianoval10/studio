@@ -2,65 +2,61 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from 'react';
-import type { ReportFormData, UploadedImage } from "@/types";
-import ClientOnlyReportForm from "@/components/vetscribe/ReportForm"; // Use the client-only wrapper
-import { ReportPreview } from "@/components/vetscribe/ReportPreview";
+import type { ReportFormData } from "@/types";
+import ClientOnlyReportForm from "@/components/vetscribe/ReportForm";
 import { AppHeader } from "@/components/vetscribe/AppHeader";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
-// Função para converter File para Data URI foi removida pois não é mais necessária aqui para extração.
-// Apenas para preview, que já é feito no ReportForm com URL.createObjectURL
+const fileToDataUri = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
 
 export default function VetScribePage() {
-  const [currentFormData, setCurrentFormData] = useState<ReportFormData | null>(null);
-  const [generatedReportText, setGeneratedReportText] = useState<string | null>(null);
-  const [currentUploadedImages, setCurrentUploadedImages] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [printTrigger, setPrintTrigger] = useState(0); 
   const { toast } = useToast();
 
   const handleFormSubmit = useCallback(async (data: ReportFormData, images: File[]) => {
     setIsLoading(true);
-    setError(null);
-    setGeneratedReportText(null);
 
-    const uploadedImageObjects: UploadedImage[] = images.map(file => ({
-      id: crypto.randomUUID(),
-      file,
-      previewUrl: URL.createObjectURL(file)
-    }));
-    setCurrentUploadedImages(prevImages => {
-      prevImages.forEach(img => URL.revokeObjectURL(img.previewUrl));
-      return uploadedImageObjects;
-    });
-    setCurrentFormData(data);
-
-    // A conversão de imagens para Data URIs e passagem para a action foi removida.
     try {
-      const result = await handleGenerateReportAction(data); // Chamada simplificada
+      const result = await handleGenerateReportAction(data);
       if (result.success && result.reportText) {
-        setGeneratedReportText(result.reportText);
+        
+        const imageDataForStorage = await Promise.all(
+          images.map(async (file) => ({
+            id: crypto.randomUUID(),
+            dataUri: await fileToDataUri(file),
+          }))
+        );
+
+        sessionStorage.setItem('uploadedImages', JSON.stringify(imageDataForStorage));
+        sessionStorage.setItem('reportFormData', JSON.stringify(data));
+        sessionStorage.setItem('generatedReportText', JSON.stringify(result.reportText));
+        
+        window.open('/laudo', '_blank');
+
         toast({
-          title: "Laudo Gerado",
-          description: "A IA gerou o rascunho do laudo com sucesso. A caixa de diálogo de impressão será aberta.",
+          title: "Laudo Gerado com Sucesso",
+          description: "A pré-visualização do laudo foi aberta em uma nova aba.",
           variant: "default",
         });
-        setPrintTrigger(prev => prev + 1); 
       } else {
-        setError(result.error || "Falha ao gerar o laudo.");
         toast({
-          title: "Erro",
+          title: "Erro ao Gerar Laudo",
           description: result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.",
           variant: "destructive",
         });
       }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : "Ocorreu um erro inesperado.";
-      setError(errorMessage);
       toast({
-        title: "Erro",
+        title: "Erro Crítico",
         description: errorMessage,
         variant: "destructive",
       });
@@ -69,80 +65,14 @@ export default function VetScribePage() {
     }
   }, [toast]);
 
-  useEffect(() => {
-    return () => {
-      currentUploadedImages.forEach(img => URL.revokeObjectURL(img.previewUrl));
-    };
-  }, [currentUploadedImages]);
-
-  useEffect(() => {
-    if (printTrigger > 0 && generatedReportText && !isLoading) {
-      console.log('[VetScribePage] Conditions met for printing. printTrigger:', printTrigger, 'generatedReportText exists:', !!generatedReportText, 'isLoading:', isLoading);
-      const timer = setTimeout(() => {
-        console.log('[VetScribePage] Calling window.print() now.');
-        window.print();
-      }, 500);
-      return () => {
-        console.log('[VetScribePage] Clearing print timer.');
-        clearTimeout(timer);
-      }
-    } else {
-       if (printTrigger > 0) {
-         console.log('[VetScribePage] Conditions NOT met for printing. printTrigger:', printTrigger, 'generatedReportText exists:', !!generatedReportText, 'isLoading:', isLoading);
-       }
-    }
-  }, [printTrigger, generatedReportText, isLoading]);
-
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <AppHeader className="no-print" />
+      <AppHeader />
       <main className="flex-grow container mx-auto px-4 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start h-[calc(100vh-85px)] lg:h-[calc(100vh-100px)]">
-          
-          <div className="lg:h-full no-print">
-             <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
-          </div>
-
-          
-          <div className="lg:h-full"> 
-            <ReportPreview
-              formData={currentFormData}
-              reportText={generatedReportText}
-              uploadedImages={currentUploadedImages}
-              isLoading={isLoading}
-              error={error}
-            />
-          </div>
+        <div className="max-w-4xl mx-auto">
+          <ClientOnlyReportForm onSubmit={handleFormSubmit} isLoading={isLoading} />
         </div>
       </main>
-      
-      <style jsx global>{`
-        @media print {
-          .no-print {
-            display: none !important;
-          }
-          body {
-            background-color: #fff !important; 
-            -webkit-print-color-adjust: exact !important; 
-            color-adjust: exact !important; 
-          }
-          main { 
-            padding: 0 !important;
-            margin: 0 !important;
-          }
-          .lg\\:sticky { 
-            position: static !important;
-          }
-           
-          .overflow-hidden {
-            overflow: visible !important;
-          }
-           .overflow-y-auto {
-            overflow-y: visible !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
-    
