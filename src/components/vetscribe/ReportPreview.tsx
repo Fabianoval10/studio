@@ -3,7 +3,7 @@
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Printer, AlertTriangle, Info, FileText, Mail, PawPrint } from "lucide-react";
 import NextImage from "next/image";
@@ -43,6 +43,20 @@ const renderBoldMarkdown = (text: string | null) => {
     </React.Fragment>
   );
 };
+
+const DogIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M48.6,85.2c-1-2.1-1.8-4.3-2.3-6.6c-0.4-1.8-0.8-3.7-1.1-5.5c-0.2-1.3-0.4-2.6-0.5-3.9c0.1-2.4,0.7-4.7,1.8-6.8 c0.6-1.1,1.3-2.1,2.1-3.1c-2.1-0.2-4.2-0.4-6.3-0.5c-2-0.1-4-0.1-6,0c-2.7,0.1-5.4,0.5-8,1.2c-1,0.3-2,0.6-3,1 c-1.5,0.6-3,1.3-4.3,2.3c-0.8,0.6-1.5,1.3-2.1,2.1c-1.3,1.6-2,3.5-2.1,5.5c0,1.3,0.2,2.6,0.6,3.9c0.4,1.3,1,2.6,1.7,3.8 c-2.4-0.5-4.7-1.3-6.8-2.6c-0.7-0.4-1.4-0.9-2-1.4c-2.3-2-3-5.2-2.1-7.9c0.5-1.5,1.4-2.8,2.6-3.9c0.6-0.6,1.3-1.1,2-1.6 c4.3-2.9,9.4-4.3,14.6-4.5c2.6-0.1,5.2-0.1,7.8,0c3,0.1,6,0.5,8.9,1.2c2.9,0.7,5.7,1.8,8.2,3.3c-3,3.6-5.2,7.8-6.3,12.3 c-0.5,2.1-0.6,4.2-0.4,6.3c0.1,1.1,0.2,2.2,0.4,3.3c-2.2-0.6-4.3-1.4-6.3-2.6c-0.9-0.5-1.8-1.1-2.6-1.8c-1.2-1-2.1-2.2-2.8-3.5 c-0.7-1.4-1-2.9-1-4.4c0-1.1,0.1-2.2,0.4-3.3c0.3-1,0.7-2,1.2-2.9c-1-0.1-2-0.1-3,0c-3.1,0.3-6.2,1.1-9,2.4 c-1.2,0.6-2.3,1.3-3.3,2.1c-2,1.7-3.1,4.1-3,6.6c0,1.4,0.3,2.8,0.9,4.1c0.6,1.3,1.5,2.5,2.5,3.5c1.1,1,2.3,1.9,3.6,2.6 c2.7,1.4,5.6,2.3,8.6,2.6c1.5,0.2,3,0.2,4.5,0.2c2.8,0,5.6-0.4,8.2-1.2c2.7-0.9,5.2-2.2,7.4-4c-0.6-3.2-0.7-6.4-0.4-9.6 c0.2-2.1,0.7-4.1,1.5-6.1c0.7-1.7,1.6-3.3,2.8-4.8c-1.6-0.9-3.3-1.6-5-2.1c-3.5-1.1-7.2-1.6-10.9-1.5c-3.1,0.1-6.2,0.5-9.2,1.4 c-2.9,0.8-5.7,2.1-8.2,3.7c-0.7,0.4-1.3,0.9-1.9,1.4c-1.2,1.1-2.1,2.4-2.7,3.8c-0.6,1.5-0.9,3.1-0.8,4.7c0.1,2.5,1,4.8,2.6,6.7 c1.1,1.3,2.5,2.4,4,3.2c3.1,1.6,6.4,2.5,9.8,2.7c3,0.2,6-0.1,8.9-0.8c3-0.8,5.8-2,8.3-3.7c-0.2,0.8-0.3,1.6-0.3,2.4 c0,1.2,0.2,2.4,0.5,3.6c0.4,1.1,0.8,2.2,1.4,3.2c0.6,1,1.3,2,2.1,2.9c1,1.1,2.1,2.1,3.2,3c0.4,0.3,0.8,0.6,1.2,0.9 c-1.5,2.1-3.5,3.8-5.8,5.1c-2.7,1.5-5.6,2.5-8.6,3c-3,0.5-6.1,0.5-9.1,0.1c-3-0.4-5.9-1.3-8.6-2.6c-2.7-1.3-5.2-3.1-7.3-5.2 c-1-1-1.9-2.1-2.7-3.3c-1.1-1.6-1.8-3.4-2.1-5.3c-0.3-2.1,0-4.2,0.7-6.2c0.8-2,2-3.9,3.6-5.4c1.1-1,2.3-1.8,3.6-2.5 c3.2-1.6,6.6-2.6,10.1-3c3.4-0.4,6.8-0.4,10.2,0.1c3.5,0.4,6.9,1.3,10.1,2.6c3.2,1.3,6.2,3.1,8.8,5.2c-1.3,2.5-2,5.2-2.1,7.9 c-0.1,2.1,0.3,4.2,1.1,6.2c0.7,1.8,1.8,3.5,3.2,4.9c0.9,0.9,1.9,1.7,2.9,2.4c-0.1,0.2-0.2,0.3-0.2,0.5c-0.5,0.7-1,1.4-1.5,2.1 c-1.1,1.3-2.3,2.5-3.6,3.6c-2.7,2.1-5.8,3.6-9,4.4c-3.2,0.8-6.5,1-9.8,0.6c-3.2-0.4-6.3-1.4-9.2-2.9c-2.8-1.5-5.4-3.5-7.6-5.8" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
+
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+)
 
 export function ReportPreview({ formData, reportText, uploadedImages, isLoading, error }: ReportPreviewProps) {
   const handlePrint = () => {
@@ -97,7 +111,41 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
     return (
       <div id="printable-area" className="printable-content bg-gray-100 p-4">
-        {/* --- PAGE 1: COVER --- */}
+        {/* --- PAGE 1: STYLIZED COVER --- */}
+        <div className="print-page" id="stylized-cover-page">
+            <div className="flex-grow w-full bg-accent flex flex-col justify-center items-center p-8 text-primary-foreground relative">
+                <div className="text-center space-y-4">
+                    <p className="font-sans tracking-widest uppercase text-lg">VETLD ultrassonografia com essência</p>
+                    <div className="flex items-center justify-center gap-4">
+                        <DogIcon className="w-24 h-24 stroke-current" />
+                        <h1 className="font-headline font-bold text-5xl leading-tight">RELATÓRIO<br/>ULTRASSONO-<br/>GRÁFICO</h1>
+                    </div>
+                </div>
+            </div>
+            <div className="bg-white w-full p-4 flex justify-between items-center text-xs text-muted-foreground border-t">
+                <div className="flex items-center gap-2">
+                    <PawPrint className="h-8 w-8 text-primary" />
+                    <div>
+                        <p className="font-bold text-primary">VETLD</p>
+                        <p>ULTRASSONOGRAFIA</p>
+                    </div>
+                </div>
+                <div className="text-right space-y-1">
+                    <div className="flex items-center justify-end gap-2">
+                        <Mail className="w-4 h-4"/>
+                        <span>baddhaimaginologia@gmail.com</span>
+                    </div>
+                    <div className="flex items-center justify-end gap-2">
+                        <InstagramIcon className="w-4 h-4"/>
+                        <span>baddha_ultrassom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div className="print-page-break"></div>
+        
+        {/* --- PAGE 2: INFO --- */}
         <div className="print-page" id="cover-page">
           <header className="flex justify-between items-center text-center flex-col mb-16">
             <div className="flex items-center gap-3 bg-primary text-primary-foreground p-3 rounded-full mb-4">
@@ -138,7 +186,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
 
         <div className="print-page-break"></div>
 
-        {/* --- PAGE 2: REPORT BODY --- */}
+        {/* --- PAGE 3: REPORT BODY --- */}
         <div className="print-page" id="report-body-page">
           <header className="print-report-header">
             <div className="flex justify-between items-center">
@@ -171,7 +219,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           </footer>
         </div>
 
-        {/* --- PAGE 3: IMAGES --- */}
+        {/* --- PAGE 4: IMAGES --- */}
         {uploadedImages.length > 0 && (
           <>
             <div className="print-page-break"></div>
@@ -249,6 +297,11 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
           box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
           min-height: 1123px; /* A4 height in pixels for screen representation */
         }
+        #stylized-cover-page {
+          display: flex;
+          flex-direction: column;
+          padding: 0;
+        }
         .print-page-break {
           display: none;
         }
@@ -259,7 +312,7 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
         @media print {
           @page {
             size: A4;
-            margin: 1cm;
+            margin: 0;
           }
 
           body, html {
@@ -311,24 +364,47 @@ export function ReportPreview({ formData, reportText, uploadedImages, isLoading,
             flex-direction: column;
             page-break-inside: avoid !important;
           }
+          
+          #stylized-cover-page {
+             background-color: white !important;
+          }
+
+          #stylized-cover-page > .bg-accent {
+             background-color: hsl(var(--accent)) !important;
+             color: hsl(var(--primary-foreground)) !important;
+          }
+           #stylized-cover-page > .bg-accent * {
+             color: hsl(var(--primary-foreground)) !important;
+             stroke: hsl(var(--primary-foreground)) !important;
+           }
+
+          #stylized-cover-page > .bg-white {
+             background-color: white !important;
+          }
 
           #cover-page {
              justify-content: space-between;
              text-align: center;
-             padding: 2cm 0;
+             padding: 2cm !important;
           }
           
           .report-main-content {
             flex-grow: 1;
+             padding: 2cm !important;
           }
 
           .print-report-footer {
             display: block !important;
             margin-top: auto; /* Push to bottom */
-            padding-top: 1rem;
+            padding-bottom: 1cm;
             width: 100%;
             text-align: center;
           }
+          
+           .print-report-header {
+             display: flex !important;
+             padding: 1cm 2cm 0 2cm !important;
+           }
 
           /* --- FONT STYLES --- */
           .cover-title-print, .report-title-print, .info-title-print {
