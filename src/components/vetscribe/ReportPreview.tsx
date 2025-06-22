@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -252,4 +251,3 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-
