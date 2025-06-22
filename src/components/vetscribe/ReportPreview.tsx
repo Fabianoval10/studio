@@ -3,7 +3,6 @@
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import NextImage from "next/image";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 
@@ -25,16 +24,17 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
 
 const renderBoldMarkdown = (text: string | null) => {
   if (!text) return null;
-  return (
-    <React.Fragment>
-      {text.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+  // This regex handles paragraphs and bolding correctly.
+  return text.split('\n').map((paragraph, pIndex) => (
+    <p key={pIndex} style={{ minHeight: '1.2em' /* ensure empty lines create space */ }}>
+      {paragraph.split(/(\*\*.*?\*\*)/g).map((part, index) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           return <b key={index}>{part.slice(2, -2)}</b>;
         }
         return part;
       })}
-    </React.Fragment>
-  );
+    </p>
+  ));
 };
 
 
@@ -52,10 +52,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           </div>
           
           {/* --- PAGE 2: INFO (with letterhead) --- */}
-          <div className="print-page">
-            <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
+          <div className="print-page with-background">
+            <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background-image" />
             <main className="report-main-content">
-              <h3 className="report-title-print text-center">INFORMAÇÕES DO PACIENTE E DO EXAME</h3>
+              {/* The title "INFORMAÇÕES DO PACIENTE E DO EXAME" is part of the background image */}
               <div className="info-grid-print">
                 <div className="info-section-print">
                   <h4 className="info-subtitle-print">Paciente</h4>
@@ -72,7 +72,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                   <DetailItem label="Clínica" value={formData.clinicName} />
                   <DetailItem label="M.V. Resp." value={formData.vetName} />
                   <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
-                  <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "PPP", { locale: ptBR })} />
+                  <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
                 </div>
               </div>
             </main>
@@ -80,14 +80,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
   
           {/* --- PAGE 3: REPORT BODY --- */}
           {reportText && (
-            <div className="print-page">
-                <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
+            <div className="print-page with-background">
+                <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background-image" />
                 <main className="report-main-content">
-                    {/* The title is in the background image, so it's removed from here. */}
+                    {/* The title "LAUDO DESCRITIVO" is part of the background image */}
                     <div className="report-date-print">
-                      {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                      {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
                     </div>
-                    <div className="whitespace-pre-wrap font-sans report-text-block">
+                    <div className="report-text-block">
                         {renderBoldMarkdown(reportText)}
                     </div>
                 </main>
@@ -96,18 +96,16 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
   
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
-            <div className="print-page">
-              <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
+            <div className="print-page with-background">
+              <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background-image" />
               <main className="report-main-content">
-                  <h3 className="report-title-print">IMAGENS DO EXAME</h3>
+                  {/* The title "IMAGENS DO EXAME" is part of the background image */}
                   <div className="print-image-grid">
                     {uploadedImages.map((img, index) => (
                       <div key={img.id} className="print-image-item">
-                        <NextImage
+                        <img
                           src={img.previewUrl}
                           alt={`Imagem do exame ${index + 1}`}
-                          width={300} 
-                          height={225}
                           className="w-full h-auto rounded-md"
                           data-ai-hint="ultrasound medical"
                         />
@@ -137,8 +135,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             html, body {
               margin: 0;
               padding: 0;
-              height: 100%;
               width: 100%;
+              height: 100%;
               background-color: white !important;
               -webkit-print-color-adjust: exact !important;
               color-adjust: exact !important;
@@ -155,31 +153,23 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .print-page {
               page-break-after: always;
-              height: 100%;
-              width: 100%;
               position: relative;
+              width: 210mm;
+              height: 297mm;
               overflow: hidden;
-              background: white;
             }
 
             #printable-area > .print-page:last-child {
                 page-break-after: auto;
             }
-
-            .print-fill-image, .print-background {
+            
+            .print-fill-image, .print-background-image {
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                object-fit: fill; /* Stretch to fill the A4 page */
-            }
-
-            .print-fill-image {
-              z-index: 2;
-            }
-
-            .print-background {
+                object-fit: cover;
                 z-index: 1;
             }
 
@@ -187,21 +177,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-main-content {
               position: relative;
               z-index: 2;
-              padding: 5.5cm 2.5cm 2.5cm 2.5cm;
+              /* Adjusted padding: Top, Right, Bottom, Left */
+              padding: 6.0cm 2cm 2.5cm 2.5cm;
               height: 100%;
               box-sizing: border-box;
-            }
-            .report-title-print {
               font-family: 'Montserrat', sans-serif;
-              font-weight: 300;
-              font-size: 16pt;
-              color: hsl(var(--primary));
-              margin-bottom: 2rem;
-              padding-bottom: 0.5rem;
-              border-bottom: 1px solid hsl(var(--border));
-            }
-            .report-title-print.text-center {
-              text-align: center;
             }
             
             .report-date-print {
@@ -213,21 +193,27 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 padding-right: 0.2cm;
             }
 
-            .info-body-print, .info-body-print *, .report-text-block, .report-text-block *, .info-grid-print * {
+            .report-text-block, .info-grid-print {
               font-family: 'Montserrat', sans-serif;
               font-size: 11pt;
               line-height: 1.6;
-              color: black;
+              color: #333;
             }
+
+            .report-text-block p {
+                margin: 0 0 0.5em 0;
+            }
+
             .report-text-block b, .info-grid-print b {
                font-weight: 700;
+               color: black;
             }
             
             /* --- INFO PAGE GRID --- */
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
-              gap: 2rem;
+              gap: 2.5rem;
             }
             .info-subtitle-print {
               font-weight: 700;
@@ -246,7 +232,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(2, 1fr);
-              gap: 0.5cm;
+              gap: 0.8cm;
               margin-top: 1rem;
             }
             .print-image-item {
@@ -260,6 +246,4 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-    
-
     
