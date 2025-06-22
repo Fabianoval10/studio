@@ -1,7 +1,6 @@
 
 "use client";
 
-import { ReportForm } from '@/components/vetscribe/ReportForm';
 import { AppHeader } from '@/components/vetscribe/AppHeader';
 import { ReportPreview } from '@/components/vetscribe/ReportPreview';
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -21,10 +20,9 @@ export default function Home() {
 
   useEffect(() => {
     if (reportDataForPrint) {
-      // Delay printing slightly to allow state to update and component to re-render
       const timer = setTimeout(() => {
         window.print();
-        setReportDataForPrint(null); // Reset after printing
+        setReportDataForPrint(null); 
       }, 500);
       return () => clearTimeout(timer);
     }
@@ -36,13 +34,12 @@ export default function Home() {
     setReportDataForPrint(null);
     
     try {
-      // Convert images to data URIs for preview
       const imagePromises = images.map(file => {
         return new Promise<UploadedImage>((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = (event) => {
             if (!event.target?.result) {
-              return reject(new Error("FileReader did not return a result."));
+              return reject(new Error("FileReader não retornou resultado."));
             }
             resolve({
               id: crypto.randomUUID(),
@@ -65,19 +62,19 @@ export default function Home() {
           uploadedImages: uploadedImagesForPreview,
         });
       } else {
-        const errorMessage = result.error || "Failed to generate report. Please try again.";
+        const errorMessage = result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.";
         toast({
-          title: "Error Generating Report",
+          title: "Erro ao Gerar Laudo",
           description: errorMessage,
           variant: "destructive",
         });
       }
     } catch (e: any) {
         const errorMessage = e.message.includes('quota') 
-            ? "Images are too large or too many. Try uploading fewer or smaller images."
-            : (e instanceof Error ? e.message : "An unexpected error occurred.");
+            ? "As imagens são muito grandes ou numerosas. Tente carregar menos imagens ou menores."
+            : (e instanceof Error ? e.message : "Ocorreu um erro inesperado.");
         toast({
-            title: "Critical Error",
+            title: "Erro Crítico",
             description: errorMessage,
             variant: "destructive",
         });
@@ -95,7 +92,6 @@ export default function Home() {
         </main>
       </div>
 
-      {/* This component will only be rendered when we have data for printing */}
       {reportDataForPrint && (
         <div className="print-container">
            <ReportPreview

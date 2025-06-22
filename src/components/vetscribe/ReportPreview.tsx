@@ -17,7 +17,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   return (
     <div className={className}>
       <span className="font-semibold text-foreground/80">{label}: </span> 
-      <span className="font-body text-foreground">{String(value)}</span>
+      <span className="text-foreground">{String(value)}</span>
     </div>
   );
 };
@@ -29,16 +29,21 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const renderBoldMarkdown = (text: string | null) => {
       if (!text) return null;
-      return text.split('\n').map((paragraph, pIndex) => (
-        <p key={pIndex} style={{ minHeight: '1.2em' }} className="font-body">
-          {paragraph.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+      // Replace newline characters with <br /> tags and handle bold markdown
+      const parts = text.split(/(\*\*.*?\*\*|\n)/g);
+      return (
+        <p>
+          {parts.map((part, index) => {
+            if (part === '\n') {
+              return <br key={index} />;
+            }
             if (part.startsWith('**') && part.endsWith('**')) {
               return <b key={index}>{part.slice(2, -2)}</b>;
             }
             return part;
           })}
         </p>
-      ));
+      );
     };
 
     return (
@@ -49,52 +54,62 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
              <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" />
           </div>
           
-          {/* This wrapper contains all content that should have the letterhead background */}
-          <div className="print-content-section">
-            <div className="info-grid-print">
-              <div className="info-section-print">
-                <h4 className="info-subtitle-print">Paciente</h4>
-                <DetailItem label="Tutor" value={formData.ownerName} />
-                <DetailItem label="Paciente" value={formData.petName} />
-                <DetailItem label="ID" value={formData.patientId} />
-                <DetailItem label="Espécie" value={formData.species} />
-                <DetailItem label="Raça" value={formData.breed} />
-                <DetailItem label="Sexo" value={formData.sex} />
-                <DetailItem label="Idade" value={fullAge} />
-              </div>
-              <div className="info-section-print">
-                <h4 className="info-subtitle-print">Exame</h4>
-                <DetailItem label="Clínica" value={formData.clinicName} />
-                <DetailItem label="M.V. Resp." value={formData.vetName} />
-                <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
-                <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
-              </div>
+          <div className="print-content-wrapper">
+            {/* Page 2: Patient Info */}
+            <div className="print-page with-background">
+              <main>
+                <div className="info-grid-print">
+                  <div className="info-section-print">
+                    <h4 className="info-subtitle-print">Paciente</h4>
+                    <DetailItem label="Tutor" value={formData.ownerName} />
+                    <DetailItem label="Paciente" value={formData.petName} />
+                    <DetailItem label="ID" value={formData.patientId} />
+                    <DetailItem label="Espécie" value={formData.species} />
+                    <DetailItem label="Raça" value={formData.breed} />
+                    <DetailItem label="Sexo" value={formData.sex} />
+                    <DetailItem label="Idade" value={fullAge} />
+                  </div>
+                  <div className="info-section-print">
+                    <h4 className="info-subtitle-print">Exame</h4>
+                    <DetailItem label="Clínica" value={formData.clinicName} />
+                    <DetailItem label="M.V. Resp." value={formData.vetName} />
+                    <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
+                    <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
+                  </div>
+                </div>
+              </main>
             </div>
 
+            {/* Page 3: Report Text */}
             {reportText && (
-              <div className="report-text-container">
+              <div className="print-page with-background">
+                <main>
                   <div className="report-date-print">
                     {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
                   </div>
                   <div className="report-text-block">
                       {renderBoldMarkdown(reportText)}
                   </div>
+                </main>
               </div>
             )}
     
+            {/* Page 4: Images */}
             {uploadedImages.length > 0 && (
-               <div className="print-image-container">
-                <div className="print-image-grid">
-                  {uploadedImages.map((img, index) => (
-                    <div key={img.id} className="print-image-item">
-                      <img
-                        src={img.previewUrl}
-                        alt={`Imagem do exame ${index + 1}`}
-                        data-ai-hint="ultrasound medical"
-                      />
-                    </div>
-                  ))}
-                </div>
+               <div className="print-page with-background">
+                 <main>
+                  <div className="print-image-grid">
+                    {uploadedImages.map((img, index) => (
+                      <div key={img.id} className="print-image-item">
+                        <img
+                          src={img.previewUrl}
+                          alt={`Imagem do exame ${index + 1}`}
+                          data-ai-hint="ultrasound medical"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                 </main>
               </div>
             )}
           </div>
@@ -134,32 +149,40 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               height: 297mm;
               overflow: hidden;
               position: relative;
+              page-break-after: always;
             }
+            .print-page:last-child {
+              page-break-after: auto;
+            }
+
             .print-fill-image {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-            }
-            .print-cover-page { page-break-after: always; }
-            .print-final-page { page-break-before: always; }
-            
-            body {
-              background-image: url('/timbrado.jpg') !important;
-              background-size: 210mm 297mm !important;
-              background-repeat: repeat-y !important;
-            }
-            .print-cover-page, .print-final-page {
-              background-color: white !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
             }
             
-            .print-content-section {
+            .with-background::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-image: url('/timbrado.jpg');
+              background-size: cover;
+              z-index: 1;
+            }
+
+            .print-page > main {
+              position: relative;
+              z-index: 2;
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               box-sizing: border-box;
-              width: 100%;
-              font-family: 'Alegreya', serif;
-              color: #333;
-              page-break-before: always;
-              page-break-after: always;
+              height: 100%;
             }
 
             .info-grid-print {
@@ -167,10 +190,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
               page-break-after: avoid;
-              margin-bottom: 2rem;
             }
             .info-subtitle-print {
-              font-family: 'Belleza', sans-serif;
               font-weight: 700;
               font-size: 12pt;
               color: hsl(var(--primary));
@@ -180,13 +201,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             .info-section-print > div {
               margin-bottom: 0.5rem;
-              font-family: 'Alegreya', serif;
-            }
-            .report-text-container {
-              page-break-before: always;
             }
             .report-date-print {
-                font-family: 'Belleza', sans-serif;
                 font-size: 10pt;
                 color: #4a4a4a;
                 text-align: right;
@@ -194,21 +210,17 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 padding-right: 0.2cm;
             }
             .report-text-block {
-              font-family: 'Alegreya', serif;
               font-size: 11pt;
               line-height: 1.6;
             }
             .report-text-block p {
-                margin: 0 0 0.5em 0;
+                margin: 0;
             }
             .report-text-block b, .info-grid-print b {
                font-weight: 700;
                color: black;
             }
 
-            .print-image-container {
-              page-break-before: always;
-            }
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(2, 1fr);

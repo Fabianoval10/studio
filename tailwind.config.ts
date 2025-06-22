@@ -16,12 +16,6 @@ export default {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ['"Be Vietnam Pro"', 'sans-serif'],
-        headline: ['Belleza', 'sans-serif'],
-        body: ['Alegreya', 'serif'],
-        code: ['"Source Code Pro"', 'monospace'],
-      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

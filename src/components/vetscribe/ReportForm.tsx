@@ -94,10 +94,10 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
   return (
     <Card className="shadow-lg flex flex-col h-full">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
+        <CardTitle className="text-3xl text-primary flex items-center gap-2">
           <FileText className="w-8 h-8" /> Criar Novo Laudo
         </CardTitle>
-        <CardDescription className="font-sans">
+        <CardDescription>
           Preencha os detalhes abaixo para gerar um laudo de ultrassom.
         </CardDescription>
       </CardHeader>
@@ -106,7 +106,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
           <ScrollArea className="flex-grow pr-4 report-form-scroll-area">
             <Accordion type="multiple" defaultValue={["clinic-info","pet-info","exam-info", "findings-generation"]} className="w-full">
               <AccordionItem value="clinic-info">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Informações da Clínica</AccordionTrigger>
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Informações da Clínica</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                   <FormFieldWrapper name="clinicName" label="Nome da Clínica" errors={errors}>
                     <Input id="clinicName" {...register("clinicName")} />
@@ -118,7 +118,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
               </AccordionItem>
 
               <AccordionItem value="pet-info">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Informações do Pet</AccordionTrigger>
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Informações do Pet</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormFieldWrapper name="petName" label="Nome do Pet" errors={errors}>
@@ -167,7 +167,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
               </AccordionItem>
 
               <AccordionItem value="exam-info">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Informações do Exame</AccordionTrigger>
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Informações do Exame</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormFieldWrapper name="referringVet" label="Veterinário Solicitante (Opcional)" errors={errors}>
@@ -206,7 +206,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
               </AccordionItem>
 
               <AccordionItem value="exam-images">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Imagens do Exame</AccordionTrigger>
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Imagens do Exame</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                   <FormFieldWrapper name="findings" label="Carregar Imagens do Exame (Opcional)" errors={errors} fieldType="images">
                     <Input id="imageUpload" type="file" accept="image/*" multiple onChange={handleImageUpload} className="file:text-primary file:font-medium" />
@@ -233,7 +233,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
               </AccordionItem>
 
               <AccordionItem value="findings-generation">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Achados & Geração de Laudo</AccordionTrigger>
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Achados & Geração de Laudo</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                   <FormFieldWrapper name="findings" label="Achados Estruturados" errors={errors} fieldType="textarea">
                     <Textarea
@@ -241,14 +241,13 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                       {...register("findings")}
                       rows={8}
                       placeholder="Descreva todas as estruturas observadas e quaisquer anormalidades em detalhe. Ex: Fígado: Tamanho e ecogenicidade normais. Ausência de lesões focais. Baço: Levemente aumentado com nodularidade hipoecóica difusa..."
-                      className="font-sans"
                     />
                   </FormFieldWrapper>
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="anatomical-measurements">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline flex items-center gap-2">
+                <AccordionTrigger className="text-xl text-primary hover:no-underline flex items-center gap-2">
                   <Ruler className="w-5 h-5" /> Medidas Anatômicas (cm)
                 </AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-6">
@@ -274,7 +273,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   </div>
 
                   <div>
-                    <h4 className="text-md font-headline text-primary/80 mb-2">Alças Intestinais (cm)</h4>
+                    <h4 className="text-md text-primary/80 mb-2">Alças Intestinais (cm)</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3 pl-2 border-l-2 border-primary/20">
                       <FormFieldWrapper name="medidaDuodenoCm" label="Duodeno" errors={errors}>
                         <Input id="medidaDuodenoCm" {...register("medidaDuodenoCm")} placeholder="Ex: 0.18"/>
@@ -292,7 +291,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   </div>
                   
                   <div>
-                    <h4 className="text-md font-headline text-primary/80 mb-2">Rins (cm)</h4>
+                    <h4 className="text-md text-primary/80 mb-2">Rins (cm)</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 pl-2 border-l-2 border-primary/20">
                       <FormFieldWrapper name="medidaRimEsquerdoCm" label="Rim Esquerdo" errors={errors}>
                         <Input id="medidaRimEsquerdoCm" {...register("medidaRimEsquerdoCm")} placeholder="Ex: 6.65"/>
@@ -304,7 +303,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   </div>
 
                   <div>
-                    <h4 className="text-md font-headline text-primary/80 mb-2">Adrenais (Margem Cranial x Margem Caudal cm)</h4>
+                    <h4 className="text-md text-primary/80 mb-2">Adrenais (Margem Cranial x Margem Caudal cm)</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pl-2 border-l-2 border-primary/20">
                       <div>
                         <Label className="text-sm font-medium">Adrenal Esquerda</Label>
@@ -336,10 +335,10 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
 
 
               <AccordionItem value="additional-notes">
-                <AccordionTrigger className="text-xl font-headline text-primary hover:no-underline">Observações Adicionais</AccordionTrigger>
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Observações Adicionais</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
                    <FormFieldWrapper name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors} fieldType="textarea">
-                    <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações." className="font-sans"/>
+                    <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações."/>
                   </FormFieldWrapper>
                 </AccordionContent>
               </AccordionItem>
@@ -376,10 +375,10 @@ const ClientOnlyForm: React.FC<ReportFormProps> = (props) => {
     return (
       <Card className="shadow-lg flex flex-col h-full">
         <CardHeader>
-          <CardTitle className="font-headline text-3xl text-primary flex items-center gap-2">
+          <CardTitle className="text-3xl text-primary flex items-center gap-2">
             <FileText className="w-8 h-8" /> Carregando Formulário...
           </CardTitle>
-          <CardDescription className="font-sans">
+          <CardDescription>
             O formulário de criação de laudo está sendo preparado.
           </CardDescription>
         </CardHeader>
