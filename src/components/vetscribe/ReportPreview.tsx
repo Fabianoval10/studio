@@ -49,7 +49,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       <>
         <div id="printable-area">
           {/* 01: Capa do laudo */}
-          <div className="print-page print-cover-page"></div>
+          <div className="print-cover-page"></div>
           
           {/* 02: Conteúdo do laudo */}
           <div className="print-content-wrapper">
@@ -102,7 +102,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           </div>
           
           {/* 03: Ultima pagina */}
-          <div className="print-page print-final-page"></div>
+          <div className="print-final-page"></div>
         </div>
 
         <style jsx global>{`
@@ -126,47 +126,50 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             body {
+                /* Aplica o timbrado a TODAS as páginas do conteúdo */
                 background-image: url('/timbrado.jpg');
                 background-size: 210mm 297mm;
-                background-repeat: no-repeat;
-                background-position: center;
+                background-repeat: repeat-y; /* Garante a repetição em cada nova página */
             }
 
             .no-print { display: none !important; }
-            .print-container, #printable-area { display: block !important; }
+            #printable-area { display: block !important; }
 
-            .print-page {
-              width: 210mm;
-              height: 297mm;
-              position: relative;
+            /* Capa e página final são blocos de página inteira que cobrem o fundo do body */
+            .print-cover-page, .print-final-page {
+                width: 210mm;
+                height: 297mm;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
             }
             
             .print-cover-page {
-                background-image: url('/capa.jpg') !important;
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                page-break-after: always;
+                background-image: url('/capa.jpg');
+                page-break-after: always; /* Força o conteúdo para a próxima página */
             }
 
             .print-final-page {
-                background-image: url('/fim.jpg') !important;
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                page-break-before: always;
+                background-image: url('/fim.jpg');
+                page-break-before: always; /* Força esta página para uma nova folha */
             }
 
-            .print-content-wrapper main {
+            /* O wrapper do conteúdo apenas adiciona o espaçamento interno */
+            .print-content-wrapper {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               color: black;
+              background: transparent; /* Permite que o fundo do body apareça */
+              /* Sem altura fixa, permite que o conteúdo flua por várias páginas */
+            }
+            
+            .print-content-wrapper main {
+              padding: 0;
             }
 
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
-              page-break-after: avoid;
               page-break-inside: avoid;
               font-size: 11pt;
             }
@@ -188,7 +191,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 margin-bottom: 2.5rem;
                 padding-right: 0.2cm;
                 page-break-after: avoid;
-                page-break-inside: avoid;
             }
             .report-text-block {
               font-size: 11pt;
@@ -208,7 +210,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: repeat(2, 1fr);
               gap: 0.8cm;
               margin-top: 1rem;
-              page-break-before: auto;
               page-break-inside: avoid;
             }
             .print-image-item {
@@ -227,3 +228,4 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
+
