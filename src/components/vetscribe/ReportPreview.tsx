@@ -147,6 +147,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               background-color: white !important;
               -webkit-print-color-adjust: exact !important;
               color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
             
             .no-print {
@@ -227,10 +228,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               border-radius: 4px;
             }
 
-            /* --- NEW BACKGROUND STYLES --- */
+            /* --- BACKGROUND STYLES --- */
             .print-page.with-background {
               background-image: url('/folha padrão.jpg') !important;
-              background-size: 100% 100% !important;
+              background-size: 100% 100% !important; /* CRITICAL CHANGE */
               background-position: center !important;
               background-repeat: no-repeat !important;
             }
