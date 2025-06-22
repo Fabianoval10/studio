@@ -3,8 +3,6 @@
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PawPrint } from "lucide-react";
 import NextImage from "next/image";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
@@ -49,11 +47,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         <div id="printable-area">
           {/* --- PAGE 1: COVER --- */}
           <div className="print-page">
-             <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" data-ai-hint="report cover" />
+             <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" />
           </div>
           
           {/* --- PAGE 2: INFO (with letterhead) --- */}
-          <div className="print-page with-background">
+          <div className="print-page">
+            <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
             <main className="report-main-content">
               <h3 className="report-title-print text-center">INFORMAÇÕES DO PACIENTE E DO EXAME</h3>
               <div className="info-grid-print">
@@ -80,7 +79,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
   
           {/* --- PAGE 3: REPORT BODY --- */}
           {reportText && (
-            <div className="print-page with-background">
+            <div className="print-page">
+                <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
                 <main className="report-main-content">
                     <h3 className="report-title-print">LAUDO DESCRITIVO</h3>
                     <div className="whitespace-pre-wrap font-sans report-text-block">
@@ -92,7 +92,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
   
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
-            <div className="print-page with-background">
+            <div className="print-page">
+              <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
               <main className="report-main-content">
                   <h3 className="report-title-print">IMAGENS DO EXAME</h3>
                   <div className="print-image-grid">
@@ -115,7 +116,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           
           {/* --- FINAL PAGE --- */}
           <div className="print-page">
-            <img src="/pagina%20fim.png" alt="Página Final do Laudo" className="print-fill-image" data-ai-hint="report back" />
+            <img src="/pagina%20fim.png" alt="Página Final do Laudo" className="print-fill-image" />
           </div>
         </div>
         <style jsx global>{`
@@ -167,7 +168,24 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 object-fit: cover;
             }
             
+            .print-background {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: fill; /* Stretch to fill the A4 page */
+              z-index: 1;
+            }
+            
             /* --- FONT & LAYOUT STYLES --- */
+            .report-main-content {
+              position: relative;
+              z-index: 2;
+              padding: 3cm 2.5cm;
+              height: 100%;
+              box-sizing: border-box;
+            }
             .report-title-print {
               font-family: 'Montserrat', sans-serif;
               font-weight: 300;
@@ -222,18 +240,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               border: 1px solid #ccc;
               padding: 2px;
               border-radius: 4px;
-            }
-
-            /* --- BACKGROUND STYLES --- */
-            .print-page.with-background {
-              background-image: url('/folha%20padrão.jpg') !important;
-              background-size: 100% 100% !important;
-              background-position: center !important;
-              background-repeat: no-repeat !important;
-            }
-
-            .report-main-content {
-              padding: 3cm 2.5cm;
             }
           }
         `}</style>
