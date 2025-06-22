@@ -190,6 +190,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block {
               font-size: 11pt;
               line-height: 1.6;
+              page-break-inside: avoid;
             }
             .report-text-block p {
                 margin: 0 0 1em 0;
