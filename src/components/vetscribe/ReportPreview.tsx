@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -36,11 +35,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     return (
       <>
+        {/* The HTML structure is the same, representing the document flow */}
         <div id="printable-area">
-          {/* Div para a capa. Forçará uma quebra de página APÓS ela. Adicionado &nbsp; para robustez. */}
           <div className="print-cover-page">&nbsp;</div>
-          
-          {/* Wrapper para o conteúdo do laudo, que fluirá por uma ou mais páginas. */}
           <div className="print-content-wrapper">
              <main>
                 <div className="info-grid-print">
@@ -89,45 +86,61 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 )}
              </main>
           </div>
-          
-          {/* Div para a página final. Forçará uma quebra de página ANTES dela. Adicionado &nbsp; para robustez. */}
           <div className="print-final-page">&nbsp;</div>
         </div>
 
+        {/* This new CSS block implements the robust printing strategy */}
         <style jsx global>{`
+          /*
+            On screen, we use a robust technique to hide the print container.
+            Instead of 'display: none', which can prevent browsers from loading
+            assets, we move it off-screen. This ensures all images are pre-loaded
+            and the layout is calculated before printing begins.
+          */
           .print-container {
-            display: none;
+            position: absolute !important;
+            left: -9999px !important;
+            top: auto !important;
+            width: 1px !important;
+            height: 1px !important;
+            overflow: hidden !important;
           }
-  
+
           @media print {
-            /* Configurações globais da página de impressão */
+            /* 1. Reset and Isolate: Hide everything except our print container */
+            body > *:not(.print-container) {
+              display: none !important;
+            }
+
+            .print-container {
+              position: static !important;
+              left: auto !important;
+              top: auto !important;
+              width: auto !important;
+              height: auto !important;
+              overflow: visible !important;
+            }
+
+            /* 2. Global Print Setup */
             @page {
               size: A4;
               margin: 0;
             }
-
             html, body {
               margin: 0;
               padding: 0;
-              width: 100%;
-              height: 100%;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
             
-            /* FUNDO PADRÃO: Aplica o timbrado a TODAS as páginas por padrão. */
+            /* 3. Define Page Backgrounds and Breaks */
             body {
                 background-image: url('/timbrado.jpg') !important;
                 background-size: 210mm 297mm !important;
                 background-repeat: no-repeat !important; 
             }
 
-            .no-print { display: none !important; }
-            #printable-area { display: block !important; }
-
-            /* Estrutura das páginas de capa e final */
             .print-cover-page, .print-final-page {
-                position: relative; /* Ajuda na renderização correta */
                 width: 210mm;
                 height: 297mm;
                 background-size: cover !important;
@@ -135,19 +148,17 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-repeat: no-repeat !important;
             }
             
-            /* SOBREPOSIÇÃO 1: A capa usa sua própria imagem e força uma quebra de página depois. */
             .print-cover-page {
                 background-image: url('/capa.jpg') !important;
                 page-break-after: always;
             }
 
-            /* SOBREPOSIÇÃO 2: A página final usa sua própria imagem e força uma quebra de página antes. */
             .print-final-page {
                 background-image: url('/fim.jpg') !important;
                 page-break-before: always;
             }
 
-            /* Conteúdo do Laudo: Apenas um wrapper com padding para alinhar o texto dentro do timbrado. */
+            /* 4. Style Content Wrapper and its contents */
             .print-content-wrapper {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               color: black;
@@ -194,10 +205,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 margin: 0 0 1em 0;
                 text-align: justify;
             }
-            .report-text-block b, .info-grid-print b {
-               font-weight: 700;
-               color: black;
-            }
 
             .print-image-grid {
               display: grid;
@@ -221,6 +228,4 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         `}</style>
       </>
     );
-  }
-
-    
+}
