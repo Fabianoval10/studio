@@ -132,7 +132,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           
           {/* --- FINAL PAGE --- */}
           <div className="print-page">
-            <img src="/pagina fim.png" alt="Página Final do Laudo" className="print-fill-image" data-ai-hint="report back" />
+            <img src="/pagina%20fim.png" alt="Página Final do Laudo" className="print-fill-image" data-ai-hint="report back" />
           </div>
         </div>
         <style jsx global>{`
@@ -141,9 +141,16 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
   
           @media print {
-            body, html {
+            @page {
+              size: A4;
+              margin: 0;
+            }
+
+            html, body {
               margin: 0;
               padding: 0;
+              height: 100%;
+              width: 100%;
               background-color: white !important;
               -webkit-print-color-adjust: exact !important;
               color-adjust: exact !important;
@@ -160,9 +167,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .print-page {
               page-break-after: always !important;
-              height: 100vh;
-              display: flex;
-              flex-direction: column;
+              height: 100%;
+              width: 100%;
               position: relative;
               overflow: hidden;
               background: white;
@@ -182,13 +188,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
   
             #info-page {
+               display: flex;
+               flex-direction: column;
                justify-content: space-between;
                text-align: center;
                padding: 2cm !important;
             }
 
             .info-page-footer {
-                padding: 1cm 2cm;
+                padding-top: 1cm;
                 font-family: 'Montserrat', sans-serif !important;
                 font-size: 10pt !important;
                 color: #555 !important;
@@ -230,19 +238,18 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             /* --- BACKGROUND STYLES --- */
             .print-page.with-background {
-              background-image: url('/folha padrão.jpg') !important;
-              background-size: 100% 100% !important; /* CRITICAL CHANGE */
+              background-image: url('/folha%20padrão.jpg') !important;
+              background-size: 100% 100% !important;
               background-position: center !important;
               background-repeat: no-repeat !important;
             }
 
             .with-background > .report-main-content {
-              flex-grow: 1;
               padding: 3cm 2.5cm !important;
             }
-
           }
         `}</style>
       </>
     );
   }
+
