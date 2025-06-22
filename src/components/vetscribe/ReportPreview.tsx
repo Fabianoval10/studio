@@ -16,7 +16,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   if (value === null || value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) return null;
   return (
     <div className={className}>
-      <span className="font-semibold text-foreground/80">{label}: </span> 
+      <span className="font-semibold text-foreground/80">{label}: </span>
       <span className="text-foreground">{String(value)}</span>
     </div>
   );
@@ -36,41 +36,50 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     return (
       <>
-        <div id="printable-area">
-          <div className="print-cover-page">&nbsp;</div>
+        {/* Container for printing, positioned off-screen */}
+        <div id="printable-area" className="print-container">
+          {/* Cover Page */}
+          <div className="print-page print-cover-page" style={{ backgroundImage: "url('/capa.jpg')" }}>
+            &nbsp;
+          </div>
+
+          {/* Main content with letterhead background */}
           <div className="print-content-wrapper">
              <main>
-                <div className="info-grid-print">
-                  <div className="info-section-print">
-                    <h4 className="info-subtitle-print">Paciente</h4>
-                    <DetailItem label="Tutor" value={formData.ownerName} />
-                    <DetailItem label="Paciente" value={formData.petName} />
-                    <DetailItem label="ID" value={formData.patientId} />
-                    <DetailItem label="Espécie" value={formData.species} />
-                    <DetailItem label="Raça" value={formData.breed} />
-                    <DetailItem label="Sexo" value={formData.sex} />
-                    <DetailItem label="Idade" value={fullAge} />
+                {/* NEW WRAPPER to keep patient data, exam data, and report text together */}
+                <div className="report-content-group">
+                  <div className="info-grid-print">
+                    <div className="info-section-print">
+                      <h4 className="info-subtitle-print">Paciente</h4>
+                      <DetailItem label="Tutor" value={formData.ownerName} />
+                      <DetailItem label="Paciente" value={formData.petName} />
+                      <DetailItem label="ID" value={formData.patientId} />
+                      <DetailItem label="Espécie" value={formData.species} />
+                      <DetailItem label="Raça" value={formData.breed} />
+                      <DetailItem label="Sexo" value={formData.sex} />
+                      <DetailItem label="Idade" value={fullAge} />
+                    </div>
+                    <div className="info-section-print">
+                      <h4 className="info-subtitle-print">Exame</h4>
+                      <DetailItem label="Clínica" value={formData.clinicName} />
+                      <DetailItem label="M.V. Resp." value={formData.vetName} />
+                      <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
+                      <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
+                    </div>
                   </div>
-                  <div className="info-section-print">
-                    <h4 className="info-subtitle-print">Exame</h4>
-                    <DetailItem label="Clínica" value={formData.clinicName} />
-                    <DetailItem label="M.V. Resp." value={formData.vetName} />
-                    <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
-                    <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
-                  </div>
+
+                  {reportText && (
+                    <>
+                      <div className="report-date-print">
+                        {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
+                      </div>
+                      <div className="report-text-block">
+                          {renderReportText(reportText)}
+                      </div>
+                    </>
+                  )}
                 </div>
 
-                {reportText && (
-                  <>
-                    <div className="report-date-print">
-                      {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
-                    </div>
-                    <div className="report-text-block">
-                        {renderReportText(reportText)}
-                    </div>
-                  </>
-                )}
-        
                 {uploadedImages.length > 0 && (
                   <div className="print-image-grid">
                     {uploadedImages.map((img, index) => (
@@ -86,11 +95,16 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 )}
              </main>
           </div>
-          <div className="print-final-page">&nbsp;</div>
+
+          {/* Final Page */}
+          <div className="print-page print-final-page" style={{ backgroundImage: "url('/fim.jpg')" }}>
+            &nbsp;
+          </div>
         </div>
 
         <style jsx global>{`
           .print-container {
+            /* Position off-screen to pre-render without being visible */
             position: absolute !important;
             left: -9999px !important;
             top: auto !important;
@@ -100,6 +114,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
 
           @media print {
+            /* Hide everything except the print container */
             body > *:not(.print-container) {
               display: none !important;
             }
@@ -123,49 +138,53 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
-            
+
             body {
+                /* Default background for all content pages */
                 background-image: url('/timbrado.jpg') !important;
                 background-size: 210mm 297mm !important;
-                background-repeat: no-repeat !important; 
-            }
-
-            .print-cover-page, .print-final-page {
-                position: relative;
-                width: 210mm;
-                height: 297mm;
-                background-size: cover !important;
-                background-position: center !important;
                 background-repeat: no-repeat !important;
             }
-            
+
+            .print-page {
+              position: relative;
+              width: 210mm;
+              height: 297mm;
+              background-size: cover !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+            }
+
             .print-cover-page {
-                background-image: url('/capa.jpg') !important;
                 page-break-after: always;
             }
 
             .print-final-page {
-                background-image: url('/fim.jpg') !important;
                 page-break-before: always;
             }
 
             .print-content-wrapper {
+              /* Margins for the letterhead */
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               color: black;
               background: transparent;
               width: 210mm;
               box-sizing: border-box;
             }
-            
+
             main {
               padding: 0;
+            }
+            
+            /* This group ensures all its content stays on one page */
+            .report-content-group {
+              page-break-inside: avoid;
             }
 
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
-              page-break-inside: avoid;
               font-size: 11pt;
             }
             .info-subtitle-print {
@@ -185,12 +204,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 text-align: right;
                 margin-bottom: 2.5rem;
                 padding-right: 0.2cm;
-                page-break-after: avoid;
             }
             .report-text-block {
               font-size: 11pt;
               line-height: 1.6;
-              page-break-inside: avoid;
             }
             .report-text-block p {
                 margin: 0 0 1em 0;
@@ -200,7 +217,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(3, 1fr);
-              grid-auto-rows: 2.1cm;
+              grid-auto-rows: 2.1cm; /* This creates the 3x7 grid for 21 images */
               gap: 0.2cm;
               margin-top: 1.5rem;
               page-break-before: auto;
