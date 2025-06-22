@@ -17,7 +17,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   return (
     <div className={className}>
       <span className="font-semibold text-foreground/80">{label}: </span> 
-      <span className="font-sans text-foreground">{String(value)}</span>
+      <span className="font-body text-foreground">{String(value)}</span>
     </div>
   );
 };
@@ -30,7 +30,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     const renderBoldMarkdown = (text: string | null) => {
       if (!text) return null;
       return text.split('\n').map((paragraph, pIndex) => (
-        <p key={pIndex} style={{ minHeight: '1.2em' }}>
+        <p key={pIndex} style={{ minHeight: '1.2em' }} className="font-body">
           {paragraph.split(/(\*\*.*?\*\*)/g).map((part, index) => {
             if (part.startsWith('**') && part.endsWith('**')) {
               return <b key={index}>{part.slice(2, -2)}</b>;
@@ -129,7 +129,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .no-print { display: none !important; }
             .print-container, #printable-area { display: block !important; }
             
-            /* Cover and Final pages are simple, full-height divs */
             .print-page {
               width: 210mm;
               height: 297mm;
@@ -143,40 +142,35 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             .print-cover-page { page-break-after: always; }
             .print-final-page { page-break-before: always; }
-
-            /* THIS IS THE CORE FIX */
-            /* The body itself gets the repeating background */
+            
             body {
               background-image: url('/timbrado.jpg') !important;
               background-size: 210mm 297mm !important;
-              background-repeat: repeat-y !important; /* repeat on Y axis if content flows */
+              background-repeat: repeat-y !important;
             }
-            /* The cover/final pages get a white background to hide the body's background */
             .print-cover-page, .print-final-page {
               background-color: white !important;
             }
             
-            /* The content section uses PADDING to create margins inside the background image */
             .print-content-section {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               box-sizing: border-box;
               width: 100%;
-              font-family: 'Montserrat', sans-serif;
+              font-family: 'Alegreya', serif;
               color: #333;
-              /* It needs page breaks to separate it from cover/final */
               page-break-before: always;
               page-break-after: always;
             }
 
-            /* General content styling */
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
               page-break-after: avoid;
-              margin-bottom: 2rem; /* space before report text starts */
+              margin-bottom: 2rem;
             }
             .info-subtitle-print {
+              font-family: 'Belleza', sans-serif;
               font-weight: 700;
               font-size: 12pt;
               color: hsl(var(--primary));
@@ -186,11 +180,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             .info-section-print > div {
               margin-bottom: 0.5rem;
+              font-family: 'Alegreya', serif;
             }
             .report-text-container {
-              page-break-before: always; /* If info and text need to be on separate pages */
+              page-break-before: always;
             }
             .report-date-print {
+                font-family: 'Belleza', sans-serif;
                 font-size: 10pt;
                 color: #4a4a4a;
                 text-align: right;
@@ -198,6 +194,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 padding-right: 0.2cm;
             }
             .report-text-block {
+              font-family: 'Alegreya', serif;
               font-size: 11pt;
               line-height: 1.6;
             }
@@ -209,7 +206,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                color: black;
             }
 
-            /* Image grid styling */
             .print-image-container {
               page-break-before: always;
             }
@@ -235,5 +231,3 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-
-    

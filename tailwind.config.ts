@@ -17,9 +17,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Montserrat', 'sans-serif'],
-        headline: ['Montserrat', 'sans-serif'], // Titles
-        body: ['Montserrat', 'sans-serif'], // Body
+        sans: ['Belleza', 'sans-serif'],
+        headline: ['Belleza', 'sans-serif'],
+        body: ['Alegreya', 'serif'],
         code: ['"Source Code Pro"', 'monospace'],
       },
       colors: {
