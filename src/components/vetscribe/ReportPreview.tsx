@@ -1,8 +1,9 @@
+
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PawPrint } from "lucide-react";
 import NextImage from "next/image";
 import { format } from "date-fns";
@@ -15,7 +16,7 @@ interface ReportPreviewProps {
 }
 
 const DetailItem: React.FC<{ label: string; value?: string | number | null; className?: string }> = ({ label, value, className }) => {
-  if (value === null || value === undefined || value === "") return null;
+  if (value === null || value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) return null;
   return (
     <div className={className}>
       <span className="font-semibold text-foreground/80">{label}: </span> 
@@ -38,25 +39,53 @@ const renderBoldMarkdown = (text: string | null) => {
   );
 };
 
+const ReportPageHeader: React.FC<{ patientName?: string }> = ({ patientName }) => (
+    <header className="print-report-header">
+        <div className="flex items-center gap-3">
+            <div className="bg-primary text-primary-foreground p-1.5 rounded-md">
+                <PawPrint className="w-5 h-5" />
+            </div>
+            <h1 className="text-lg font-headline text-primary font-bold">Baddha Ultrassonografia</h1>
+        </div>
+        {patientName && <span className="text-sm text-foreground">Paciente: {patientName}</span>}
+    </header>
+);
+
+const ReportPageFooter: React.FC<{ vetName?: string, clinicName?: string }> = ({ vetName, clinicName }) => (
+    <footer className="print-report-footer">
+        <div className="signature-area">
+            <NextImage
+                src="/ASSINATURA.png"
+                alt="Assinatura Digitalizada"
+                width={150} 
+                height={50} 
+                data-ai-hint="doctor signature"
+            />
+            <p className="text-xs text-center mt-1">{vetName}</p>
+        </div>
+        <div className="clinic-info">
+            <p className="font-bold">{clinicName}</p>
+        </div>
+    </footer>
+);
+
+
 export function ReportPreview({ formData, reportText, uploadedImages }: ReportPreviewProps) {
     if (!formData) return null;
+
+    const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
 
     return (
       <>
         <div id="printable-area">
           {/* --- PAGE 1: IMAGE COVER --- */}
-          <div className="print-page" id="cover-image-page">
-             <img
-                src="/capa.jpg"
-                alt="Capa do Laudo"
-                className="print-fill-image"
-                data-ai-hint="report cover"
-             />
+          <div className="print-page">
+             <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" data-ai-hint="report cover" />
           </div>
           
           {/* --- PAGE 2: INFO --- */}
-          <div className="print-page" id="cover-page">
-            <header className="flex justify-between items-center text-center flex-col mb-16">
+          <div className="print-page" id="info-page">
+            <header className="flex justify-between items-center text-center flex-col mb-12">
               <div className="flex items-center gap-3 bg-primary text-primary-foreground p-3 rounded-full mb-4">
                 <PawPrint className="w-10 h-10" />
               </div>
@@ -80,30 +109,24 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                   <DetailItem label="Espécie" value={formData.species} />
                   <DetailItem label="Raça" value={formData.breed} />
                   <DetailItem label="Sexo" value={formData.sex} />
-                  <DetailItem label="Idade" value={`${formData.ageYears} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`} />
+                  <DetailItem label="Idade" value={fullAge} />
                   <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
                 </CardContent>
               </Card>
             </main>
   
-            <CardFooter className="text-center mt-16 info-body-print">
+            <footer className="info-page-footer">
               <div className="mx-auto">
                 <p className="font-bold">{formData.clinicName}</p>
-                <p>CRMV: {formData.vetName}</p>
+                <p>M.V. Resp.: {formData.vetName}</p>
                 <p>Data do Exame: {format(new Date(formData.examDate), "PPP", { locale: ptBR })}</p>
               </div>
-            </CardFooter>
+            </footer>
           </div>
   
           {/* --- PAGE 3: REPORT BODY --- */}
           <div className="print-page" id="report-body-page">
-            <header className="print-report-header">
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-primary">Baddha Ultrassonografia</span>
-                <span>Paciente: {formData.petName}</span>
-              </div>
-            </header>
-            
+            <ReportPageHeader patientName={formData.petName}/>
             <main className="report-main-content">
               {reportText && (
                 <>
@@ -114,29 +137,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 </>
               )}
             </main>
-  
-            <footer className="print-report-footer">
-              <NextImage
-                src="/ASSINATURA.png"
-                alt="Assinatura Digitalizada"
-                width={150} 
-                height={50} 
-                data-ai-hint="doctor signature"
-                className="mx-auto"
-              />
-              <p className="text-xs text-center mt-1 info-body-print">{formData.vetName}</p>
-            </footer>
+            <ReportPageFooter vetName={formData.vetName} clinicName={formData.clinicName} />
           </div>
   
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
             <div className="print-page" id="images-page">
-              <header className="print-report-header">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-primary">Baddha Ultrassonografia</span>
-                    <span>Imagens do Exame - Paciente: {formData.petName}</span>
-                  </div>
-              </header>
+              <ReportPageHeader patientName={formData.petName} />
               <main className="report-main-content">
                   <h3 className="report-title-print">IMAGENS DO EXAME</h3>
                   <div className="print-image-grid">
@@ -154,28 +161,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                     ))}
                   </div>
               </main>
-              <footer className="print-report-footer">
-                <NextImage
-                  src="/ASSINATURA.png"
-                  alt="Assinatura Digitalizada"
-                  width={150} 
-                  height={50} 
-                  data-ai-hint="doctor signature"
-                  className="mx-auto"
-                />
-                <p className="text-xs text-center mt-1 info-body-print">{formData.vetName}</p>
-              </footer>
+              <ReportPageFooter vetName={formData.vetName} clinicName={formData.clinicName} />
             </div>
           )}
           
           {/* --- FINAL PAGE --- */}
-          <div className="print-page" id="final-image-page">
-            <img
-                src="/pagina fim.png"
-                alt="Página Final do Laudo"
-                className="print-fill-image"
-                data-ai-hint="report back"
-            />
+          <div className="print-page">
+            <img src="/pagina fim.png" alt="Página Final do Laudo" className="print-fill-image" data-ai-hint="report back" />
           </div>
         </div>
         <style jsx global>{`
@@ -185,9 +177,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
   
           @media print {
             body, html {
-              background-color: white !important;
               margin: 0;
               padding: 0;
+              background-color: white !important;
+              -webkit-print-color-adjust: exact !important;
+              color-adjust: exact !important;
             }
             
             .no-print {
@@ -198,29 +192,19 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: block !important;
             }
             
-            #printable-area > .print-page {
+            .print-page {
               page-break-after: always !important;
               page-break-inside: avoid !important;
+              height: 100vh;
+              display: flex;
+              flex-direction: column;
+              position: relative;
+              overflow: hidden;
+              background: white;
             }
 
             #printable-area > .print-page:last-child {
-              page-break-after: auto !important;
-            }
-
-            .print-page {
-              width: 100%;
-              height: 100vh;
-              padding: 0 !important;
-              margin: 0 !important;
-              border: none !important;
-              box-shadow: none !important;
-              background-color: white !important;
-              display: flex;
-              flex-direction: column;
-              -webkit-print-color-adjust: exact !important;
-              color-adjust: exact !important;
-              position: relative;
-              overflow: hidden;
+                page-break-after: auto !important;
             }
 
             .print-fill-image {
@@ -232,7 +216,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 object-fit: cover !important;
             }
   
-            #cover-page {
+            #info-page {
                justify-content: space-between;
                text-align: center;
                padding: 2cm !important;
@@ -240,34 +224,45 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .report-main-content {
               flex-grow: 1;
-              padding: 2cm !important;
+              padding: 0 2cm 1cm 2cm !important;
+            }
+
+            .print-report-header {
+               display: flex !important;
+               justify-content: space-between;
+               align-items: center;
+               padding: 1cm 2cm 1cm 2cm !important;
+               border-bottom: 2px solid hsl(var(--primary));
             }
   
             .print-report-footer {
-              display: block !important;
+              display: flex !important;
+              justify-content: space-between;
+              align-items: flex-end;
+              padding: 1cm 2cm 1cm 2cm;
+              border-top: 1px solid hsl(var(--border));
               margin-top: auto;
-              padding-bottom: 1cm;
               width: 100%;
-              text-align: center;
+              box-sizing: border-box;
+            }
+
+            .info-page-footer {
+                padding: 1cm 2cm;
+                font-family: 'Montserrat', sans-serif !important;
+                font-size: 10pt !important;
+                color: #555 !important;
             }
             
-             .print-report-header {
-               display: flex !important;
-               justify-content: space-between;
-               padding: 1cm 2cm 0 2cm !important;
-               font-family: 'Montserrat', sans-serif !important;
-               font-size: 9pt;
-               color: #78655B !important;
-             }
-  
             /* --- FONT STYLES --- */
             .cover-title-print, .report-title-print, .info-title-print {
               font-family: 'Montserrat', sans-serif !important;
-              font-weight: 300 !important; /* light */
+              font-weight: 300 !important;
               font-size: 18pt !important;
-              color: #78655B !important;
+              color: hsl(var(--primary)) !important;
               margin-bottom: 1rem;
+              text-align: left;
             }
+
             .info-body-print, .info-body-print *, .report-text-block, .report-text-block * {
               font-family: 'Montserrat', sans-serif !important;
               font-size: 11pt !important;
@@ -291,8 +286,19 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               padding: 2px;
               border-radius: 4px;
             }
+
+            /* Footer specific styles */
+            .signature-area {
+                text-align: center;
+            }
+            .clinic-info {
+                text-align: right;
+                font-size: 9pt;
+            }
           }
         `}</style>
       </>
     );
   }
+
+    
