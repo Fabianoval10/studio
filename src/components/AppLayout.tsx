@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -53,9 +54,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href} passHref legacyBehavior>
+                <Link href={item.href}>
                   <SidebarMenuButton
-                    as="a"
                     isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/')}
                     tooltip={item.label}
                   >
@@ -70,8 +70,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <Link href="/settings" passHref legacyBehavior>
-                        <SidebarMenuButton as="a" isActive={pathname === '/settings'} tooltip="Configurações">
+                    <Link href="/settings">
+                        <SidebarMenuButton isActive={pathname === '/settings'} tooltip="Configurações">
                             <SettingsIcon />
                             <span>Configurações</span>
                         </SidebarMenuButton>
