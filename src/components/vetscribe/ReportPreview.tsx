@@ -148,6 +148,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background: white !important;
             }
 
+            .print-final-page {
+                page-break-before: always;
+            }
+
             .print-fill-image {
                 width: 210mm;
                 height: 297mm;
