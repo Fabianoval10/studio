@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -172,7 +171,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           {/* --- FINAL PAGE --- */}
           <div className="print-page" id="final-image-page">
             <img
-                src="/pagina%20fim.png"
+                src="/pagina fim.png"
                 alt="Página Final do Laudo"
                 className="print-fill-image"
                 data-ai-hint="report back"
@@ -189,7 +188,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               background-color: white !important;
               margin: 0;
               padding: 0;
-              height: 100%;
             }
             
             .no-print {
@@ -211,7 +209,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             .print-page {
               width: 100%;
-              height: 100%;
+              height: 100vh;
               padding: 0 !important;
               margin: 0 !important;
               border: none !important;
@@ -298,7 +296,3 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-
-    
-
-    
