@@ -126,7 +126,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin: 0;
               padding: 0;
               width: 100%;
-              height: 100%;
               background-color: white !important;
               -webkit-print-color-adjust: exact !important;
               color-adjust: exact !important;
@@ -145,8 +144,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               page-break-after: always;
               position: relative;
               width: 210mm;
-              height: 297mm;
-              overflow: hidden;
+              /* REMOVED fixed height and overflow to allow content to flow naturally across pages */
             }
 
             #printable-area > .print-page:last-child {
@@ -167,9 +165,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               position: relative;
               z-index: 2;
               padding: 6.0cm 2cm 7.5cm 2.5cm;
-              height: 100%;
               box-sizing: border-box;
               font-family: 'Montserrat', sans-serif;
+              /* REMOVED height: 100% to allow content to define its own height */
             }
             
             .report-date-print {
@@ -234,3 +232,4 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     
 
     
+
