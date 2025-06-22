@@ -57,7 +57,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 priority
              />
           </div>
-  
           <div className="print-page-break"></div>
           
           {/* --- PAGE 2: INFO --- */}
@@ -100,7 +99,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               </div>
             </CardFooter>
           </div>
-  
           <div className="print-page-break"></div>
   
           {/* --- PAGE 3: REPORT BODY --- */}
@@ -136,7 +134,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </footer>
           </div>
   
-          {/* --- PAGE 4: IMAGES --- */}
+          {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
             <>
               <div className="print-page-break"></div>
@@ -179,14 +177,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </>
           )}
           
-          {/* --- FINAL PAGE: IMAGE --- */}
+          {/* --- FINAL PAGE --- */}
           <div className="print-page-break"></div>
           <div className="print-page" id="final-image-page">
             <NextImage
                 src="/pagina fim.png"
                 alt="Página Final do Laudo"
                 layout="fill"
-                objectFit="contain"
+                objectFit="cover"
                 objectPosition="center"
                 data-ai-hint="report back"
             />
