@@ -29,9 +29,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const renderBoldMarkdown = (text: string | null) => {
       if (!text) return null;
-      // This regex handles paragraphs and bolding correctly.
       return text.split('\n').map((paragraph, pIndex) => (
-        <p key={pIndex} style={{ minHeight: '1.2em' /* ensure empty lines create space */ }}>
+        <p key={pIndex} style={{ minHeight: '1.2em' }}>
           {paragraph.split(/(\*\*.*?\*\*)/g).map((part, index) => {
             if (part.startsWith('**') && part.endsWith('**')) {
               return <b key={index}>{part.slice(2, -2)}</b>;
@@ -45,16 +44,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     return (
       <>
         <div id="printable-area">
-          {/* --- PAGE 1: COVER --- */}
           <div className="print-page">
              <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" />
           </div>
           
-          {/* --- PAGE 2: INFO (with letterhead) --- */}
           <div className="print-page with-background">
             <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-background-image" />
             <main className="report-main-content">
-              {/* The title "INFORMAÇÕES DO PACIENTE E DO EXAME" is part of the background image */}
               <div className="info-grid-print">
                 <div className="info-section-print">
                   <h4 className="info-subtitle-print">Paciente</h4>
@@ -77,12 +73,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </main>
           </div>
   
-          {/* --- PAGE 3: REPORT BODY --- */}
           {reportText && (
             <div className="print-page with-background">
                 <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-background-image" />
                 <main className="report-main-content">
-                    {/* The title "LAUDO DESCRITIVO" is part of the background image */}
                     <div className="report-date-print">
                       {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
                     </div>
@@ -93,12 +87,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </div>
           )}
   
-          {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
             <div className="print-page with-background">
               <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-background-image" />
               <main className="report-main-content">
-                  {/* The title "IMAGENS DO EXAME" is part of the background image */}
                   <div className="print-image-grid">
                     {uploadedImages.map((img, index) => (
                       <div key={img.id} className="print-image-item">
@@ -115,7 +107,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </div>
           )}
           
-          {/* --- FINAL PAGE --- */}
           <div className="print-page">
             <img src="/fim.png" alt="Página Final do Laudo" className="print-fill-image" />
           </div>
@@ -172,12 +163,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
             }
 
-            /* --- FONT & LAYOUT STYLES --- */
             .report-main-content {
               position: relative;
               z-index: 2;
-              /* Adjusted padding: Top, Right, Bottom, Left */
-              padding: 6.0cm 2cm 2.5cm 2.5cm;
+              padding: 6.0cm 2cm 5.5cm 2.5cm;
               height: 100%;
               box-sizing: border-box;
               font-family: 'Montserrat', sans-serif;
@@ -208,7 +197,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                color: black;
             }
             
-            /* --- INFO PAGE GRID --- */
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
@@ -226,8 +214,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin-bottom: 0.5rem;
             }
 
-
-            /* --- IMAGE GRID --- */
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(2, 1fr);
@@ -245,4 +231,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
+    
+
     
