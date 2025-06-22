@@ -48,10 +48,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     return (
       <>
         <div id="printable-area">
-          {/* 01: Capa do laudo */}
+          {/* 01: Capa do laudo (DIV VAZIA PARA OCUPAR A PRIMEIRA PÁGINA) */}
           <div className="print-cover-page"></div>
           
-          {/* 02: Conteúdo do laudo */}
+          {/* 02: Conteúdo do laudo (IRÁ FLUTUAR SOBRE O FUNDO DO BODY) */}
           <div className="print-content-wrapper">
              <main>
                 <div className="info-grid-print">
@@ -101,7 +101,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
              </main>
           </div>
           
-          {/* 03: Ultima pagina */}
+          {/* 03: Ultima pagina (DIV VAZIA PARA OCUPAR A ÚLTIMA PÁGINA) */}
           <div className="print-final-page"></div>
         </div>
 
@@ -126,43 +126,42 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             body {
-                /* Aplica o timbrado a TODAS as páginas do conteúdo */
-                background-image: url('/timbrado.jpg');
-                background-size: 210mm 297mm;
-                background-repeat: repeat-y; /* Garante a repetição em cada nova página */
+                /* 02: APLICA O TIMBRADO A TODAS AS PÁGINAS */
+                background-image: url('/timbrado.jpg') !important;
+                background-size: 210mm 297mm !important;
+                background-repeat: no-repeat !important;
             }
 
             .no-print { display: none !important; }
             #printable-area { display: block !important; }
 
-            /* Capa e página final são blocos de página inteira que cobrem o fundo do body */
             .print-cover-page, .print-final-page {
                 width: 210mm;
                 height: 297mm;
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
+                background-size: cover !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
             }
             
             .print-cover-page {
-                background-image: url('/capa.jpg');
-                page-break-after: always; /* Força o conteúdo para a próxima página */
+                /* 01: SOBRESCREVE O TIMBRADO COM A CAPA */
+                background-image: url('/capa.jpg') !important;
+                page-break-after: always; /* FORÇA O CONTEÚDO PARA A PRÓXIMA PÁGINA */
             }
 
             .print-final-page {
-                background-image: url('/fim.jpg');
-                page-break-before: always; /* Força esta página para uma nova folha */
+                /* 03: SOBRESCREVE O TIMBRADO COM A PÁGINA FINAL */
+                background-image: url('/fim.jpg') !important;
+                page-break-before: always; /* FORÇA ESTA PÁGINA PARA UMA NOVA FOLHA */
             }
 
-            /* O wrapper do conteúdo apenas adiciona o espaçamento interno */
             .print-content-wrapper {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               color: black;
-              background: transparent; /* Permite que o fundo do body apareça */
-              /* Sem altura fixa, permite que o conteúdo flua por várias páginas */
+              background: transparent;
             }
             
-            .print-content-wrapper main {
+            main {
               padding: 0;
             }
 
@@ -228,4 +227,3 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-
