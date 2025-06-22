@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -141,6 +142,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             .print-cover-page, .print-final-page {
+                position: relative;
                 width: 210mm;
                 height: 297mm;
                 background-size: cover !important;
@@ -208,20 +210,26 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             .print-image-grid {
               display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              gap: 0.8cm;
-              margin-top: 1rem;
-              page-break-inside: avoid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 0.4cm;
+              margin-top: 1.5rem;
+              page-break-before: auto;
             }
             .print-image-item {
-              page-break-inside: avoid;
               border: 1px solid #ccc;
               padding: 2px;
               border-radius: 4px;
+              aspect-ratio: 4 / 3;
+              overflow: hidden;
+              page-break-inside: avoid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
             }
             .print-image-item img {
               width: 100%;
-              height: auto;
+              height: 100%;
+              object-fit: cover;
               border-radius: 2px;
             }
           }
