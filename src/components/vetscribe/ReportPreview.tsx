@@ -38,10 +38,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     return (
       <>
         <div id="printable-area">
-          {/* 01: Capa do laudo (DIV VAZIA PARA OCUPAR A PRIMEIRA PÁGINA) */}
+          {/* RULE 1: A div for the cover page, which forces a page break after it */}
           <div className="print-cover-page"></div>
           
-          {/* 02: Conteúdo do laudo (IRÁ FLUTUAR SOBRE O FUNDO DO BODY) */}
+          {/* RULE 2: This is the actual content that will flow across one or more pages with the 'timbrado' background applied to the body */}
           <div className="print-content-wrapper">
              <main>
                 <div className="info-grid-print">
@@ -91,7 +91,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
              </main>
           </div>
           
-          {/* 03: Ultima pagina (DIV VAZIA PARA OCUPAR A ÚLTIMA PÁGINA) */}
+          {/* RULE 3: A div for the final page, which is forced to a new page */}
           <div className="print-final-page"></div>
         </div>
 
@@ -115,11 +115,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               print-color-adjust: exact !important;
             }
             
+            /* RULE 2 (Base): Apply 'timbrado' to ALL pages by default. The browser will repeat this for every new page of content. */
             body {
-                /* 02: APLICA O TIMBRADO A TODAS AS PÁGINAS */
                 background-image: url('/timbrado.jpg') !important;
                 background-size: 210mm 297mm !important;
-                background-repeat: no-repeat !important;
+                background-repeat: no-repeat !important; 
             }
 
             .no-print { display: none !important; }
@@ -133,22 +133,25 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-repeat: no-repeat !important;
             }
             
+            /* RULE 1 (Override): Override body background with the cover page on the first page. */
             .print-cover-page {
-                /* 01: SOBRESCREVE O TIMBRADO COM A CAPA */
                 background-image: url('/capa.jpg') !important;
-                page-break-after: always; /* FORÇA O CONTEÚDO PARA A PRÓXIMA PÁGINA */
+                page-break-after: always;
             }
 
+            /* RULE 3 (Override): Override body background with the final page, forcing it to a new sheet. */
             .print-final-page {
-                /* 03: SOBRESCREVE O TIMBRADO COM A PÁGINA FINAL */
                 background-image: url('/fim.jpg') !important;
-                page-break-before: always; /* FORÇA ESTA PÁGINA PARA UMA NOVA FOLHA */
+                page-break-before: always;
             }
 
             .print-content-wrapper {
+              /* This wrapper's only job is to provide the correct padding for the content to sit within the 'timbrado' design. */
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               color: black;
               background: transparent;
+              width: 210mm;
+              box-sizing: border-box;
             }
             
             main {
