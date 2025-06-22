@@ -52,45 +52,30 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
              <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" data-ai-hint="report cover" />
           </div>
           
-          {/* --- PAGE 2: INFO --- */}
-          <div className="print-page" id="info-page">
-            <header className="flex justify-between items-center text-center flex-col mb-12">
-              <div className="flex items-center gap-3 bg-primary text-primary-foreground p-3 rounded-full mb-4">
-                <PawPrint className="w-10 h-10" />
-              </div>
-              <h1 className="text-3xl font-headline text-primary font-bold">Baddha Ultrassonografia</h1>
-              <p className="text-sm text-muted-foreground">Laudos de Ultrassom Inteligentes</p>
-            </header>
-  
-            <main className="flex-grow flex flex-col justify-center items-center text-center">
-              <h2 className="cover-title-print text-4xl font-headline font-light text-primary mb-12">
-                LAUDO DE ULTRASSONOGRAFIA ABDOMINAL
-              </h2>
-              
-              <Card className="w-full max-w-2xl text-left shadow-md border">
-                <CardHeader>
-                  <CardTitle className="info-title-print">INFORMAÇÕES DO PACIENTE</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm info-body-print">
+          {/* --- PAGE 2: INFO (with letterhead) --- */}
+          <div className="print-page with-background">
+            <main className="report-main-content">
+              <h3 className="report-title-print text-center">INFORMAÇÕES DO PACIENTE E DO EXAME</h3>
+              <div className="info-grid-print">
+                <div className="info-section-print">
+                  <h4 className="info-subtitle-print">Paciente</h4>
                   <DetailItem label="Tutor" value={formData.ownerName} />
                   <DetailItem label="Paciente" value={formData.petName} />
-                  <DetailItem label="ID do Paciente" value={formData.patientId} />
+                  <DetailItem label="ID" value={formData.patientId} />
                   <DetailItem label="Espécie" value={formData.species} />
                   <DetailItem label="Raça" value={formData.breed} />
                   <DetailItem label="Sexo" value={formData.sex} />
                   <DetailItem label="Idade" value={fullAge} />
+                </div>
+                <div className="info-section-print">
+                  <h4 className="info-subtitle-print">Exame</h4>
+                  <DetailItem label="Clínica" value={formData.clinicName} />
+                  <DetailItem label="M.V. Resp." value={formData.vetName} />
                   <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
-                </CardContent>
-              </Card>
-            </main>
-  
-            <footer className="info-page-footer">
-              <div className="mx-auto">
-                <p className="font-bold">{formData.clinicName}</p>
-                <p>M.V. Resp.: {formData.vetName}</p>
-                <p>Data do Exame: {format(new Date(formData.examDate), "PPP", { locale: ptBR })}</p>
+                  <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "PPP", { locale: ptBR })} />
+                </div>
               </div>
-            </footer>
+            </main>
           </div>
   
           {/* --- PAGE 3: REPORT BODY --- */}
@@ -181,42 +166,50 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 height: 100%;
                 object-fit: cover;
             }
-  
-            #info-page {
-               display: flex;
-               flex-direction: column;
-               justify-content: space-between;
-               text-align: center;
-               padding: 2cm;
-            }
-
-            .info-page-footer {
-                padding-top: 1cm;
-                font-family: 'Montserrat', sans-serif;
-                font-size: 10pt;
-                color: #555;
-            }
             
-            /* --- FONT STYLES --- */
-            .cover-title-print, .report-title-print, .info-title-print {
+            /* --- FONT & LAYOUT STYLES --- */
+            .report-title-print {
               font-family: 'Montserrat', sans-serif;
               font-weight: 300;
-              font-size: 18pt;
+              font-size: 16pt;
               color: hsl(var(--primary));
-              margin-bottom: 1rem;
-              text-align: left;
+              margin-bottom: 2rem;
+              padding-bottom: 0.5rem;
+              border-bottom: 1px solid hsl(var(--border));
+            }
+            .report-title-print.text-center {
+              text-align: center;
             }
 
-            .info-body-print, .info-body-print *, .report-text-block, .report-text-block * {
+            .info-body-print, .info-body-print *, .report-text-block, .report-text-block *, .info-grid-print * {
               font-family: 'Montserrat', sans-serif;
               font-size: 11pt;
-              line-height: 1.5;
+              line-height: 1.6;
               color: black;
             }
-            .report-text-block b {
+            .report-text-block b, .info-grid-print b {
                font-weight: 700;
             }
             
+            /* --- INFO PAGE GRID --- */
+            .info-grid-print {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 2rem;
+            }
+            .info-subtitle-print {
+              font-weight: 700;
+              font-size: 12pt;
+              color: hsl(var(--primary));
+              margin-bottom: 1rem;
+              border-bottom: 1px solid hsl(var(--border));
+              padding-bottom: 0.5rem;
+            }
+            .info-section-print > div {
+              margin-bottom: 0.5rem;
+            }
+
+
             /* --- IMAGE GRID --- */
             .print-image-grid {
               display: grid;
@@ -247,5 +240,4 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-
     
