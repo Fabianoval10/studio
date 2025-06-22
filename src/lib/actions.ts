@@ -84,7 +84,9 @@ export async function handleGenerateReportAction(
     console.log('[handleGenerateReportAction] Resultado BRUTO do fluxo generateReport:', JSON.stringify(result, null, 2));
 
     if (result && result.reportText) {
-      return { success: true, reportText: result.reportText };
+      // Sanitize the AI output to remove any potential HTML tags, ensuring clean text for rendering.
+      const sanitizedReportText = result.reportText.replace(/<\/?[^>]+(>|$)/g, "");
+      return { success: true, reportText: sanitizedReportText };
     } else {
       console.error('[handleGenerateReportAction] Fluxo retornou com sucesso, mas reportText está ausente ou vazio:', result);
       return { success: false, error: "A IA retornou uma resposta inesperada (texto do laudo ausente)." };

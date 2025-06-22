@@ -67,7 +67,6 @@ Instruções Detalhadas para Preenchimento do Modelo:
 3.  Se um órgão nos 'Achados Fornecidos pelo Usuário' tiver uma descrição específica, use-a para esse órgão.
 4.  Se um órgão no modelo não for mencionado ou detalhado nos 'Achados Fornecidos pelo Usuário', você deve usar uma descrição padrão de normalidade para esse órgão (conforme sugerido no modelo) ou, se apropriado, indicar que não foi avaliado ou que não há alterações significativas, MAS SEMPRE MANTENHA O PARÁGRAFO E A ESTRUTURA DO ÓRGÃO NO LAUDO.
 5.  Se uma medida específica não for fornecida nem nos 'Achados' nem nas 'Medidas Anatômicas', utilize o valor representativo normal do modelo para a espécie e raça, ou indique que a medida não foi obtida, mas mantenha o formato da frase que contém a medida no texto.
-6.  **Ao descrever uma alteração significativa ou uma medida específica fornecida pelo usuário, coloque essa parte do texto em negrito usando a sintaxe Markdown (\`**texto em negrito**\`). Por exemplo: \`Paredes normoespessas (duodeno **0,25 cm**/jejuno 0,19 cm/íleo 0,21 cm/cólon 0,11 cm)\` ou \`Baço: **Levemente aumentado com ecotextura heterogênea**.\`**
 
 MODELO OBRIGATÓRIO DO LAUDO (USE ESTA ESTRUTURA E FORMATAÇÃO EXATAS):
 

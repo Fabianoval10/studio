@@ -27,22 +27,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
 
-    const renderBoldMarkdown = (text: string | null) => {
+    const renderReportText = (text: string | null) => {
       if (!text) return null;
-      const paragraphs = text.split('\n').filter(p => p.trim() !== '');
-      return paragraphs.map((paragraph, pIndex) => {
-        const parts = paragraph.split(/(\*\*.*?\*\*)/g);
-        return (
-          <p key={pIndex}>
-            {parts.map((part, index) => {
-              if (part.startsWith('**') && part.endsWith('**')) {
-                return <b key={index}>{part.slice(2, -2)}</b>;
-              }
-              return part;
-            })}
-          </p>
-        );
-      });
+      // Split by newline, filter empty lines, and wrap each line in a <p> tag.
+      return text.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => (
+        <p key={index}>{paragraph}</p>
+      ));
     };
 
     return (
@@ -80,7 +70,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                       {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
                     </div>
                     <div className="report-text-block">
-                        {renderBoldMarkdown(reportText)}
+                        {renderReportText(reportText)}
                     </div>
                   </>
                 )}
