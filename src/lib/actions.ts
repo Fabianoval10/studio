@@ -84,8 +84,8 @@ export async function handleGenerateReportAction(
     console.log('[handleGenerateReportAction] Resultado BRUTO do fluxo generateReport:', JSON.stringify(result, null, 2));
 
     if (result && result.reportText) {
-      // Sanitize the AI output to remove any potential HTML tags, ensuring clean text for rendering.
-      const sanitizedReportText = result.reportText.replace(/<\/?[^>]+(>|$)/g, "");
+      // Sanitize the AI output to remove any potential HTML tags and trim whitespace, ensuring clean text for rendering.
+      const sanitizedReportText = result.reportText.replace(/<\/?[^>]+(>|$)/g, "").trim();
       return { success: true, reportText: sanitizedReportText };
     } else {
       console.error('[handleGenerateReportAction] Fluxo retornou com sucesso, mas reportText está ausente ou vazio:', result);
