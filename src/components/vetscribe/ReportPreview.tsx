@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -93,22 +94,20 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           </div>
   
           {/* --- PAGE 3: REPORT BODY --- */}
-          <div className="print-page with-background" id="report-body-page">
-            <main className="report-main-content">
-              {reportText && (
-                <>
-                  <h3 className="report-title-print">LAUDO DESCRITIVO</h3>
-                  <div className="whitespace-pre-wrap font-sans report-text-block">
-                    {renderBoldMarkdown(reportText)}
-                  </div>
-                </>
-              )}
-            </main>
-          </div>
+          {reportText && (
+            <div className="print-page with-background">
+                <main className="report-main-content">
+                    <h3 className="report-title-print">LAUDO DESCRITIVO</h3>
+                    <div className="whitespace-pre-wrap font-sans report-text-block">
+                        {renderBoldMarkdown(reportText)}
+                    </div>
+                </main>
+            </div>
+          )}
   
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
-            <div className="print-page with-background" id="images-page">
+            <div className="print-page with-background">
               <main className="report-main-content">
                   <h3 className="report-title-print">IMAGENS DO EXAME</h3>
                   <div className="print-image-grid">
@@ -165,7 +164,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             .print-page {
-              page-break-after: always !important;
+              page-break-after: always;
               height: 100%;
               width: 100%;
               position: relative;
@@ -174,16 +173,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             #printable-area > .print-page:last-child {
-                page-break-after: auto !important;
+                page-break-after: auto;
             }
 
             .print-fill-image {
-                position: absolute;
-                top: 0;
-                left: 0;
                 width: 100%;
                 height: 100%;
-                object-fit: cover !important;
+                object-fit: cover;
             }
   
             #info-page {
@@ -191,34 +187,34 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                flex-direction: column;
                justify-content: space-between;
                text-align: center;
-               padding: 2cm !important;
+               padding: 2cm;
             }
 
             .info-page-footer {
                 padding-top: 1cm;
-                font-family: 'Montserrat', sans-serif !important;
-                font-size: 10pt !important;
-                color: #555 !important;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 10pt;
+                color: #555;
             }
             
             /* --- FONT STYLES --- */
             .cover-title-print, .report-title-print, .info-title-print {
-              font-family: 'Montserrat', sans-serif !important;
-              font-weight: 300 !important;
-              font-size: 18pt !important;
-              color: hsl(var(--primary)) !important;
+              font-family: 'Montserrat', sans-serif;
+              font-weight: 300;
+              font-size: 18pt;
+              color: hsl(var(--primary));
               margin-bottom: 1rem;
               text-align: left;
             }
 
             .info-body-print, .info-body-print *, .report-text-block, .report-text-block * {
-              font-family: 'Montserrat', sans-serif !important;
-              font-size: 11pt !important;
+              font-family: 'Montserrat', sans-serif;
+              font-size: 11pt;
               line-height: 1.5;
-              color: black !important;
+              color: black;
             }
             .report-text-block b {
-               font-weight: 700 !important;
+               font-weight: 700;
             }
             
             /* --- IMAGE GRID --- */
@@ -229,7 +225,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin-top: 1rem;
             }
             .print-image-item {
-              page-break-inside: avoid !important;
+              page-break-inside: avoid;
               border: 1px solid #ccc;
               padding: 2px;
               border-radius: 4px;
@@ -243,11 +239,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               background-repeat: no-repeat !important;
             }
 
-            .with-background > .report-main-content {
-              padding: 3cm 2.5cm !important;
+            .report-main-content {
+              padding: 3cm 2.5cm;
             }
           }
         `}</style>
       </>
     );
   }
+
+    
