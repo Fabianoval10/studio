@@ -22,26 +22,25 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   );
 };
 
-const renderBoldMarkdown = (text: string | null) => {
-  if (!text) return null;
-  // This regex handles paragraphs and bolding correctly.
-  return text.split('\n').map((paragraph, pIndex) => (
-    <p key={pIndex} style={{ minHeight: '1.2em' /* ensure empty lines create space */ }}>
-      {paragraph.split(/(\*\*.*?\*\*)/g).map((part, index) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
-          return <b key={index}>{part.slice(2, -2)}</b>;
-        }
-        return part;
-      })}
-    </p>
-  ));
-};
-
-
 export function ReportPreview({ formData, reportText, uploadedImages }: ReportPreviewProps) {
     if (!formData) return null;
 
     const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
+
+    const renderBoldMarkdown = (text: string | null) => {
+      if (!text) return null;
+      // This regex handles paragraphs and bolding correctly.
+      return text.split('\n').map((paragraph, pIndex) => (
+        <p key={pIndex} style={{ minHeight: '1.2em' /* ensure empty lines create space */ }}>
+          {paragraph.split(/(\*\*.*?\*\*)/g).map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              return <b key={index}>{part.slice(2, -2)}</b>;
+            }
+            return part;
+          })}
+        </p>
+      ));
+    };
 
     return (
       <>
@@ -53,7 +52,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           
           {/* --- PAGE 2: INFO (with letterhead) --- */}
           <div className="print-page with-background">
-            <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background-image" />
+            <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-background-image" />
             <main className="report-main-content">
               {/* The title "INFORMAÇÕES DO PACIENTE E DO EXAME" is part of the background image */}
               <div className="info-grid-print">
@@ -81,7 +80,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           {/* --- PAGE 3: REPORT BODY --- */}
           {reportText && (
             <div className="print-page with-background">
-                <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background-image" />
+                <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-background-image" />
                 <main className="report-main-content">
                     {/* The title "LAUDO DESCRITIVO" is part of the background image */}
                     <div className="report-date-print">
@@ -97,7 +96,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
             <div className="print-page with-background">
-              <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background-image" />
+              <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-background-image" />
               <main className="report-main-content">
                   {/* The title "IMAGENS DO EXAME" is part of the background image */}
                   <div className="print-image-grid">
@@ -118,7 +117,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           
           {/* --- FINAL PAGE --- */}
           <div className="print-page">
-            <img src="/pagina%20fim.png" alt="Página Final do Laudo" className="print-fill-image" />
+            <img src="/fim.png" alt="Página Final do Laudo" className="print-fill-image" />
           </div>
         </div>
         <style jsx global>{`
