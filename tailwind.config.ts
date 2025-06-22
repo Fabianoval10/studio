@@ -17,7 +17,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Belleza', 'sans-serif'],
+        sans: ['"Be Vietnam Pro"', 'sans-serif'],
         headline: ['Belleza', 'sans-serif'],
         body: ['Alegreya', 'serif'],
         code: ['"Source Code Pro"', 'monospace'],
