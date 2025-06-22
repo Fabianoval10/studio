@@ -37,6 +37,7 @@ const renderBoldMarkdown = (text: string | null) => {
   );
 };
 
+
 export function ReportPreview({ formData, reportText, uploadedImages }: ReportPreviewProps) {
     if (!formData) return null;
 
@@ -82,7 +83,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             <div className="print-page">
                 <img src="/folha%20padrão.jpg" alt="Papel Timbrado" className="print-background" />
                 <main className="report-main-content">
-                    <h3 className="report-title-print">LAUDO DESCRITIVO</h3>
+                    {/* The title is in the background image, so it's removed from here. */}
+                    <div className="report-date-print">
+                      {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                    </div>
                     <div className="whitespace-pre-wrap font-sans report-text-block">
                         {renderBoldMarkdown(reportText)}
                     </div>
@@ -162,27 +166,28 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 page-break-after: auto;
             }
 
-            .print-fill-image {
+            .print-fill-image, .print-background {
+                position: absolute;
+                top: 0;
+                left: 0;
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                object-fit: fill; /* Stretch to fill the A4 page */
             }
-            
+
+            .print-fill-image {
+              z-index: 2;
+            }
+
             .print-background {
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              object-fit: fill; /* Stretch to fill the A4 page */
-              z-index: 1;
+                z-index: 1;
             }
-            
+
             /* --- FONT & LAYOUT STYLES --- */
             .report-main-content {
               position: relative;
               z-index: 2;
-              padding: 3cm 2.5cm;
+              padding: 5.5cm 2.5cm 2.5cm 2.5cm;
               height: 100%;
               box-sizing: border-box;
             }
@@ -197,6 +202,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             .report-title-print.text-center {
               text-align: center;
+            }
+            
+            .report-date-print {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 10pt;
+                color: #4a4a4a;
+                text-align: right;
+                margin-bottom: 2.5rem;
+                padding-right: 0.2cm;
             }
 
             .info-body-print, .info-body-print *, .report-text-block, .report-text-block *, .info-grid-print * {
@@ -246,4 +260,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
+    
+
     
