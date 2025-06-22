@@ -29,35 +29,31 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const renderBoldMarkdown = (text: string | null) => {
       if (!text) return null;
-      // Replace newline characters with <br /> tags and handle bold markdown
-      const parts = text.split(/(\*\*.*?\*\*|\n)/g);
-      return (
-        <p>
-          {parts.map((part, index) => {
-            if (part === '\n') {
-              return <br key={index} />;
-            }
-            if (part.startsWith('**') && part.endsWith('**')) {
-              return <b key={index}>{part.slice(2, -2)}</b>;
-            }
-            return part;
-          })}
-        </p>
-      );
+      const paragraphs = text.split('\n').filter(p => p.trim() !== '');
+      return paragraphs.map((paragraph, pIndex) => {
+        const parts = paragraph.split(/(\*\*.*?\*\*)/g);
+        return (
+          <p key={pIndex} style={{ marginBottom: '1em' }}>
+            {parts.map((part, index) => {
+              if (part.startsWith('**') && part.endsWith('**')) {
+                return <b key={index}>{part.slice(2, -2)}</b>;
+              }
+              return part;
+            })}
+          </p>
+        );
+      });
     };
 
     return (
       <>
         <div id="printable-area">
-          {/* Page 1: Cover Page */}
           <div className="print-page print-cover-page">
              <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" />
           </div>
           
           <div className="print-content-wrapper">
-            {/* Page 2: Patient Info */}
-            <div className="print-page with-background">
-              <main>
+             <main>
                 <div className="info-grid-print">
                   <div className="info-section-print">
                     <h4 className="info-subtitle-print">Paciente</h4>
@@ -77,27 +73,19 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                     <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
                   </div>
                 </div>
-              </main>
-            </div>
 
-            {/* Page 3: Report Text */}
-            {reportText && (
-              <div className="print-page with-background">
-                <main>
-                  <div className="report-date-print">
-                    {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
-                  </div>
-                  <div className="report-text-block">
-                      {renderBoldMarkdown(reportText)}
-                  </div>
-                </main>
-              </div>
-            )}
-    
-            {/* Page 4: Images */}
-            {uploadedImages.length > 0 && (
-               <div className="print-page with-background">
-                 <main>
+                {reportText && (
+                  <>
+                    <div className="report-date-print">
+                      {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
+                    </div>
+                    <div className="report-text-block">
+                        {renderBoldMarkdown(reportText)}
+                    </div>
+                  </>
+                )}
+        
+                {uploadedImages.length > 0 && (
                   <div className="print-image-grid">
                     {uploadedImages.map((img, index) => (
                       <div key={img.id} className="print-image-item">
@@ -109,14 +97,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                       </div>
                     ))}
                   </div>
-                 </main>
-              </div>
-            )}
+                )}
+             </main>
           </div>
           
-          {/* Last Page: Final Page */}
           <div className="print-page print-final-page">
-            <img src="/fim.png" alt="Página Final do Laudo" className="print-fill-image" />
+            <img src="/fim.jpg" alt="Página Final do Laudo" className="print-fill-image" />
           </div>
         </div>
 
@@ -126,6 +112,16 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
   
           @media print {
+            body {
+                background-image: url('/timbrado.jpg');
+                background-size: 210mm 297mm;
+                background-repeat: no-repeat;
+                background-position: center;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
             @page {
               size: A4;
               margin: 0;
@@ -135,29 +131,26 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin: 0;
               padding: 0;
               width: 100%;
-              background-color: white !important;
-              -webkit-print-color-adjust: exact !important;
-              color-adjust: exact !important;
-              print-color-adjust: exact !important;
             }
             
             .no-print { display: none !important; }
             .print-container, #printable-area { display: block !important; }
-            
+
             .print-page {
-              width: 210mm;
-              height: 297mm;
-              overflow: hidden;
-              position: relative;
               page-break-after: always;
             }
+
             .print-page:last-child {
               page-break-after: auto;
             }
+            
+            .print-cover-page, .print-final-page {
+                background: white !important;
+            }
 
             .print-fill-image {
-                width: 100%;
-                height: 100%;
+                width: 210mm;
+                height: 297mm;
                 object-fit: cover;
                 position: absolute;
                 top: 0;
@@ -165,24 +158,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
             }
             
-            .with-background::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background-image: url('/timbrado.jpg');
-              background-size: cover;
-              z-index: 1;
-            }
-
-            .print-page > main {
+            .print-content-wrapper {
               position: relative;
               z-index: 2;
+              color: black;
+            }
+
+            .print-content-wrapper main {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
-              box-sizing: border-box;
-              height: 100%;
             }
 
             .info-grid-print {
@@ -190,6 +173,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
               page-break-after: avoid;
+              page-break-inside: avoid;
             }
             .info-subtitle-print {
               font-weight: 700;
@@ -208,13 +192,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 text-align: right;
                 margin-bottom: 2.5rem;
                 padding-right: 0.2cm;
+                page-break-after: avoid;
+                page-break-inside: avoid;
             }
             .report-text-block {
               font-size: 11pt;
               line-height: 1.6;
             }
             .report-text-block p {
-                margin: 0;
+                margin: 0 0 1em 0;
             }
             .report-text-block b, .info-grid-print b {
                font-weight: 700;
@@ -226,6 +212,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: repeat(2, 1fr);
               gap: 0.8cm;
               margin-top: 1rem;
+              page-break-before: always;
             }
             .print-image-item {
               page-break-inside: avoid;
