@@ -3,7 +3,7 @@
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PawPrint } from "lucide-react";
 import NextImage from "next/image";
 import { format } from "date-fns";
@@ -57,7 +57,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 priority
              />
           </div>
-          <div className="print-page-break"></div>
           
           {/* --- PAGE 2: INFO --- */}
           <div className="print-page" id="cover-page">
@@ -99,7 +98,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               </div>
             </CardFooter>
           </div>
-          <div className="print-page-break"></div>
   
           {/* --- PAGE 3: REPORT BODY --- */}
           <div className="print-page" id="report-body-page">
@@ -136,49 +134,45 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
   
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
-            <>
-              <div className="print-page-break"></div>
-              <div className="print-page" id="images-page">
-                <header className="print-report-header">
-                   <div className="flex justify-between items-center">
-                      <span className="font-bold text-primary">Baddha Ultrassonografia</span>
-                      <span>Imagens do Exame - Paciente: {formData.petName}</span>
-                   </div>
-                </header>
-                <main className="report-main-content">
-                    <h3 className="report-title-print">IMAGENS DO EXAME</h3>
-                    <div className="print-image-grid">
-                      {uploadedImages.map((img, index) => (
-                        <div key={img.id} className="print-image-item">
-                          <NextImage
-                            src={img.previewUrl}
-                            alt={`Imagem do exame ${index + 1}`}
-                            width={300} 
-                            height={225}
-                            className="w-full h-auto rounded-md"
-                            data-ai-hint="ultrasound medical"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                </main>
-                <footer className="print-report-footer">
-                  <NextImage
-                    src="/ASSINATURA.png"
-                    alt="Assinatura Digitalizada"
-                    width={150} 
-                    height={50} 
-                    data-ai-hint="doctor signature"
-                    className="mx-auto"
-                  />
-                  <p className="text-xs text-center mt-1 info-body-print">{formData.vetName}</p>
-                </footer>
-              </div>
-            </>
+            <div className="print-page" id="images-page">
+              <header className="print-report-header">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-primary">Baddha Ultrassonografia</span>
+                    <span>Imagens do Exame - Paciente: {formData.petName}</span>
+                  </div>
+              </header>
+              <main className="report-main-content">
+                  <h3 className="report-title-print">IMAGENS DO EXAME</h3>
+                  <div className="print-image-grid">
+                    {uploadedImages.map((img, index) => (
+                      <div key={img.id} className="print-image-item">
+                        <NextImage
+                          src={img.previewUrl}
+                          alt={`Imagem do exame ${index + 1}`}
+                          width={300} 
+                          height={225}
+                          className="w-full h-auto rounded-md"
+                          data-ai-hint="ultrasound medical"
+                        />
+                      </div>
+                    ))}
+                  </div>
+              </main>
+              <footer className="print-report-footer">
+                <NextImage
+                  src="/ASSINATURA.png"
+                  alt="Assinatura Digitalizada"
+                  width={150} 
+                  height={50} 
+                  data-ai-hint="doctor signature"
+                  className="mx-auto"
+                />
+                <p className="text-xs text-center mt-1 info-body-print">{formData.vetName}</p>
+              </footer>
+            </div>
           )}
           
           {/* --- FINAL PAGE --- */}
-          <div className="print-page-break"></div>
           <div className="print-page" id="final-image-page">
             <NextImage
                 src="/pagina fim.png"
@@ -189,7 +183,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 data-ai-hint="report back"
             />
           </div>
-
         </div>
         <style jsx global>{`
           .print-container {
@@ -199,6 +192,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           @media print {
             body, html {
               background-color: white !important;
+              margin: 0;
+              padding: 0;
             }
             
             .no-print {
@@ -210,25 +205,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             #printable-area {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              padding: 0;
-              margin: 0;
-              background-color: transparent !important;
+              /* No special positioning needed */
             }
 
-            .print-page-break {
-              page-break-after: always !important;
-              display: block;
-              height: 0;
-              visibility: hidden;
-            }
-  
             .print-page {
               width: 100%;
-              height: 100vh;
+              height: 100vh; /* Use viewport height to define a "page" */
               padding: 0 !important;
               margin: 0 !important;
               border: none !important;
@@ -236,16 +218,26 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               background-color: white !important;
               display: flex;
               flex-direction: column;
+              page-break-after: always !important; /* This is the key change */
               page-break-inside: avoid !important;
               -webkit-print-color-adjust: exact !important;
               color-adjust: exact !important;
               position: relative;
+            }
+
+            /* This rule prevents a blank page from being added at the very end */
+            #printable-area > .print-page:last-of-type {
+              page-break-after: auto !important;
             }
   
             #cover-page {
                justify-content: space-between;
                text-align: center;
                padding: 2cm !important;
+            }
+
+            #final-image-page img {
+                object-fit: cover !important;
             }
             
             .report-main-content {
@@ -306,5 +298,3 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
-
-    
