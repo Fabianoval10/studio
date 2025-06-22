@@ -153,19 +153,26 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               background-size: cover !important;
               background-position: center !important;
               background-repeat: no-repeat !important;
+              page-break-inside: avoid;
             }
 
             .print-cover-page {
                 page-break-after: always;
+                background-image: url('/capa.jpg') !important;
             }
 
             .print-final-page {
                 page-break-before: always;
+                background-image: url('/fim.jpg') !important;
+            }
+            
+            .print-page-content {
+                display: none;
             }
 
             .print-content-wrapper {
               /* Margins for the letterhead */
-              padding: 6.0cm 2cm 7.5cm 2.5cm;
+              padding: 4.5cm 2cm 5cm 2.5cm;
               color: black;
               background: transparent;
               width: 210mm;
