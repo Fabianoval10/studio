@@ -39,37 +39,6 @@ const renderBoldMarkdown = (text: string | null) => {
   );
 };
 
-const ReportPageHeader: React.FC<{ patientName?: string }> = ({ patientName }) => (
-    <header className="print-report-header">
-        <div className="flex items-center gap-3">
-            <div className="bg-primary text-primary-foreground p-1.5 rounded-md">
-                <PawPrint className="w-5 h-5" />
-            </div>
-            <h1 className="text-lg font-headline text-primary font-bold">Baddha Ultrassonografia</h1>
-        </div>
-        {patientName && <span className="text-sm text-foreground">Paciente: {patientName}</span>}
-    </header>
-);
-
-const ReportPageFooter: React.FC<{ vetName?: string, clinicName?: string }> = ({ vetName, clinicName }) => (
-    <footer className="print-report-footer">
-        <div className="signature-area">
-            <NextImage
-                src="/ASSINATURA.png"
-                alt="Assinatura Digitalizada"
-                width={150} 
-                height={50} 
-                data-ai-hint="doctor signature"
-            />
-            <p className="text-xs text-center mt-1">{vetName}</p>
-        </div>
-        <div className="clinic-info">
-            <p className="font-bold">{clinicName}</p>
-        </div>
-    </footer>
-);
-
-
 export function ReportPreview({ formData, reportText, uploadedImages }: ReportPreviewProps) {
     if (!formData) return null;
 
@@ -78,7 +47,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     return (
       <>
         <div id="printable-area">
-          {/* --- PAGE 1: IMAGE COVER --- */}
+          {/* --- PAGE 1: COVER --- */}
           <div className="print-page">
              <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" data-ai-hint="report cover" />
           </div>
@@ -125,8 +94,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           </div>
   
           {/* --- PAGE 3: REPORT BODY --- */}
-          <div className="print-page" id="report-body-page">
-            <ReportPageHeader patientName={formData.petName}/>
+          <div className="print-page with-background" id="report-body-page">
             <main className="report-main-content">
               {reportText && (
                 <>
@@ -137,13 +105,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 </>
               )}
             </main>
-            <ReportPageFooter vetName={formData.vetName} clinicName={formData.clinicName} />
           </div>
   
           {/* --- PAGE 4: IMAGES (Conditional) --- */}
           {uploadedImages.length > 0 && (
-            <div className="print-page" id="images-page">
-              <ReportPageHeader patientName={formData.petName} />
+            <div className="print-page with-background" id="images-page">
               <main className="report-main-content">
                   <h3 className="report-title-print">IMAGENS DO EXAME</h3>
                   <div className="print-image-grid">
@@ -161,7 +127,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                     ))}
                   </div>
               </main>
-              <ReportPageFooter vetName={formData.vetName} clinicName={formData.clinicName} />
             </div>
           )}
           
@@ -194,7 +159,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .print-page {
               page-break-after: always !important;
-              page-break-inside: avoid !important;
               height: 100vh;
               display: flex;
               flex-direction: column;
@@ -220,30 +184,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                justify-content: space-between;
                text-align: center;
                padding: 2cm !important;
-            }
-            
-            .report-main-content {
-              flex-grow: 1;
-              padding: 0 2cm 1cm 2cm !important;
-            }
-
-            .print-report-header {
-               display: flex !important;
-               justify-content: space-between;
-               align-items: center;
-               padding: 1cm 2cm 1cm 2cm !important;
-               border-bottom: 2px solid hsl(var(--primary));
-            }
-  
-            .print-report-footer {
-              display: flex !important;
-              justify-content: space-between;
-              align-items: flex-end;
-              padding: 1cm 2cm 1cm 2cm;
-              border-top: 1px solid hsl(var(--border));
-              margin-top: auto;
-              width: 100%;
-              box-sizing: border-box;
             }
 
             .info-page-footer {
@@ -287,18 +227,21 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               border-radius: 4px;
             }
 
-            /* Footer specific styles */
-            .signature-area {
-                text-align: center;
+            /* --- NEW BACKGROUND STYLES --- */
+            .print-page.with-background {
+              background-image: url('/folha padrão.jpg') !important;
+              background-size: 100% 100% !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
             }
-            .clinic-info {
-                text-align: right;
-                font-size: 9pt;
+
+            .with-background > .report-main-content {
+              flex-grow: 1;
+              padding: 3cm 2.5cm !important;
             }
+
           }
         `}</style>
       </>
     );
   }
-
-    
