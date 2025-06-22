@@ -3,7 +3,7 @@
 
 import type { ReportFormData, UploadedImage } from "@/types";
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { PawPrint } from "lucide-react";
 import NextImage from "next/image";
 import { format } from "date-fns";
@@ -204,8 +204,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: block !important;
             }
             
-            #printable-area {
-              /* No special positioning needed */
+            #printable-area > .print-page {
+              page-break-after: always !important;
+              page-break-inside: avoid !important;
+            }
+
+            /* This rule prevents a blank page from being added at the very end */
+            #printable-area > .print-page:last-of-type {
+              page-break-after: auto !important;
             }
 
             .print-page {
@@ -218,16 +224,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               background-color: white !important;
               display: flex;
               flex-direction: column;
-              page-break-after: always !important; /* This is the key change */
-              page-break-inside: avoid !important;
               -webkit-print-color-adjust: exact !important;
               color-adjust: exact !important;
               position: relative;
-            }
-
-            /* This rule prevents a blank page from being added at the very end */
-            #printable-area > .print-page:last-of-type {
-              page-break-after: auto !important;
             }
   
             #cover-page {
@@ -236,6 +235,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                padding: 2cm !important;
             }
 
+            #cover-image-page img,
             #final-image-page img {
                 object-fit: cover !important;
             }
