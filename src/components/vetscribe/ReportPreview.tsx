@@ -33,7 +33,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       return paragraphs.map((paragraph, pIndex) => {
         const parts = paragraph.split(/(\*\*.*?\*\*)/g);
         return (
-          <p key={pIndex} style={{ marginBottom: '1em' }}>
+          <p key={pIndex}>
             {parts.map((part, index) => {
               if (part.startsWith('**') && part.endsWith('**')) {
                 return <b key={index}>{part.slice(2, -2)}</b>;
@@ -48,10 +48,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     return (
       <>
         <div id="printable-area">
-          <div className="print-page print-cover-page">
-             <img src="/capa.jpg" alt="Capa do Laudo" className="print-fill-image" />
-          </div>
+          {/* 01: Capa do laudo */}
+          <div className="print-page print-cover-page"></div>
           
+          {/* 02: Conteúdo do laudo */}
           <div className="print-content-wrapper">
              <main>
                 <div className="info-grid-print">
@@ -101,9 +101,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
              </main>
           </div>
           
-          <div className="print-page print-final-page">
-            <img src="/fim.jpg" alt="Página Final do Laudo" className="print-fill-image" />
-          </div>
+          {/* 03: Ultima pagina */}
+          <div className="print-page print-final-page"></div>
         </div>
 
         <style jsx global>{`
@@ -112,16 +111,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
   
           @media print {
-            body {
-                background-image: url('/timbrado.jpg');
-                background-size: 210mm 297mm;
-                background-repeat: no-repeat;
-                background-position: center;
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
             @page {
               size: A4;
               margin: 0;
@@ -131,45 +120,46 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin: 0;
               padding: 0;
               width: 100%;
+              -webkit-print-color-adjust: exact !important;
+              color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
             
+            body {
+                background-image: url('/timbrado.jpg');
+                background-size: 210mm 297mm;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+
             .no-print { display: none !important; }
             .print-container, #printable-area { display: block !important; }
 
             .print-page {
-              page-break-after: always;
-            }
-
-            .print-page:last-child {
-              page-break-after: auto;
+              width: 210mm;
+              height: 297mm;
+              position: relative;
             }
             
-            .print-cover-page, .print-final-page {
-                background: white !important;
+            .print-cover-page {
+                background-image: url('/capa.jpg') !important;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                page-break-after: always;
             }
 
             .print-final-page {
+                background-image: url('/fim.jpg') !important;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
                 page-break-before: always;
-            }
-
-            .print-fill-image {
-                width: 210mm;
-                height: 297mm;
-                object-fit: cover;
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 1;
-            }
-            
-            .print-content-wrapper {
-              position: relative;
-              z-index: 2;
-              color: black;
             }
 
             .print-content-wrapper main {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
+              color: black;
             }
 
             .info-grid-print {
@@ -178,6 +168,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               gap: 2.5rem;
               page-break-after: avoid;
               page-break-inside: avoid;
+              font-size: 11pt;
             }
             .info-subtitle-print {
               font-weight: 700;
@@ -205,6 +196,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             .report-text-block p {
                 margin: 0 0 1em 0;
+                text-align: justify;
             }
             .report-text-block b, .info-grid-print b {
                font-weight: 700;
@@ -216,7 +208,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: repeat(2, 1fr);
               gap: 0.8cm;
               margin-top: 1rem;
-              page-break-before: always;
+              page-break-before: auto;
+              page-break-inside: avoid;
             }
             .print-image-item {
               page-break-inside: avoid;
