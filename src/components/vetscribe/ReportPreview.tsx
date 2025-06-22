@@ -166,7 +166,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-main-content {
               position: relative;
               z-index: 2;
-              padding: 6.0cm 2cm 5.5cm 2.5cm;
+              padding: 6.0cm 2cm 7.5cm 2.5cm;
               height: 100%;
               box-sizing: border-box;
               font-family: 'Montserrat', sans-serif;
