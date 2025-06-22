@@ -47,14 +47,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         <div id="printable-area">
           {/* --- PAGE 1: IMAGE COVER --- */}
           <div className="print-page" id="cover-image-page">
-             <NextImage
+             <img
                 src="/capa.jpg"
                 alt="Capa do Laudo"
-                layout="fill"
-                objectFit="cover"
-                objectPosition="center"
+                className="print-fill-image"
                 data-ai-hint="report cover"
-                priority
              />
           </div>
           
@@ -174,12 +171,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           
           {/* --- FINAL PAGE --- */}
           <div className="print-page" id="final-image-page">
-            <NextImage
+            <img
                 src="/pagina fim.png"
                 alt="Página Final do Laudo"
-                layout="fill"
-                objectFit="cover"
-                objectPosition="center"
+                className="print-fill-image"
                 data-ai-hint="report back"
             />
           </div>
@@ -209,14 +204,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               page-break-inside: avoid !important;
             }
 
-            /* This rule prevents a blank page from being added at the very end */
             #printable-area > .print-page:last-of-type {
               page-break-after: auto !important;
             }
 
             .print-page {
               width: 100%;
-              height: 100vh; /* Use viewport height to define a "page" */
+              height: 100vh;
               padding: 0 !important;
               margin: 0 !important;
               border: none !important;
@@ -228,16 +222,20 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               color-adjust: exact !important;
               position: relative;
             }
+
+            .print-fill-image {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover !important;
+            }
   
             #cover-page {
                justify-content: space-between;
                text-align: center;
                padding: 2cm !important;
-            }
-
-            #cover-image-page img,
-            #final-image-page img {
-                object-fit: cover !important;
             }
             
             .report-main-content {
@@ -298,3 +296,5 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       </>
     );
   }
+
+    
