@@ -36,7 +36,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     return (
       <>
-        {/* The HTML structure is the same, representing the document flow */}
         <div id="printable-area">
           <div className="print-cover-page">&nbsp;</div>
           <div className="print-content-wrapper">
@@ -90,14 +89,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           <div className="print-final-page">&nbsp;</div>
         </div>
 
-        {/* This new CSS block implements the robust printing strategy */}
         <style jsx global>{`
-          /*
-            On screen, we use a robust technique to hide the print container.
-            Instead of 'display: none', which can prevent browsers from loading
-            assets, we move it off-screen. This ensures all images are pre-loaded
-            and the layout is calculated before printing begins.
-          */
           .print-container {
             position: absolute !important;
             left: -9999px !important;
@@ -108,7 +100,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
 
           @media print {
-            /* 1. Reset and Isolate: Hide everything except our print container */
             body > *:not(.print-container) {
               display: none !important;
             }
@@ -122,7 +113,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               overflow: visible !important;
             }
 
-            /* 2. Global Print Setup */
             @page {
               size: A4;
               margin: 0;
@@ -134,7 +124,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               print-color-adjust: exact !important;
             }
             
-            /* 3. Define Page Backgrounds and Breaks */
             body {
                 background-image: url('/timbrado.jpg') !important;
                 background-size: 210mm 297mm !important;
@@ -160,7 +149,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 page-break-before: always;
             }
 
-            /* 4. Style Content Wrapper and its contents */
             .print-content-wrapper {
               padding: 6.0cm 2cm 7.5cm 2.5cm;
               color: black;
@@ -211,7 +199,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(3, 1fr);
-              gap: 0.4cm;
+              grid-auto-rows: 2.1cm;
+              gap: 0.2cm;
               margin-top: 1.5rem;
               page-break-before: auto;
             }
@@ -219,7 +208,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               border: 1px solid #ccc;
               padding: 2px;
               border-radius: 4px;
-              aspect-ratio: 4 / 3;
               overflow: hidden;
               page-break-inside: avoid;
               display: flex;
