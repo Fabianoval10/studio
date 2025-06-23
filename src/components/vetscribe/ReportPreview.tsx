@@ -172,7 +172,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             .print-content-wrapper {
               /* Margins for the letterhead */
-              padding: 4.5cm 2cm 5cm 2.5cm;
+              padding: 2cm 2cm 5cm 2.5cm;
               color: black;
               background: transparent;
               width: 210mm;
