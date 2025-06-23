@@ -45,7 +45,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             <div className="print-page print-cover-page">&nbsp;</div>
 
             {/* Page 2: Content (Patient Info, Exam Info, Report Text) */}
-            <div className="print-page">
+            <div className="print-page print-content-page">
               <div className="print-content-wrapper">
                 <div className="report-content-group">
                   <div className="info-grid-print">
@@ -154,8 +154,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               position: relative;
             }
 
-            .print-page:not(:last-child) {
-              page-break-after: always;
+            .print-content-page,
+            .print-image-page,
+            .print-final-page {
+              page-break-before: always;
             }
             
             .print-cover-page {
