@@ -39,7 +39,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         {/* Container for printing, positioned off-screen */}
         <div id="printable-area" className="print-container">
           {/* Cover Page */}
-          <div className="print-page print-cover-page" style={{ backgroundImage: "url('/capa.jpg')" }}>
+          <div className="print-page print-cover-page">
             &nbsp;
           </div>
 
@@ -97,14 +97,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           </div>
 
           {/* Final Page */}
-          <div className="print-page print-final-page" style={{ backgroundImage: "url('/fim.jpg')" }}>
+          <div className="print-page print-final-page">
             &nbsp;
           </div>
         </div>
 
         <style jsx global>{`
           .print-container {
-            /* Position off-screen to pre-render without being visible */
             position: absolute !important;
             left: -9999px !important;
             top: auto !important;
@@ -114,7 +113,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
 
           @media print {
-            /* Hide everything except the print container */
             body > *:not(.print-container) {
               display: none !important;
             }
@@ -140,7 +138,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             body {
-                /* Default background for all content pages */
                 background-image: url('/timbrado.jpg') !important;
                 background-size: 210mm 297mm !important;
                 background-repeat: no-repeat !important;
@@ -171,7 +168,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             .print-content-wrapper {
-              /* Margins for the letterhead */
               padding: 2cm 2cm 5cm 2.5cm;
               color: black;
               background: transparent;
@@ -183,7 +179,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               padding: 0;
             }
             
-            /* This group ensures all its content stays on one page */
             .report-content-group {
               page-break-inside: avoid;
             }
@@ -224,13 +219,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(3, 1fr);
-              grid-auto-rows: 2.1cm; /* This creates the 3x7 grid for 21 images */
-              gap: 0.2cm;
+              grid-auto-rows: 2.9cm;
+              gap: 0.4cm;
               margin-top: 1.5rem;
               page-break-before: auto;
             }
             .print-image-item {
-              border: 1px solid #ccc;
+              border: 1px solid #e0e0e0;
               padding: 2px;
               border-radius: 4px;
               overflow: hidden;
@@ -238,11 +233,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               justify-content: center;
               align-items: center;
+              background-color: #fcfcfc;
             }
             .print-image-item img {
               width: 100%;
               height: 100%;
-              object-fit: cover;
+              object-fit: contain;
               border-radius: 2px;
             }
           }
