@@ -59,22 +59,22 @@ REGRAS:
 
 DADOS BRUTOS FORNECIDOS:
 - Espécie: {{{species}}}
-{{#if figado}}- Fígado: {{{figado}}}{{/if}}
-{{#if vesiculaBiliar}}- Vesícula Biliar: {{{vesiculaBiliar}}}{{/if}}
-{{#if pancreas}}- Pâncreas: {{{pancreas}}}{{/if}}
-{{#if estomago}}- Estômago: {{{estomago}}}{{/if}}
-{{#if intestino}}- Alças Intestinais: {{{intestino}}}{{/if}}
-{{#if rimDireito}}- Rim Direito: {{{rimDireito}}}{{/if}}
-{{#if rimEsquerdo}}- Rim Esquerdo: {{{rimEsquerdo}}}{{/if}}
-{{#if baco}}- Baço: {{{baco}}}{{/if}}
-{{#if adrenais}}- Adrenais: {{{adrenais}}}{{/if}}
-{{#if vesiculaUrinaria}}- Vesícula Urinária: {{{vesiculaUrinaria}}}{{/if}}
-{{#if prostata}}- Próstata: {{{prostata}}}{{/if}}
-{{#if uteroOvarios}}- Útero e Ovários: {{{uteroOvarios}}}{{/if}}
-{{#if linfonodos}}- Linfonodos: {{{linfonodos}}}{{/if}}
-{{#if liquidoLivre}}- Líquido Livre: {{{liquidoLivre}}}{{/if}}
-{{#if outros}}- Outros Achados: {{{outros}}}{{/if}}
-{{#if additionalNotes}}- Notas para Conclusão: {{{additionalNotes}}}{{/if}}
+- Fígado: {{{figado}}}
+- Vesícula Biliar: {{{vesiculaBiliar}}}
+- Pâncreas: {{{pancreas}}}
+- Estômago: {{{estomago}}}
+- Alças Intestinais: {{{intestino}}}
+- Rim Direito: {{{rimDireito}}}
+- Rim Esquerdo: {{{rimEsquerdo}}}
+- Baço: {{{baco}}}
+- Adrenais: {{{adrenais}}}
+- Vesícula Urinária: {{{vesiculaUrinaria}}}
+- Próstata: {{{prostata}}}
+- Útero e Ovários: {{{uteroOvarios}}}
+- Linfonodos: {{{linfonodos}}}
+- Líquido Livre: {{{liquidoLivre}}}
+- Outros Achados: {{{outros}}}
+- Notas para Conclusão: {{{additionalNotes}}}
 `,
 });
 
