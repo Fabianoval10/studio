@@ -36,17 +36,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     return (
       <>
-        {/* Container for printing, positioned off-screen */}
-        <div id="printable-area" className="print-container">
-          {/* Cover Page */}
-          <div className="print-page print-cover-page">
-            &nbsp;
-          </div>
+        {/* This container is positioned off-screen to pre-render for printing, but is visible to the browser */}
+        <div id="printable-area" className="print-only-container">
+            {/* Page 1: Cover */}
+            <div className="print-page print-cover-page">&nbsp;</div>
 
-          {/* Main content with letterhead background */}
-          <div className="print-content-wrapper">
-             <main>
-                {/* NEW WRAPPER to keep patient data, exam data, and report text together */}
+            {/* Page 2: Content (Patient Info, Exam Info, Report Text) */}
+            <div className="print-page">
+              <div className="print-content-wrapper">
                 <div className="report-content-group">
                   <div className="info-grid-print">
                     <div className="info-section-print">
@@ -79,9 +76,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                     </>
                   )}
                 </div>
+              </div>
+            </div>
 
-                {uploadedImages.length > 0 && (
-                  <div className="print-image-grid">
+            {/* Page 3...N: Images */}
+            {uploadedImages.length > 0 && (
+              <div className="print-page print-image-page">
+                <div className="print-image-grid">
                     {uploadedImages.map((img, index) => (
                       <div key={img.id} className="print-image-item">
                         <img
@@ -91,39 +92,38 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                         />
                       </div>
                     ))}
-                  </div>
-                )}
-             </main>
-          </div>
+                </div>
+              </div>
+            )}
 
-          {/* Final Page */}
-          <div className="print-page print-final-page">
-            &nbsp;
-          </div>
+            {/* Final Page */}
+            <div className="print-page print-final-page">&nbsp;</div>
         </div>
 
         <style jsx global>{`
-          .print-container {
+          .print-only-container {
             position: absolute !important;
-            left: -9999px !important;
-            top: auto !important;
+            opacity: 0 !important;
             width: 1px !important;
             height: 1px !important;
             overflow: hidden !important;
+            z-index: -9999 !important;
+            pointer-events: none !important;
           }
 
           @media print {
-            body > *:not(.print-container) {
+            body > *:not(.print-only-container) {
               display: none !important;
             }
 
-            .print-container {
+            .print-only-container {
               position: static !important;
-              left: auto !important;
-              top: auto !important;
+              opacity: 1 !important;
               width: auto !important;
               height: auto !important;
               overflow: visible !important;
+              z-index: auto !important;
+              pointer-events: auto !important;
             }
 
             @page {
@@ -142,41 +142,39 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-size: 210mm 297mm !important;
                 background-repeat: no-repeat !important;
             }
-
+            
             .print-page {
-              position: relative;
               width: 210mm;
               height: 297mm;
-              background-size: cover !important;
-              background-position: center !important;
-              background-repeat: no-repeat !important;
-              page-break-inside: avoid;
+              box-sizing: border-box;
+              page-break-after: always;
+              position: relative; /* Helps with layout consistency */
+            }
+            .print-page:last-child {
+                page-break-after: auto;
             }
 
             .print-cover-page {
-                page-break-after: always;
                 background-image: url('/capa.jpg') !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
             }
 
             .print-final-page {
-                page-break-before: always;
                 background-image: url('/fim.jpg') !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
             }
             
-            .print-page-content {
-                display: none;
-            }
-
             .print-content-wrapper {
-              padding: 2cm 2cm 5cm 2.5cm;
+              padding: 2cm 2.5cm 5.0cm 2.5cm;
               color: black;
               background: transparent;
-              width: 210mm;
+              width: 100%;
+              height: 100%;
               box-sizing: border-box;
-            }
-
-            main {
-              padding: 0;
             }
             
             .report-content-group {
@@ -216,29 +214,37 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 text-align: justify;
             }
 
+            .print-image-page {
+              display: flex;
+              flex-direction: column;
+              height: 100%;
+              box-sizing: border-box;
+              padding: 2cm 2.5cm 5.0cm 2.5cm;
+            }
+
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(3, 1fr);
-              grid-auto-rows: 2.9cm;
-              gap: 0.4cm;
-              margin-top: 1.5rem;
-              page-break-before: auto;
+              grid-template-rows: repeat(7, 1fr); /* 3x7 Grid */
+              gap: 0.4cm; /* Increased gap */
+              flex-grow: 1; /* This will make it fill the available space */
             }
+
             .print-image-item {
               border: 1px solid #e0e0e0;
               padding: 2px;
               border-radius: 4px;
-              overflow: hidden;
               page-break-inside: avoid;
               display: flex;
               justify-content: center;
               align-items: center;
               background-color: #fcfcfc;
+              overflow: hidden;
             }
             .print-image-item img {
               width: 100%;
               height: 100%;
-              object-fit: contain;
+              object-fit: contain; /* Changed from cover to contain */
               border-radius: 2px;
             }
           }
