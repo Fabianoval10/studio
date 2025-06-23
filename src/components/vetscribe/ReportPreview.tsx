@@ -62,14 +62,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                     </div>
                   </div>
 
+                  <hr className="report-divider" />
+
                   {reportText && (
-                    <>
-                      <div className="report-text-block">
-                          {reportText.split('\n').map((paragraph, index) => (
-                            <p key={index}>{paragraph}</p>
-                          ))}
-                      </div>
-                    </>
+                    <div className="report-text-block">
+                        {reportText.split('\n').map((paragraph, index) => (
+                          <p key={index}>{paragraph}</p>
+                        ))}
+                    </div>
                   )}
                 </div>
               </div>
@@ -162,6 +162,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                z-index: -1;
             }
             
             .print-page {
@@ -185,8 +186,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
               font-size: 10pt;
-              margin-bottom: 2.5rem;
             }
+
+            .report-divider {
+              border: none;
+              height: 1px;
+              background-color: #F97316; /* Cor Laranja */
+              margin: 1.5rem 0;
+            }
+
             .info-subtitle-print {
               font-weight: 700;
               font-size: 11pt;
