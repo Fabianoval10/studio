@@ -154,10 +154,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               position: relative;
             }
 
-            .print-content-page,
-            .print-image-page,
-            .print-final-page {
-              page-break-before: always;
+            .print-page:not(.print-final-page) {
+              page-break-after: always;
             }
             
             .print-cover-page {
