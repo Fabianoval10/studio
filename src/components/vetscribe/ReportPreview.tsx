@@ -163,9 +163,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 height: 100%;
                 box-sizing: border-box;
                 padding: 2cm 2.5cm 5.0cm 2.5cm;
-                font-family: var(--font-montserrat), sans-serif;
-                font-weight: 300;
-                font-size: 10pt;
             }
             
             .info-grid-print {
@@ -182,8 +179,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             .info-subtitle-print {
-              font-weight: 600;
-              font-size: 18pt;
+              font-weight: bold;
+              font-size: 14pt;
               color: hsl(var(--primary));
               margin-bottom: 1rem;
               border-bottom: 1px solid hsl(var(--border));
