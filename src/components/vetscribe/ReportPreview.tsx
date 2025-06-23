@@ -27,7 +27,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
 
-    // As per user request: Limit images to a single page (21 images max)
     const imagesForOnePage = uploadedImages.slice(0, 21);
 
     return (
@@ -39,8 +38,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </div>
 
             {/* Page 2: Content (Patient Info, Exam Info, Report Text) */}
-            <div className="print-page print-content-page">
-              <div className="print-content-wrapper">
+            <div className="print-page">
+              <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-full-bg-image" data-ai-hint="letterhead document" />
+              <div className="print-content-page">
                 <div className="report-content-group">
                   <div className="info-grid-print">
                     <div className="info-section-print">
@@ -77,17 +77,20 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             {/* Page 3: Images (Single Page) */}
             {imagesForOnePage.length > 0 && (
-              <div className="print-page print-image-page">
-                <div className="print-image-grid">
-                  {imagesForOnePage.map((img) => (
-                    <div key={img.id} className="print-image-item">
-                      <img
-                        src={img.previewUrl}
-                        alt={`Imagem do exame`}
-                        data-ai-hint="ultrasound medical"
-                      />
-                    </div>
-                  ))}
+              <div className="print-page">
+                <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-full-bg-image" data-ai-hint="letterhead document" />
+                <div className="print-image-page">
+                  <div className="print-image-grid">
+                    {imagesForOnePage.map((img) => (
+                      <div key={img.id} className="print-image-item">
+                        <img
+                          src={img.previewUrl}
+                          alt={`Imagem do exame`}
+                          data-ai-hint="ultrasound medical"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -159,7 +162,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                z-index: -1;
             }
             
             .print-page {
@@ -171,6 +173,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             .print-content-page {
+                position: relative;
+                z-index: 1;
+                height: 100%;
+                box-sizing: border-box;
                 padding: 2cm 2.5cm 5.0cm 2.5cm;
             }
             
@@ -203,6 +209,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             .print-image-page {
+              position: relative;
+              z-index: 1;
+              height: 100%;
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
