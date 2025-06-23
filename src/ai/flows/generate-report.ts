@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview Generates a draft ultrasound report from structured data input.
+ * @fileOverview Generates a structured ultrasound report from a description of findings.
  *
  * - generateReport - A function that handles the generation of the ultrasound report.
  * - GenerateReportInput - The input type for the generateReport function.
@@ -12,20 +12,26 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+// Input is now much simpler.
 const GenerateReportInputSchema = z.object({
   animalSpecies: z.string().describe('Espécie do animal examinado.'),
-  animalBreed: z.string().describe('Raça do animal examinado.'),
-  animalSex: z.string().describe('Sexo do animal examinado.'),
-  animalAge: z.number().describe('Idade do animal em anos.'),
-  examDate: z.string().describe('Data em que o exame de ultrassom foi realizado.'),
-  findings: z.string().describe('Achados estruturados do exame de ultrassom fornecidos pelo usuário.'),
-  additionalNotes: z.string().optional().describe('Quaisquer notas ou observações adicionais fornecidas pelo usuário.'),
-  organMeasurements: z.string().optional().describe('Medidas anatômicas detalhadas dos órgãos em cm, fornecidas pelo usuário.'),
+  findings: z.string().describe('Achados e medidas do exame de ultrassom fornecidos pelo usuário. A IA deve usar isso para preencher todos os campos.'),
+  additionalNotes: z.string().optional().describe('Quaisquer notas ou observações adicionais fornecidas pelo usuário para a conclusão.'),
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
 
+// Output is now structured. This is the key optimization.
 const GenerateReportOutputSchema = z.object({
-  reportText: z.string().describe('O texto do laudo de ultrassom gerado, seguindo o modelo especificado.'),
+  figado: z.string().describe("Descrição do Fígado. Se não houver informações nos achados, descreva como normal."),
+  vesiculaBiliar: z.string().describe("Descrição da Vesícula Biliar e vias biliares. Se não houver informações, descreva como normal."),
+  pancreas: z.string().describe("Descrição do Pâncreas. Se não houver informações, descreva como normal."),
+  alcasIntestinais: z.string().describe("Descrição das Alças Intestinais (Duodeno, Jejuno, Íleo, Cólon). Se não houver informações, descreva como normal, incluindo medidas padrão."),
+  cavidadeGastrica: z.string().describe("Descrição da Cavidade Gástrica. Se não houver informações, descreva como normal."),
+  baco: z.string().describe("Descrição do Baço. Se não houver informações, descreva como normal."),
+  rins: z.string().describe("Descrição de ambos os Rins (Esquerdo e Direito). Se não houver informações, descreva como normais, incluindo medidas padrão."),
+  adrenais: z.string().describe("Descrição de ambas as Adrenais (Esquerda e Direita). Se não houver informações, descreva como normais, incluindo medidas padrão."),
+  vesiculaUrinaria: z.string().describe("Descrição da Vesícula Urinária. Se não houver informações, descreva como normal."),
+  conclusoes: z.string().describe("Conclusões e impressões diagnósticas. Se houver notas adicionais do usuário, baseie-se nelas. Caso contrário, use 'Nada mais digno de nota na data da avaliação.'"),
 });
 export type GenerateReportOutput = z.infer<typeof GenerateReportOutputSchema>;
 
@@ -33,68 +39,27 @@ export async function generateReport(input: GenerateReportInput): Promise<Genera
   return generateReportFlow(input);
 }
 
+// The prompt is now much cleaner and asks for JSON.
 const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateReportInputSchema},
   output: {schema: GenerateReportOutputSchema},
-  prompt: `Você é um radiologista veterinário experiente. Gere um laudo de ultrassom COMPLETO e DETALHADO em Português do Brasil.
-O laudo DEVE seguir EXATAMENTE a estrutura e formato do modelo abaixo, incluindo todas as quebras de linha e parágrafos.
+  prompt: `Você é um radiologista veterinário experiente. Sua tarefa é gerar um laudo de ultrassom estruturado em Português do Brasil, preenchendo cada campo do JSON de saída.
 
-Dados do Paciente e Exame (NÃO INCLUIR DIRETAMENTE NO LAUDO FINAL, APENAS PARA CONTEXTO):
-Espécie Animal: {{{animalSpecies}}}
-Raça Animal: {{{animalBreed}}}
-Sexo Animal: {{{animalSex}}}
-Idade Animal: {{{animalAge}}} anos
-Data do Exame: {{{examDate}}}
-
-Achados Fornecidos pelo Usuário (Use para preencher o modelo abaixo, complementando com as 'Medidas Anatômicas' quando apropriado):
-{{{findings}}}
-
-{{#if organMeasurements}}
-Medidas Anatômicas (cm) Fornecidas pelo Usuário (Use para preencher ou complementar as medidas no modelo abaixo. Estas medidas devem ter prioridade sobre os exemplos do modelo):
-{{{organMeasurements}}}
-{{/if}}
-
+Contexto:
+- Espécie: {{{animalSpecies}}}
+- Achados do Exame (fonte principal de informação): {{{findings}}}
 {{#if additionalNotes}}
-Notas Adicionais Fornecidas pelo Usuário (Use para a seção de conclusões/observações):
-{{{additionalNotes}}}
+- Notas Adicionais para Conclusão: {{{additionalNotes}}}
 {{/if}}
 
-Instruções Detalhadas para Preenchimento do Modelo:
-1.  Utilize os 'Achados Fornecidos pelo Usuário' para formar a base da descrição de cada órgão no modelo.
-2.  Se 'Medidas Anatômicas (cm) Fornecidas pelo Usuário' estiverem presentes, elas DEVEM ser usadas para preencher as medidas correspondentes no modelo, substituindo quaisquer valores de exemplo do modelo. Incorpore essas medidas naturalmente na descrição do órgão.
-3.  Se um órgão nos 'Achados Fornecidos pelo Usuário' tiver uma descrição específica, use-a para esse órgão.
-4.  Se um órgão no modelo não for mencionado ou detalhado nos 'Achados Fornecidos pelo Usuário', você deve usar uma descrição padrão de normalidade para esse órgão (conforme sugerido no modelo) ou, se apropriado, indicar que não foi avaliado ou que não há alterações significativas, MAS SEMPRE MANTENHA O PARÁGRAFO E A ESTRUTURA DO ÓRGÃO NO LAUDO.
-5.  Se uma medida específica não for fornecida nem nos 'Achados' nem nas 'Medidas Anatômicas', utilize o valor representativo normal do modelo para a espécie e raça, ou indique que a medida não foi obtida, mas mantenha o formato da frase que contém a medida no texto.
-
-MODELO OBRIGATÓRIO DO LAUDO (USE ESTA ESTRUTURA E FORMATAÇÃO EXATAS):
-
-Fígado: de contornos definidos, margens regulares, bordas arredondadas, dimensões preservadas, ecotextura homogênea, ecogenicidade mantida. Arquitetura vascular preservada.
-
-Vesícula biliar: de paredes finas e regulares, repleta por conteúdo anecogênico homogêneo. Não existem evidências de obstrução em vias biliares intra ou extra hepáticas.
-
-Pâncreas: de superfícies regulares em suas porções passíveis de visualização em ramo direito, dimensões preservadas medindo aproximadamente 0,45 cm de diâmetro, ecogenicidade mantida.
-
-Alças intestinais: de distribuição topográfica habitual, paredes normoespessas (duodeno 0,18 cm/jejuno 0,19 cm/íleo 0,21 cm/cólon 0,11 cm) e com estratificação de camadas mantida. Motilidade progressiva preservada.
-
-Cavidade gástrica: de paredes finas medindo aproximadamente 0,19 cm em região de corpo, estratificação de camadas mantida, repleta por conteúdo alimentar. Motilidade progressiva preservada.
-
-Baço: de contornos definidos e margens regulares, dimensões mantidas, ecotextura homogênea e ecogenicidade mantida.
-
-Rins: de dimensões preservadas, medindo aproximadamente 6,65 cm o rim esquerdo e 5,53 cm o rim direito, margens regulares, com relações e definição córtico medular preservadas, ecogenicidade mantida em cortical.
-
-Adrenais: de dimensões e formato anatômico preservados, definição córtico medular mantida, medindo (margem cranial x margem caudal) aproximadamente 0,41 cm x 0,42 cm a adrenal esquerda e 0,41 cm x 0,42 cm a adrenal direita.
-
-Vesícula urinária: em distensão adequada, paredes finas (aproximadamente 0,15 cm) e mucosas regulares, repleta por conteúdo anecogênico.
-
-{{#if additionalNotes}}
-Impressões Diagnósticas / Conclusões / Observações Adicionais:
-{{{additionalNotes}}}
-{{else}}
-Nada mais digno de nota na data da avaliação.
-{{/if}}
-`,
+Instruções:
+1.  Analise os 'Achados do Exame' para extrair informações e medidas para cada órgão.
+2.  Para cada órgão no JSON de saída, escreva uma descrição técnica e detalhada.
+3.  Se uma medida específica de um órgão for fornecida nos 'Achados', incorpore-a naturalmente na descrição.
+4.  Se um órgão NÃO for mencionado nos 'Achados', você DEVE preencher o campo correspondente com uma descrição padrão de normalidade para a espécie.
+5.  A resposta DEVE ser um objeto JSON válido que corresponda exatamente ao schema de saída.`,
 });
 
 const generateReportFlow = ai.defineFlow(
@@ -109,31 +74,16 @@ const generateReportFlow = ai.defineFlow(
       const response = await prompt(input);
       const output = response.output;
 
-      console.log('[generateReportFlow] Raw response from prompt:', JSON.stringify(response, null, 2));
-      console.log('[generateReportFlow] Output from prompt:', JSON.stringify(output, null, 2));
-
       if (!output) {
-        console.error('[generateReportFlow] Prompt returned null or undefined output.', {rawResponse: response});
-        throw new Error('A IA não retornou um resultado estruturado. Verifique o prompt e a configuração do modelo.');
+        throw new Error('A IA não retornou um resultado estruturado.');
       }
       
-      if (typeof output.reportText !== 'string' || output.reportText.trim() === '') {
-          console.error('[generateReportFlow] Output is missing reportText or it is empty:', output);
-          throw new Error('A IA gerou um resultado, mas o texto do laudo está ausente ou vazio.');
-      }
-
-      console.log(`[generateReportFlow] Length of generated reportText: ${output.reportText.length}`);
+      console.log('[generateReportFlow] Structured output from prompt:', JSON.stringify(output, null, 2));
 
       return output;
     } catch (flowError: any) {
       console.error('[generateReportFlow] Error in flow execution:', flowError);
-      let errorMessage = 'Erro desconhecido no fluxo de IA.';
-      if (flowError instanceof Error) {
-        errorMessage = flowError.message;
-      } else if (typeof flowError === 'string') {
-        errorMessage = flowError;
-      }
-      throw new Error(`Falha no fluxo de geração de laudo: ${errorMessage}`);
+      throw new Error(`Falha no fluxo de geração de laudo: ${flowError.message}`);
     }
   }
 );

@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2, Ruler } from "lucide-react"; // Added Ruler
+import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -235,108 +235,14 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
               <AccordionItem value="findings-generation">
                 <AccordionTrigger className="text-xl text-primary hover:no-underline">Achados & Geração de Laudo</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
-                  <FormFieldWrapper name="findings" label="Achados Estruturados" errors={errors} fieldType="textarea">
+                  <FormFieldWrapper name="findings" label="Achados e Medidas" errors={errors} fieldType="textarea">
                     <Textarea
                       id="findings"
                       {...register("findings")}
-                      rows={8}
-                      placeholder="Descreva todas as estruturas observadas e quaisquer anormalidades em detalhe. Ex: Fígado: Tamanho e ecogenicidade normais. Ausência de lesões focais. Baço: Levemente aumentado com nodularidade hipoecóica difusa..."
+                      rows={10}
+                      placeholder="Descreva aqui TODAS as estruturas, anormalidades e medidas. Ex: 'Fígado com dimensões de 5.5cm, contornos regulares e ecotextura homogênea. Baço medindo 10cm x 3cm, apresentando múltiplos nódulos hipoecóicos.'"
                     />
                   </FormFieldWrapper>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="anatomical-measurements">
-                <AccordionTrigger className="text-xl text-primary hover:no-underline flex items-center gap-2">
-                  <Ruler className="w-5 h-5" /> Medidas Anatômicas (cm)
-                </AccordionTrigger>
-                <AccordionContent className="pt-4 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                    <FormFieldWrapper name="medidaFigadoCm" label="Fígado (cm)" errors={errors}>
-                      <Input id="medidaFigadoCm" {...register("medidaFigadoCm")} placeholder="Ex: 5.5"/>
-                    </FormFieldWrapper>
-                    <FormFieldWrapper name="medidaVesiculaBiliarCm" label="Vesícula Biliar (cm)" errors={errors}>
-                      <Input id="medidaVesiculaBiliarCm" {...register("medidaVesiculaBiliarCm")} placeholder="Ex: 1.0 x 0.5"/>
-                    </FormFieldWrapper>
-                    <FormFieldWrapper name="medidaPancreasCm" label="Pâncreas (cm)" errors={errors}>
-                      <Input id="medidaPancreasCm" {...register("medidaPancreasCm")} placeholder="Ex: 0.45 (diâmetro)"/>
-                    </FormFieldWrapper>
-                    <FormFieldWrapper name="medidaCavidadeGastricaCm" label="Cavidade Gástrica (cm)" errors={errors}>
-                      <Input id="medidaCavidadeGastricaCm" {...register("medidaCavidadeGastricaCm")} placeholder="Ex: 0.19 (parede)"/>
-                    </FormFieldWrapper>
-                     <FormFieldWrapper name="medidaBacoCm" label="Baço (cm)" errors={errors}>
-                      <Input id="medidaBacoCm" {...register("medidaBacoCm")} placeholder="Ex: N/A ou medida"/>
-                    </FormFieldWrapper>
-                     <FormFieldWrapper name="medidaVesiculaUrinariaCm" label="Vesícula Urinária (cm)" errors={errors}>
-                      <Input id="medidaVesiculaUrinariaCm" {...register("medidaVesiculaUrinariaCm")} placeholder="Ex: 0.15 (parede)"/>
-                    </FormFieldWrapper>
-                  </div>
-
-                  <div>
-                    <h4 className="text-md text-primary/80 mb-2">Alças Intestinais (cm)</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3 pl-2 border-l-2 border-primary/20">
-                      <FormFieldWrapper name="medidaDuodenoCm" label="Duodeno" errors={errors}>
-                        <Input id="medidaDuodenoCm" {...register("medidaDuodenoCm")} placeholder="Ex: 0.18"/>
-                      </FormFieldWrapper>
-                      <FormFieldWrapper name="medidaJejunoCm" label="Jejuno" errors={errors}>
-                        <Input id="medidaJejunoCm" {...register("medidaJejunoCm")} placeholder="Ex: 0.19"/>
-                      </FormFieldWrapper>
-                      <FormFieldWrapper name="medidaIleoCm" label="Íleo" errors={errors}>
-                        <Input id="medidaIleoCm" {...register("medidaIleoCm")} placeholder="Ex: 0.21"/>
-                      </FormFieldWrapper>
-                      <FormFieldWrapper name="medidaColonCm" label="Cólon" errors={errors}>
-                        <Input id="medidaColonCm" {...register("medidaColonCm")} placeholder="Ex: 0.11"/>
-                      </FormFieldWrapper>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-md text-primary/80 mb-2">Rins (cm)</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 pl-2 border-l-2 border-primary/20">
-                      <FormFieldWrapper name="medidaRimEsquerdoCm" label="Rim Esquerdo" errors={errors}>
-                        <Input id="medidaRimEsquerdoCm" {...register("medidaRimEsquerdoCm")} placeholder="Ex: 6.65"/>
-                      </FormFieldWrapper>
-                      <FormFieldWrapper name="medidaRimDireitoCm" label="Rim Direito" errors={errors}>
-                        <Input id="medidaRimDireitoCm" {...register("medidaRimDireitoCm")} placeholder="Ex: 5.53"/>
-                      </FormFieldWrapper>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="text-md text-primary/80 mb-2">Adrenais (Margem Cranial x Margem Caudal cm)</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pl-2 border-l-2 border-primary/20">
-                      <div>
-                        <Label className="text-sm font-medium">Adrenal Esquerda</Label>
-                        <div className="flex gap-2 mt-1">
-                          <FormFieldWrapper name="medidaAdrenalEsquerdaCranialCm" label="" errors={errors}>
-                            <Input id="medidaAdrenalEsquerdaCranialCm" {...register("medidaAdrenalEsquerdaCranialCm")} placeholder="Cranial (Ex: 0.41)"/>
-                          </FormFieldWrapper>
-                           <FormFieldWrapper name="medidaAdrenalEsquerdaCaudalCm" label="" errors={errors}>
-                            <Input id="medidaAdrenalEsquerdaCaudalCm" {...register("medidaAdrenalEsquerdaCaudalCm")} placeholder="Caudal (Ex: 0.42)"/>
-                          </FormFieldWrapper>
-                        </div>
-                      </div>
-                       <div>
-                        <Label className="text-sm font-medium">Adrenal Direita</Label>
-                        <div className="flex gap-2 mt-1">
-                          <FormFieldWrapper name="medidaAdrenalDireitaCranialCm" label="" errors={errors}>
-                            <Input id="medidaAdrenalDireitaCranialCm" {...register("medidaAdrenalDireitaCranialCm")} placeholder="Cranial (Ex: 0.41)"/>
-                          </FormFieldWrapper>
-                           <FormFieldWrapper name="medidaAdrenalDireitaCaudalCm" label="" errors={errors}>
-                            <Input id="medidaAdrenalDireitaCaudalCm" {...register("medidaAdrenalDireitaCaudalCm")} placeholder="Caudal (Ex: 0.42)"/>
-                          </FormFieldWrapper>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </AccordionContent>
-              </AccordionItem>
-
-
-              <AccordionItem value="additional-notes">
-                <AccordionTrigger className="text-xl text-primary hover:no-underline">Observações Adicionais</AccordionTrigger>
-                <AccordionContent className="pt-4 space-y-4">
                    <FormFieldWrapper name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors} fieldType="textarea">
                     <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações."/>
                   </FormFieldWrapper>

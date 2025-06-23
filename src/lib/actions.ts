@@ -5,58 +5,23 @@ import type { ReportFormData } from "@/types";
 import { generateReport, type GenerateReportInput, type GenerateReportOutput } from "@/ai/flows/generate-report";
 import { reportFormSchema } from "@/types";
 
-function formatAge(years: number, months?: number): number {
-  let totalAgeInYears = years;
-  if (months && months > 0) {
-    totalAgeInYears += months / 12;
-  }
-  return parseFloat(totalAgeInYears.toFixed(2));
-}
-
-function formatOrganMeasurements(data: ReportFormData): string | undefined {
-  const measurements: string[] = [];
-
-  if (data.medidaFigadoCm) measurements.push(`- Fígado: ${data.medidaFigadoCm} cm`);
-  if (data.medidaVesiculaBiliarCm) measurements.push(`- Vesícula Biliar: ${data.medidaVesiculaBiliarCm} cm`);
-  if (data.medidaPancreasCm) measurements.push(`- Pâncreas: ${data.medidaPancreasCm} cm`);
-  
-  const alcasIntestinais: string[] = [];
-  if (data.medidaDuodenoCm) alcasIntestinais.push(`  - Duodeno: ${data.medidaDuodenoCm} cm`);
-  if (data.medidaJejunoCm) alcasIntestinais.push(`  - Jejuno: ${data.medidaJejunoCm} cm`);
-  if (data.medidaIleoCm) alcasIntestinais.push(`  - Íleo: ${data.medidaIleoCm} cm`);
-  if (data.medidaColonCm) alcasIntestinais.push(`  - Cólon: ${data.medidaColonCm} cm`);
-  if (alcasIntestinais.length > 0) {
-    measurements.push("- Alças Intestinais:");
-    measurements.push(...alcasIntestinais);
-  }
-
-  if (data.medidaCavidadeGastricaCm) measurements.push(`- Cavidade Gástrica: ${data.medidaCavidadeGastricaCm} cm`);
-  if (data.medidaBacoCm) measurements.push(`- Baço: ${data.medidaBacoCm} cm`);
-
-  const rins: string[] = [];
-  if (data.medidaRimEsquerdoCm) rins.push(`  - Rim Esquerdo: ${data.medidaRimEsquerdoCm} cm`);
-  if (data.medidaRimDireitoCm) rins.push(`  - Rim Direito: ${data.medidaRimDireitoCm} cm`);
-  if (rins.length > 0) {
-    measurements.push("- Rins:");
-    measurements.push(...rins);
-  }
-  
-  const adrenais: string[] = [];
-  if (data.medidaAdrenalEsquerdaCranialCm || data.medidaAdrenalEsquerdaCaudalCm) {
-    adrenais.push(`  - Adrenal Esquerda (Cranial x Caudal): ${data.medidaAdrenalEsquerdaCranialCm || 'N/A'} x ${data.medidaAdrenalEsquerdaCaudalCm || 'N/A'} cm`);
-  }
-  if (data.medidaAdrenalDireitaCranialCm || data.medidaAdrenalDireitaCaudalCm) {
-    adrenais.push(`  - Adrenal Direita (Cranial x Caudal): ${data.medidaAdrenalDireitaCranialCm || 'N/A'} x ${data.medidaAdrenalDireitaCaudalCm || 'N/A'} cm`);
-  }
-  if (adrenais.length > 0) {
-    measurements.push("- Adrenais:");
-    measurements.push(...adrenais);
-  }
-  
-  if (data.medidaVesiculaUrinariaCm) measurements.push(`- Vesícula Urinária: ${data.medidaVesiculaUrinariaCm} cm`);
-
-  if (measurements.length === 0) return undefined;
-  return measurements.join("\n");
+// This new function assembles the final report text from the structured AI output.
+// This gives us full control over the final format, making it much more reliable.
+function assembleReportText(structuredOutput: GenerateReportOutput): string {
+    const reportSections = [
+        `Fígado: ${structuredOutput.figado}`,
+        `Vesícula biliar: ${structuredOutput.vesiculaBiliar}`,
+        `Pâncreas: ${structuredOutput.pancreas}`,
+        `Alças intestinais: ${structuredOutput.alcasIntestinais}`,
+        `Cavidade gástrica: ${structuredOutput.cavidadeGastrica}`,
+        `Baço: ${structuredOutput.baco}`,
+        `Rins: ${structuredOutput.rins}`,
+        `Adrenais: ${structuredOutput.adrenais}`,
+        `Vesícula urinária: ${structuredOutput.vesiculaUrinaria}`,
+        `\nImpressões Diagnósticas / Conclusões / Observações Adicionais:\n${structuredOutput.conclusoes}`
+    ];
+    
+    return reportSections.join('\n\n'); // Use double newline for paragraph breaks
 }
 
 export async function handleGenerateReportAction(
@@ -64,32 +29,29 @@ export async function handleGenerateReportAction(
 ): Promise<{ success: boolean; reportText?: string; error?: string }> {
   try {
     const validatedData = reportFormSchema.parse(data);
-    const organMeasurementsString = formatOrganMeasurements(validatedData);
-
+    
     const aiInput: GenerateReportInput = {
       animalSpecies: validatedData.species,
-      animalBreed: validatedData.breed,
-      animalSex: validatedData.sex,
-      animalAge: formatAge(validatedData.ageYears, validatedData.ageMonths),
-      examDate: validatedData.examDate.toISOString().split('T')[0],
       findings: validatedData.findings,
       additionalNotes: validatedData.additionalNotes,
-      organMeasurements: organMeasurementsString,
     };
 
     console.log('[handleGenerateReportAction] AI Input para generateReport:', JSON.stringify(aiInput, null, 2));
 
+    // The AI now returns a structured object
     const result: GenerateReportOutput = await generateReport(aiInput);
 
-    console.log('[handleGenerateReportAction] Resultado BRUTO do fluxo generateReport:', JSON.stringify(result, null, 2));
+    console.log('[handleGenerateReportAction] Resultado ESTRUTURADO do fluxo generateReport:', JSON.stringify(result, null, 2));
 
-    if (result && result.reportText) {
-      // Sanitize the AI output to remove any potential HTML tags and trim whitespace, ensuring clean text for rendering.
-      const sanitizedReportText = result.reportText.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    if (result) {
+      // Assemble the final report text from the structured data
+      const reportText = assembleReportText(result);
+      // Sanitize the assembled text to be safe
+      const sanitizedReportText = reportText.replace(/<\/?[^>]+(>|$)/g, "").trim();
       return { success: true, reportText: sanitizedReportText };
     } else {
-      console.error('[handleGenerateReportAction] Fluxo retornou com sucesso, mas reportText está ausente ou vazio:', result);
-      return { success: false, error: "A IA retornou uma resposta inesperada (texto do laudo ausente)." };
+      console.error('[handleGenerateReportAction] Fluxo retornou com sucesso, mas o resultado está vazio:', result);
+      return { success: false, error: "A IA retornou uma resposta inesperada (resultado vazio)." };
     }
   } catch (e: any) {
     console.error("[handleGenerateReportAction] Erro capturado:", e);
