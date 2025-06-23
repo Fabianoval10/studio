@@ -34,12 +34,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       ));
     };
 
-    // Limit images to a single page (21 images max)
+    // As per user request: Limit images to a single page (21 images max)
     const imagesForOnePage = uploadedImages.slice(0, 21);
 
     return (
       <>
-        {/* This container is positioned off-screen to pre-render for printing, but is visible to the browser */}
         <div id="printable-area" className="print-only-container">
             {/* Page 1: Cover */}
             <div className="print-page print-cover-page">&nbsp;</div>
@@ -64,6 +63,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                       <DetailItem label="Clínica" value={formData.clinicName} />
                       <DetailItem label="M.V. Resp." value={formData.vetName} />
                       <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
+                      <DetailItem label="Data do Exame" value={formData.examDate ? format(formData.examDate, "PPP", { locale: ptBR }) : null} />
                     </div>
                   </div>
 
@@ -138,23 +138,22 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin: 0;
               padding: 0;
               width: 210mm;
-              height: 297mm;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
 
-            /* === Page Breaking Logic (The Fix) === */
-            
+            /* === Page Breaking Logic (Definitive Fix) === */
             .print-page {
-              page-break-after: always; /* Create a page break AFTER each of these elements */
-              page-break-inside: avoid; /* Try not to break the content of a page itself */
-              width: 210mm;
-              box-sizing: border-box;
+              page-break-inside: avoid;
               position: relative;
+              width: 210mm;
+              height: 297mm;
+              box-sizing: border-box;
+              overflow: hidden;
             }
-
-            .print-page:last-child {
-              page-break-after: avoid; /* PREVENT a page break after the very last element */
+            
+            .print-page ~ .print-page {
+                page-break-before: always;
             }
 
 
@@ -172,7 +171,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-size: cover !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
-                height: 297mm;
             }
 
             .print-final-page {
@@ -180,11 +178,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-size: cover !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
-                height: 297mm;
-            }
-
-            .print-content-page {
-                min-height: 297mm; /* Ensure content page fills at least one sheet */
             }
 
             .print-content-wrapper {
@@ -195,10 +188,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               box-sizing: border-box;
             }
             
-            .report-content-group {
-              page-break-inside: avoid;
-            }
-
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
@@ -230,7 +219,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-page {
               display: flex;
               flex-direction: column;
-              min-height: 297mm;
               box-sizing: border-box;
               padding: 2cm 2.5cm 2cm 2.5cm;
             }
@@ -239,15 +227,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: grid;
               grid-template-columns: repeat(3, 1fr);
               grid-template-rows: repeat(7, 1fr); /* 3x7 Grid */
-              gap: 0.4cm; /* Increased gap */
-              flex-grow: 1; /* This will make it fill the available space */
+              gap: 0.4cm;
+              flex-grow: 1;
             }
 
             .print-image-item {
               border: 1px solid #e0e0e0;
               padding: 2px;
               border-radius: 4px;
-              page-break-inside: avoid;
               display: flex;
               justify-content: center;
               align-items: center;
@@ -257,7 +244,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-item img {
               width: 100%;
               height: 100%;
-              object-fit: contain; /* Changed from cover to contain */
+              object-fit: contain;
               border-radius: 2px;
             }
           }
