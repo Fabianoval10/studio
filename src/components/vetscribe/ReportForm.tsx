@@ -229,21 +229,21 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                                     <AlertDescription>{errors.examFindings.message as string}</AlertDescription>
                                 </Alert>
                             )}
-                            <FormFieldWrapper name="figado" label="Fígado" errors={errors} fieldType="textarea"><Textarea {...register("figado")} placeholder="Dimensões, contornos, ecotextura..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="vesiculaBiliar" label="Vesícula Biliar" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaBiliar")} placeholder="Conteúdo, paredes..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="pancreas" label="Pâncreas" errors={errors} fieldType="textarea"><Textarea {...register("pancreas")} placeholder="Visualização, ecogenicidade..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="baco" label="Baço" errors={errors} fieldType="textarea"><Textarea {...register("baco")} placeholder="Dimensões, textura, vasos..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="estomago" label="Estômago" errors={errors} fieldType="textarea"><Textarea {...register("estomago")} placeholder="Conteúdo, paredes, motilidade..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="intestino" label="Alças Intestinais" errors={errors} fieldType="textarea"><Textarea {...register("intestino")} placeholder="Conteúdo, espessura, motilidade..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="rimDireito" label="Rim Direito" errors={errors} fieldType="textarea"><Textarea {...register("rimDireito")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="rimEsquerdo" label="Rim Esquerdo" errors={errors} fieldType="textarea"><Textarea {...register("rimEsquerdo")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="adrenais" label="Adrenais" errors={errors} fieldType="textarea"><Textarea {...register("adrenais")} placeholder="Dimensões, forma, ecogenicidade..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="vesiculaUrinaria" label="Vesícula Urinária" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaUrinaria")} placeholder="Conteúdo, paredes, sedimento..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="prostata" label="Próstata" errors={errors} fieldType="textarea"><Textarea {...register("prostata")} placeholder="Dimensões, contorno, parênquima..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="uteroOvarios" label="Útero e Ovários" errors={errors} fieldType="textarea"><Textarea {...register("uteroOvarios")} placeholder="Visualização, conteúdo, dimensões..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="linfonodos" label="Linfonodos" errors={errors} fieldType="textarea"><Textarea {...register("linfonodos")} placeholder="Linfonodos abdominais visualizados..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="liquidoLivre" label="Líquido Livre" errors={errors} fieldType="textarea"><Textarea {...register("liquidoLivre")} placeholder="Presença, quantidade, aspecto..."/></FormFieldWrapper>
-                            <FormFieldWrapper name="outros" label="Outros Achados" errors={errors} fieldType="textarea"><Textarea {...register("outros")} placeholder="Outras observações relevantes..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="figado" label="Fígado" errors={errors}><Input {...register("figado")} placeholder="Medidas em cm, ex: 5.2 x 3.1"/></FormFieldWrapper>
+                            <FormFieldWrapper name="vesiculaBiliar" label="Vesícula Biliar" errors={errors}><Input {...register("vesiculaBiliar")} placeholder="Medidas em cm, ex: 1.5 x 0.8"/></FormFieldWrapper>
+                            <FormFieldWrapper name="pancreas" label="Pâncreas" errors={errors}><Input {...register("pancreas")} placeholder="Medidas em cm, ex: 0.5"/></FormFieldWrapper>
+                            <FormFieldWrapper name="baco" label="Baço" errors={errors}><Input {...register("baco")} placeholder="Medidas em cm, ex: 4.0 x 1.2"/></FormFieldWrapper>
+                            <FormFieldWrapper name="estomago" label="Estômago" errors={errors}><Input {...register("estomago")} placeholder="Espessura da parede em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="intestino" label="Alças Intestinais" errors={errors}><Input {...register("intestino")} placeholder="Espessura da parede em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="rimDireito" label="Rim Direito" errors={errors}><Input {...register("rimDireito")} placeholder="Medidas em cm, ex: 3.5 x 2.0"/></FormFieldWrapper>
+                            <FormFieldWrapper name="rimEsquerdo" label="Rim Esquerdo" errors={errors}><Input {...register("rimEsquerdo")} placeholder="Medidas em cm, ex: 3.4 x 1.9"/></FormFieldWrapper>
+                            <FormFieldWrapper name="adrenais" label="Adrenais" errors={errors}><Input {...register("adrenais")} placeholder="Medidas em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="vesiculaUrinaria" label="Vesícula Urinária" errors={errors}><Input {...register("vesiculaUrinaria")} placeholder="Espessura da parede em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="prostata" label="Próstata" errors={errors}><Input {...register("prostata")} placeholder="Medidas em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="uteroOvarios" label="Útero e Ovários" errors={errors}><Input {...register("uteroOvarios")} placeholder="Medidas em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="linfonodos" label="Linfonodos" errors={errors}><Input {...register("linfonodos")} placeholder="Medidas em cm"/></FormFieldWrapper>
+                            <FormFieldWrapper name="liquidoLivre" label="Líquido Livre" errors={errors}><Input {...register("liquidoLivre")} placeholder="Quantidade, aspecto"/></FormFieldWrapper>
+                            <FormFieldWrapper name="outros" label="Outros Achados" errors={errors}><Input {...register("outros")} placeholder="Outras observações"/></FormFieldWrapper>
                         </div>
                     </div>
                 </AccordionContent>
