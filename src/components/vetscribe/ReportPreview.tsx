@@ -31,7 +31,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     return (
       <>
-        <div id="printable-area" className="print-only-container">
+        <div id="printable-area">
             {/* Page 1: Cover */}
             <div className="print-page">
               <img src="/capa.jpg" alt="Capa do Laudo" className="print-full-bg-image" data-ai-hint="report cover" />
@@ -102,34 +102,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         </div>
 
         <style jsx global>{`
-          .print-only-container {
-            position: absolute !important;
-            opacity: 0 !important;
-            width: 1px !important;
-            height: 1px !important;
-            overflow: hidden !important;
-            z-index: -9999 !important;
-            pointer-events: none !important;
-          }
-
           @media print {
             /* === Basic Setup === */
-            body > *:not(.print-container) {
+            body > *:not(#printable-area) {
               display: none !important;
             }
 
-            .print-container {
+            #printable-area {
                 display: block !important;
-            }
-
-            .print-only-container {
-              position: static !important;
-              opacity: 1 !important;
-              width: auto !important;
-              height: auto !important;
-              overflow: visible !important;
-              z-index: auto !important;
-              pointer-events: auto !important;
             }
 
             @page {
@@ -145,9 +125,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             /* === Page Breaking Logic === */
-            .print-page:not(:first-child) {
-                page-break-before: always;
+            .print-page {
+              page-break-before: always;
             }
+            .print-page:first-child {
+              page-break-before: avoid;
+            }
+            
             .print-page {
               page-break-inside: avoid;
             }
@@ -179,13 +163,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 height: 100%;
                 box-sizing: border-box;
                 padding: 2cm 2.5cm 5.0cm 2.5cm;
+                font-family: var(--font-montserrat), sans-serif;
+                font-weight: 300;
+                font-size: 10pt;
             }
             
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
-              font-size: 10pt;
             }
 
             .report-divider {
@@ -196,8 +182,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             .info-subtitle-print {
-              font-weight: 700;
-              font-size: 11pt;
+              font-weight: 600;
+              font-size: 18pt;
               color: hsl(var(--primary));
               margin-bottom: 1rem;
               border-bottom: 1px solid hsl(var(--border));
@@ -208,7 +194,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             .report-text-block {
-              font-size: 10pt;
               line-height: 1.4;
             }
             .report-text-block p {
