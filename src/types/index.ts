@@ -19,7 +19,10 @@ export const reportFormSchema = z.object({
   referringVet: z.string().optional(),
   examDate: z.date({ required_error: "Data do exame é obrigatória" }),
   
-  // Anatomical Measurements (Restored)
+  // General Findings
+  examFindings: z.string().optional(),
+
+  // Anatomical Measurements
   figado: z.string().optional(),
   vesiculaBiliar: z.string().optional(),
   pancreas: z.string().optional(),
@@ -45,10 +48,13 @@ export const reportFormSchema = z.object({
       data.adrenais, data.vesiculaUrinaria, data.prostata,
       data.uteroOvarios, data.linfonodos, data.liquidoLivre, data.outros
     ];
-    return measurementFields.some(field => field && field.trim().length > 0);
+    const hasGeneralFindings = data.examFindings && data.examFindings.trim().length > 0;
+    const hasSpecificMeasurements = measurementFields.some(field => field && field.trim().length > 0);
+
+    return hasGeneralFindings || hasSpecificMeasurements;
 }, {
-    message: "É necessário preencher ao menos um campo com os achados do exame.",
-    path: ["figado"], // Arbitrarily attach error to the first field
+    message: "É necessário preencher os 'Achados Gerais' ou ao menos um campo nas 'Medidas Anatômicas'.",
+    path: ["examFindings"],
 });
 
 

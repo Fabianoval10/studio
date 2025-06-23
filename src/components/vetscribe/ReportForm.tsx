@@ -106,7 +106,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
       <CardContent className="flex-grow flex flex-col p-0 overflow-y-hidden">
         <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col flex-grow p-6 space-y-6">
           <ScrollArea className="flex-grow pr-4 report-form-scroll-area">
-            <Accordion type="multiple" defaultValue={["clinic-info","pet-info","exam-info", "anatomical-measurements", "conclusion-generation"]} className="w-full">
+            <Accordion type="multiple" defaultValue={["clinic-info","pet-info","exam-info", "exam-details", "conclusion-generation"]} className="w-full">
               <AccordionItem value="clinic-info">
                 <AccordionTrigger className="text-xl text-primary hover:no-underline">Informações da Clínica</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
@@ -207,31 +207,45 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                 </AccordionContent>
               </AccordionItem>
               
-               <AccordionItem value="anatomical-measurements">
+              <AccordionItem value="exam-details">
                 <AccordionTrigger className="text-xl text-primary hover:no-underline">Achados do Exame</AccordionTrigger>
-                <AccordionContent className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
-                    {errors.figado && errors.figado.message && !Object.values(errors).some(e => e && typeof e === 'object' && 'message' in e && e.message !== errors.figado?.message) && (
-                        <Alert variant="destructive" className="md:col-span-2">
-                           <AlertCircle className="h-4 w-4" />
-                           <AlertTitle>Campo Obrigatório</AlertTitle>
-                           <AlertDescription>{errors.figado.message}</AlertDescription>
-                        </Alert>
-                    )}
-                    <FormFieldWrapper name="figado" label="Fígado" errors={errors} fieldType="textarea"><Textarea {...register("figado")} placeholder="Dimensões, contornos, ecotextura..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="vesiculaBiliar" label="Vesícula Biliar" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaBiliar")} placeholder="Conteúdo, paredes..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="pancreas" label="Pâncreas" errors={errors} fieldType="textarea"><Textarea {...register("pancreas")} placeholder="Visualização, ecogenicidade..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="baco" label="Baço" errors={errors} fieldType="textarea"><Textarea {...register("baco")} placeholder="Dimensões, textura, vasos..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="estomago" label="Estômago" errors={errors} fieldType="textarea"><Textarea {...register("estomago")} placeholder="Conteúdo, paredes, motilidade..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="intestino" label="Alças Intestinais" errors={errors} fieldType="textarea"><Textarea {...register("intestino")} placeholder="Conteúdo, espessura, motilidade..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="rimDireito" label="Rim Direito" errors={errors} fieldType="textarea"><Textarea {...register("rimDireito")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="rimEsquerdo" label="Rim Esquerdo" errors={errors} fieldType="textarea"><Textarea {...register("rimEsquerdo")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="adrenais" label="Adrenais" errors={errors} fieldType="textarea"><Textarea {...register("adrenais")} placeholder="Dimensões, forma, ecogenicidade..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="vesiculaUrinaria" label="Vesícula Urinária" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaUrinaria")} placeholder="Conteúdo, paredes, sedimento..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="prostata" label="Próstata" errors={errors} fieldType="textarea"><Textarea {...register("prostata")} placeholder="Dimensões, contorno, parênquima..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="uteroOvarios" label="Útero e Ovários" errors={errors} fieldType="textarea"><Textarea {...register("uteroOvarios")} placeholder="Visualização, conteúdo, dimensões..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="linfonodos" label="Linfonodos" errors={errors} fieldType="textarea"><Textarea {...register("linfonodos")} placeholder="Linfonodos abdominais visualizados..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="liquidoLivre" label="Líquido Livre" errors={errors} fieldType="textarea"><Textarea {...register("liquidoLivre")} placeholder="Presença, quantidade, aspecto..."/></FormFieldWrapper>
-                    <FormFieldWrapper name="outros" label="Outros Achados" errors={errors} fieldType="textarea"><Textarea {...register("outros")} placeholder="Outras observações relevantes..."/></FormFieldWrapper>
+                <AccordionContent className="pt-4 space-y-6">
+                    <div className="space-y-2">
+                        <h3 className="text-lg font-medium text-foreground">Achados Gerais</h3>
+                        <p className="text-sm text-muted-foreground">Descreva aqui os achados gerais. Este campo é a base para o laudo.</p>
+                        <FormFieldWrapper name="examFindings" label="" errors={errors}>
+                           <Textarea {...register("examFindings")} rows={8} placeholder="Ex: Fígado com dimensões aumentadas e ecotextura heterogênea. Rins com contornos irregulares e perda de definição corticomedular..."/>
+                        </FormFieldWrapper>
+                    </div>
+
+                    <div className="space-y-2">
+                        <h3 className="text-lg font-medium text-foreground">Medidas Anatômicas (Opcional)</h3>
+                        <p className="text-sm text-muted-foreground">Forneça detalhes específicos para cada órgão. Eles complementarão os achados gerais.</p>
+                        <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+                             {errors.examFindings && (
+                                <Alert variant="destructive" className="md:col-span-2">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Dados Insuficientes</AlertTitle>
+                                    <AlertDescription>{errors.examFindings.message as string}</AlertDescription>
+                                </Alert>
+                            )}
+                            <FormFieldWrapper name="figado" label="Fígado" errors={errors} fieldType="textarea"><Textarea {...register("figado")} placeholder="Dimensões, contornos, ecotextura..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="vesiculaBiliar" label="Vesícula Biliar" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaBiliar")} placeholder="Conteúdo, paredes..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="pancreas" label="Pâncreas" errors={errors} fieldType="textarea"><Textarea {...register("pancreas")} placeholder="Visualização, ecogenicidade..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="baco" label="Baço" errors={errors} fieldType="textarea"><Textarea {...register("baco")} placeholder="Dimensões, textura, vasos..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="estomago" label="Estômago" errors={errors} fieldType="textarea"><Textarea {...register("estomago")} placeholder="Conteúdo, paredes, motilidade..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="intestino" label="Alças Intestinais" errors={errors} fieldType="textarea"><Textarea {...register("intestino")} placeholder="Conteúdo, espessura, motilidade..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="rimDireito" label="Rim Direito" errors={errors} fieldType="textarea"><Textarea {...register("rimDireito")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="rimEsquerdo" label="Rim Esquerdo" errors={errors} fieldType="textarea"><Textarea {...register("rimEsquerdo")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="adrenais" label="Adrenais" errors={errors} fieldType="textarea"><Textarea {...register("adrenais")} placeholder="Dimensões, forma, ecogenicidade..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="vesiculaUrinaria" label="Vesícula Urinária" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaUrinaria")} placeholder="Conteúdo, paredes, sedimento..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="prostata" label="Próstata" errors={errors} fieldType="textarea"><Textarea {...register("prostata")} placeholder="Dimensões, contorno, parênquima..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="uteroOvarios" label="Útero e Ovários" errors={errors} fieldType="textarea"><Textarea {...register("uteroOvarios")} placeholder="Visualização, conteúdo, dimensões..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="linfonodos" label="Linfonodos" errors={errors} fieldType="textarea"><Textarea {...register("linfonodos")} placeholder="Linfonodos abdominais visualizados..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="liquidoLivre" label="Líquido Livre" errors={errors} fieldType="textarea"><Textarea {...register("liquidoLivre")} placeholder="Presença, quantidade, aspecto..."/></FormFieldWrapper>
+                            <FormFieldWrapper name="outros" label="Outros Achados" errors={errors} fieldType="textarea"><Textarea {...register("outros")} placeholder="Outras observações relevantes..."/></FormFieldWrapper>
+                        </div>
+                    </div>
                 </AccordionContent>
               </AccordionItem>
 

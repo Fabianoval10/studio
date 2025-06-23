@@ -15,6 +15,7 @@ import {z} from 'genkit';
 // This input schema should reflect all the fields from the form
 const GenerateReportInputSchema = z.object({
   species: z.string().describe("Espécie do animal."),
+  examFindings: z.string().optional().describe("Achados gerais do exame descritos pelo usuário."),
   figado: z.string().optional(),
   vesiculaBiliar: z.string().optional(),
   pancreas: z.string().optional(),
@@ -51,14 +52,16 @@ const prompt = ai.definePrompt({
 A resposta deve ser APENAS o texto do laudo, formatado e pronto para ser inserido em um documento. Mantenha a ordem dos órgãos.
 
 REGRAS:
-1.  Para cada órgão, escreva uma descrição técnica e detalhada.
-2.  Se um campo de um órgão estiver vazio ou não for fornecido, você DEVE gerar uma descrição padrão de normalidade para a espécie ({{{species}}}).
-3.  Se um campo de um órgão contiver dados, use esses dados para escrever a descrição.
-4.  No final, crie um parágrafo de "Impressões Diagnósticas / Conclusões / Observações Adicionais". Se o campo 'additionalNotes' for fornecido, use-o como base para as conclusões. Caso contrário, use a frase 'Nada mais digno de nota na data da avaliação.'.
-5.  Separe a descrição de cada órgão com DUAS quebras de linha (\n\n).
+1.  Use o campo 'Achados Gerais do Exame' como a fonte primária de informação. A descrição de cada órgão deve refletir o que está descrito ali.
+2.  Use os campos de 'Medidas Anatômicas' para adicionar detalhes específicos (como dimensões) à descrição do órgão correspondente.
+3.  Se um campo de 'Medida Anatômica' estiver vazio, mas o órgão for mencionado nos 'Achados Gerais', baseie a descrição inteiramente nos 'Achados Gerais'.
+4.  Se tanto os 'Achados Gerais' quanto o campo de 'Medida Anatômica' de um órgão específico estiverem vazios ou não mencionarem o órgão, você DEVE gerar uma descrição padrão de normalidade para a espécie ({{{species}}}).
+5.  No final, crie um parágrafo de "Impressões Diagnósticas / Conclusões / Observações Adicionais". Se o campo 'additionalNotes' for fornecido, use-o como base para as conclusões. Caso contrário, use a frase 'Nada mais digno de nota na data da avaliação.'.
+6.  Separe a descrição de cada órgão com DUAS quebras de linha (\n\n).
 
 DADOS BRUTOS FORNECIDOS:
 - Espécie: {{{species}}}
+- Achados Gerais do Exame: {{{examFindings}}}
 - Fígado: {{{figado}}}
 - Vesícula Biliar: {{{vesiculaBiliar}}}
 - Pâncreas: {{{pancreas}}}

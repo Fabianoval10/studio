@@ -15,6 +15,7 @@ export async function handleGenerateReportAction(
     // We select only the relevant fields to pass to the AI.
     const aiInput: GenerateReportInput = {
       species: validatedData.species,
+      examFindings: validatedData.examFindings,
       figado: validatedData.figado,
       vesiculaBiliar: validatedData.vesiculaBiliar,
       pancreas: validatedData.pancreas,
