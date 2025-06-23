@@ -180,12 +180,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-repeat: no-repeat !important;
             }
 
-            .print-content-wrapper {
-              padding: 2cm 2.5cm 5.0cm 2.5cm;
-              color: black;
-              background: transparent;
-              width: 100%;
-              box-sizing: border-box;
+            .print-content-page {
+                padding: 2cm 2.5cm 5.0cm 2.5cm;
             }
             
             .info-grid-print {
@@ -209,10 +205,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             .report-text-block {
               font-size: 10pt;
-              line-height: 1.6;
+              line-height: 1.4;
             }
             .report-text-block p {
-                margin: 0 0 1em 0;
+                margin: 0 0 0.8em 0;
                 text-align: justify;
             }
 
