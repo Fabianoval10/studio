@@ -53,20 +53,24 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 
 **INSTRUÇÕES DE GERAÇÃO:**
 
-1.  **FORMATAÇÃO POR ÓRGÃO:**
-    *   Para cada órgão, inicie a linha com o nome do órgão em MAIÚSCULAS, seguido por um hífen. Exemplo: "FÍGADO - ".
+1.  **FORMATAÇÃO GERAL:**
+    *   Use **asteriscos duplos** (ex: \`**texto em negrito**\`) para aplicar negrito. Não use nenhum outro formato.
+
+2.  **FORMATAÇÃO POR ÓRGÃO:**
+    *   Para cada órgão, inicie a linha com o nome do órgão em MAIÚSCULAS e em **negrito**, seguido por um hífen. Exemplo: \`**FÍGADO** - \`.
     *   Mantenha a ordem dos órgãos exatamente como listado abaixo em "DADOS FORNECIDOS".
     *   Separe a descrição de cada órgão com **DUAS** quebras de linha.
 
-2.  **CONTEÚDO DA DESCRIÇÃO:**
+3.  **CONTEÚDO DA DESCRIÇÃO:**
     *   Baseie-se principalmente no campo "Achados Gerais do Exame".
-    *   Incorpore as "Medidas Anatômicas" de cada órgão de forma fluida e profissional na sua respectiva descrição.
-    *   Se um órgão não for mencionado nos achados e seu campo de medida estiver vazio, **VOCÊ DEVE** gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). Exemplo de um baço normal: "BAÇO - Contornos regulares, parênquima homogêneo e normoecogênico, com dimensões preservadas."
+    *   Incorpore as "Medidas Anatômicas" de cada órgão de forma fluida e profissional na sua respectiva descrição, colocando os valores numéricos das medidas e suas unidades em **negrito**. Exemplo: "...medindo **5.2 x 3.1 cm**."
+    *   Se um órgão não for mencionado nos achados e seu campo de medida estiver vazio, **VOCÊ DEVE** gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). Exemplo de um baço normal: \`**BAÇO** - Contornos regulares, parênquima homogêneo e normoecogênico, com dimensões preservadas.\`
 
-3.  **IMPRESSÃO DIAGNÓSTICA (CONCLUSÃO):**
-    *   Após as descrições de todos os órgãos, adicione um parágrafo final intitulado "IMPRESSÃO DIAGNÓSTICA:".
+4.  **IMPRESSÃO DIAGNÓSTICA (CONCLUSÃO):**
+    *   Após as descrições de todos os órgãos, adicione um parágrafo final intitulado \`**IMPRESSÃO DIAGNÓSTICA:**\`.
     *   O conteúdo deste parágrafo deve ser baseado nas "Notas para Conclusão".
     *   Se o campo "Notas para Conclusão" estiver vazio, use a frase: "Exame ultrassonográfico abdominal sem alterações dignas de nota na data da avaliação.".
+
 
 **DADOS FORNECIDOS:**
 - Espécie: {{{species}}}

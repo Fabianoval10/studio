@@ -29,9 +29,23 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const renderReportText = (text: string | null) => {
       if (!text) return null;
-      return text.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => (
-        <p key={index}>{paragraph}</p>
-      ));
+      return text.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => {
+        // Split the paragraph by the bold markers (e.g., **text**) while keeping the delimiters
+        const parts = paragraph.split(/(\*\*.*?\*\*)/g);
+        return (
+          <p key={index}>
+            {parts.map((part, i) =>
+              // If the part is a bold marker, render it as a <strong> element
+              part.startsWith('**') && part.endsWith('**') ? (
+                <strong key={i}>{part.slice(2, -2)}</strong>
+              ) : (
+                // Otherwise, render it as plain text
+                part
+              )
+            )}
+          </p>
+        );
+      });
     };
 
     // As per user request: Limit images to a single page (21 images max)
@@ -147,17 +161,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
 
             /* === Page Breaking Logic === */
-            .print-page {
-              page-break-inside: avoid;
-              position: relative;
-              width: 210mm;
-              height: 297mm;
-              box-sizing: border-box;
-              overflow: hidden;
-            }
-
             .print-page:not(:first-child) {
                 page-break-before: always;
+            }
+            .print-page {
+              page-break-inside: avoid;
             }
 
 
@@ -179,7 +187,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 object-fit: cover;
                 z-index: -1;
             }
-
+            
+            .print-page {
+              position: relative;
+              width: 210mm;
+              height: 297mm;
+              box-sizing: border-box;
+              overflow: hidden;
+            }
+            
             .print-content-page {
                 padding: 2cm 2.5cm 5.0cm 2.5cm;
             }
@@ -210,6 +226,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block p {
                 margin: 0 0 0.8em 0;
                 text-align: justify;
+            }
+            .report-text-block strong {
+                font-weight: 700;
             }
 
             .print-image-page {
