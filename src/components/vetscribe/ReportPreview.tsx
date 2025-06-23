@@ -34,11 +34,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       ));
     };
 
-    // Helper to chunk images into pages of 21
-    const chunk = <T,>(arr: T[], size: number): T[][] =>
-      arr.reduce((acc, _, i) => (i % size ? acc : [...acc, arr.slice(i, i + size)]), [] as T[][]);
-
-    const imagePages = chunk(uploadedImages, 21);
+    // Limit images to a single page (21 images max)
+    const imagesForOnePage = uploadedImages.slice(0, 21);
 
     return (
       <>
@@ -82,11 +79,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               </div>
             </div>
 
-            {/* Page 3...N: Images */}
-            {imagePages.length > 0 && imagePages.map((pageOfImages, pageIndex) => (
-              <div key={`image-page-${pageIndex}`} className="print-page print-image-page">
+            {/* Page 3: Images (Single Page) */}
+            {imagesForOnePage.length > 0 && (
+              <div className="print-page print-image-page">
                 <div className="print-image-grid">
-                  {pageOfImages.map((img) => (
+                  {imagesForOnePage.map((img) => (
                     <div key={img.id} className="print-image-item">
                       <img
                         src={img.previewUrl}
@@ -97,7 +94,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                   ))}
                 </div>
               </div>
-            ))}
+            )}
 
             {/* Final Page */}
             <div className="print-page print-final-page">&nbsp;</div>
