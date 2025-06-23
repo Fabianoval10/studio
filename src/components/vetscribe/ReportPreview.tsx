@@ -86,7 +86,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </div>
 
             {/* Page 3...N: Images */}
-            {imagePages.map((pageOfImages, pageIndex) => (
+            {imagePages.length > 0 && imagePages.map((pageOfImages, pageIndex) => (
               <div key={`image-page-${pageIndex}`} className="print-page print-image-page">
                 <div className="print-image-grid">
                   {pageOfImages.map((img) => (
@@ -158,14 +158,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               height: 297mm;
               box-sizing: border-box;
               position: relative;
-              page-break-after: always;
               page-break-inside: avoid;
             }
-            
-            .print-only-container > div:last-child {
-              page-break-after: auto;
-            }
 
+            .print-page:not(:last-child) {
+              page-break-after: always;
+            }
+            
             .print-cover-page {
                 background-image: url('/capa.jpg') !important;
                 background-size: cover !important;
