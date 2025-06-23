@@ -24,15 +24,42 @@ function assembleReportText(structuredOutput: GenerateReportOutput): string {
     return reportSections.join('\n\n'); // Use double newline for paragraph breaks
 }
 
+function assembleFindings(data: ReportFormData): string {
+  const findingsMap = {
+    'Fígado': data.figado,
+    'Vesícula Biliar': data.vesiculaBiliar,
+    'Pâncreas': data.pancreas,
+    'Estômago': data.estomago,
+    'Alças Intestinais': data.intestino,
+    'Rim Direito': data.rimDireito,
+    'Rim Esquerdo': data.rimEsquerdo,
+    'Baço': data.baco,
+    'Adrenais': data.adrenais,
+    'Vesícula Urinária': data.vesiculaUrinaria,
+    'Próstata': data.prostata,
+    'Útero e Ovários': data.uteroOvarios,
+    'Linfonodos': data.linfonodos,
+    'Líquido Livre': data.liquidoLivre,
+    'Outros Achados': data.outros,
+  };
+
+  return Object.entries(findingsMap)
+    .filter(([, value]) => value && value.trim() !== '')
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('; ');
+}
+
 export async function handleGenerateReportAction(
   data: ReportFormData
 ): Promise<{ success: boolean; reportText?: string; error?: string }> {
   try {
     const validatedData = reportFormSchema.parse(data);
     
+    const findingsText = assembleFindings(validatedData);
+
     const aiInput: GenerateReportInput = {
       animalSpecies: validatedData.species,
-      findings: validatedData.findings,
+      findings: findingsText,
       additionalNotes: validatedData.additionalNotes,
     };
 

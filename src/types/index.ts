@@ -19,10 +19,38 @@ export const reportFormSchema = z.object({
   referringVet: z.string().optional(),
   examDate: z.date({ required_error: "Data do exame é obrigatória" }),
   
-  // Findings & Notes for AI
-  findings: z.string().min(10, "Achados e medidas são obrigatórios (mín 10 caracteres)"),
+  // Anatomical Measurements (Restored)
+  figado: z.string().optional(),
+  vesiculaBiliar: z.string().optional(),
+  pancreas: z.string().optional(),
+  estomago: z.string().optional(),
+  intestino: z.string().optional(),
+  rimDireito: z.string().optional(),
+  rimEsquerdo: z.string().optional(),
+  baco: z.string().optional(),
+  adrenais: z.string().optional(),
+  vesiculaUrinaria: z.string().optional(),
+  prostata: z.string().optional(),
+  uteroOvarios: z.string().optional(),
+  linfonodos: z.string().optional(),
+  liquidoLivre: z.string().optional(),
+  outros: z.string().optional(),
+
+  // This maps to "conclusoes" for the AI
   additionalNotes: z.string().optional(),
+}).refine(data => {
+    const measurementFields = [
+      data.figado, data.vesiculaBiliar, data.pancreas, data.estomago,
+      data.intestino, data.rimDireito, data.rimEsquerdo, data.baco,
+      data.adrenais, data.vesiculaUrinaria, data.prostata,
+      data.uteroOvarios, data.linfonodos, data.liquidoLivre, data.outros
+    ];
+    return measurementFields.some(field => field && field.trim().length > 0);
+}, {
+    message: "É necessário preencher ao menos um campo com os achados do exame.",
+    path: ["figado"], // Arbitrarily attach error to the first field
 });
+
 
 export type ReportFormData = z.infer<typeof reportFormSchema>;
 

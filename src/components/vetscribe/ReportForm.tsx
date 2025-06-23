@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2 } from "lucide-react";
+import { CalendarIcon, ImageIcon, Trash2, FileText, Loader2, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +22,8 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 
 interface ReportFormProps {
   onSubmit: (data: ReportFormData, images: File[]) => Promise<void>;
@@ -104,7 +106,7 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
       <CardContent className="flex-grow flex flex-col p-0 overflow-y-hidden">
         <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col flex-grow p-6 space-y-6">
           <ScrollArea className="flex-grow pr-4 report-form-scroll-area">
-            <Accordion type="multiple" defaultValue={["clinic-info","pet-info","exam-info", "findings-generation"]} className="w-full">
+            <Accordion type="multiple" defaultValue={["clinic-info","pet-info","exam-info", "anatomical-measurements", "conclusion-generation"]} className="w-full">
               <AccordionItem value="clinic-info">
                 <AccordionTrigger className="text-xl text-primary hover:no-underline">Informações da Clínica</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
@@ -204,6 +206,34 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                   </div>
                 </AccordionContent>
               </AccordionItem>
+              
+               <AccordionItem value="anatomical-measurements">
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Achados do Exame</AccordionTrigger>
+                <AccordionContent className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+                    {errors.figado && errors.figado.message && !Object.values(errors).some(e => e && typeof e === 'object' && 'message' in e && e.message !== errors.figado?.message) && (
+                        <Alert variant="destructive" className="md:col-span-2">
+                           <AlertCircle className="h-4 w-4" />
+                           <AlertTitle>Campo Obrigatório</AlertTitle>
+                           <AlertDescription>{errors.figado.message}</AlertDescription>
+                        </Alert>
+                    )}
+                    <FormFieldWrapper name="figado" label="Fígado" errors={errors} fieldType="textarea"><Textarea {...register("figado")} placeholder="Dimensões, contornos, ecotextura..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="vesiculaBiliar" label="Vesícula Biliar" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaBiliar")} placeholder="Conteúdo, paredes..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="pancreas" label="Pâncreas" errors={errors} fieldType="textarea"><Textarea {...register("pancreas")} placeholder="Visualização, ecogenicidade..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="baco" label="Baço" errors={errors} fieldType="textarea"><Textarea {...register("baco")} placeholder="Dimensões, textura, vasos..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="estomago" label="Estômago" errors={errors} fieldType="textarea"><Textarea {...register("estomago")} placeholder="Conteúdo, paredes, motilidade..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="intestino" label="Alças Intestinais" errors={errors} fieldType="textarea"><Textarea {...register("intestino")} placeholder="Conteúdo, espessura, motilidade..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="rimDireito" label="Rim Direito" errors={errors} fieldType="textarea"><Textarea {...register("rimDireito")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="rimEsquerdo" label="Rim Esquerdo" errors={errors} fieldType="textarea"><Textarea {...register("rimEsquerdo")} placeholder="Dimensões, córtex, medula..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="adrenais" label="Adrenais" errors={errors} fieldType="textarea"><Textarea {...register("adrenais")} placeholder="Dimensões, forma, ecogenicidade..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="vesiculaUrinaria" label="Vesícula Urinária" errors={errors} fieldType="textarea"><Textarea {...register("vesiculaUrinaria")} placeholder="Conteúdo, paredes, sedimento..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="prostata" label="Próstata" errors={errors} fieldType="textarea"><Textarea {...register("prostata")} placeholder="Dimensões, contorno, parênquima..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="uteroOvarios" label="Útero e Ovários" errors={errors} fieldType="textarea"><Textarea {...register("uteroOvarios")} placeholder="Visualização, conteúdo, dimensões..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="linfonodos" label="Linfonodos" errors={errors} fieldType="textarea"><Textarea {...register("linfonodos")} placeholder="Linfonodos abdominais visualizados..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="liquidoLivre" label="Líquido Livre" errors={errors} fieldType="textarea"><Textarea {...register("liquidoLivre")} placeholder="Presença, quantidade, aspecto..."/></FormFieldWrapper>
+                    <FormFieldWrapper name="outros" label="Outros Achados" errors={errors} fieldType="textarea"><Textarea {...register("outros")} placeholder="Outras observações relevantes..."/></FormFieldWrapper>
+                </AccordionContent>
+              </AccordionItem>
 
               <AccordionItem value="exam-images">
                 <AccordionTrigger className="text-xl text-primary hover:no-underline">Imagens do Exame</AccordionTrigger>
@@ -232,19 +262,11 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="findings-generation">
-                <AccordionTrigger className="text-xl text-primary hover:no-underline">Achados & Geração de Laudo</AccordionTrigger>
+              <AccordionItem value="conclusion-generation">
+                <AccordionTrigger className="text-xl text-primary hover:no-underline">Conclusões & Geração de Laudo</AccordionTrigger>
                 <AccordionContent className="pt-4 space-y-4">
-                  <FormFieldWrapper name="findings" label="Achados e Medidas" errors={errors} fieldType="textarea">
-                    <Textarea
-                      id="findings"
-                      {...register("findings")}
-                      rows={10}
-                      placeholder="Descreva aqui TODAS as estruturas, anormalidades e medidas. Ex: 'Fígado com dimensões de 5.5cm, contornos regulares e ecotextura homogênea. Baço medindo 10cm x 3cm, apresentando múltiplos nódulos hipoecóicos.'"
-                    />
-                  </FormFieldWrapper>
-                   <FormFieldWrapper name="additionalNotes" label="Observações Adicionais / Impressões (Opcional)" errors={errors} fieldType="textarea">
-                    <Textarea id="additionalNotes" {...register("additionalNotes")} rows={4} placeholder="Quaisquer outros comentários, diagnósticos diferenciais ou recomendações."/>
+                   <FormFieldWrapper name="additionalNotes" label="Impressões Diagnósticas / Conclusões (Opcional)" errors={errors} fieldType="textarea">
+                    <Textarea id="additionalNotes" {...register("additionalNotes")} rows={6} placeholder="Seus comentários e conclusões aqui. A IA usará isso para formular a conclusão final. Se deixado em branco, a IA gerará uma conclusão padrão."/>
                   </FormFieldWrapper>
                 </AccordionContent>
               </AccordionItem>
