@@ -112,8 +112,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
 
           @media print {
-            body > *:not(.print-only-container) {
+            body > *:not(.print-container) {
               display: none !important;
+            }
+
+            .print-container {
+                display: block !important;
             }
 
             .print-only-container {
@@ -219,7 +223,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               flex-direction: column;
               height: 100%;
               box-sizing: border-box;
-              padding: 2cm 2.5cm 5.0cm 2.5cm;
+              padding: 2cm 2.5cm 5cm 2.5cm;
             }
 
             .print-image-grid {

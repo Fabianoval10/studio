@@ -8,6 +8,7 @@ import { useState, useCallback, useEffect } from "react";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import ClientOnlyReportForm from '@/components/vetscribe/ReportForm';
+import Portal from '@/components/Portal';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -109,13 +110,15 @@ export default function Home() {
       </div>
 
       {reportDataForPrint && (
-        <div className="print-container">
-           <ReportPreview
-            formData={reportDataForPrint.formData}
-            reportText={reportDataForPrint.reportText}
-            uploadedImages={reportDataForPrint.uploadedImages}
-          />
-        </div>
+        <Portal>
+          <div className="print-container">
+            <ReportPreview
+              formData={reportDataForPrint.formData}
+              reportText={reportDataForPrint.reportText}
+              uploadedImages={reportDataForPrint.uploadedImages}
+            />
+          </div>
+        </Portal>
       )}
     </>
   );

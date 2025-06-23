@@ -7,6 +7,7 @@ import ClientOnlyReportForm from "@/components/vetscribe/ReportForm";
 import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { ReportPreview } from '@/components/vetscribe/ReportPreview';
+import Portal from '@/components/Portal';
 
 export default function CreateReportPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -105,13 +106,15 @@ export default function CreateReportPage() {
       </div>
 
       {reportDataForPrint && (
-        <div className="print-container">
-           <ReportPreview
-            formData={reportDataForPrint.formData}
-            reportText={reportDataForPrint.reportText}
-            uploadedImages={reportDataForPrint.uploadedImages}
-          />
-        </div>
+        <Portal>
+          <div className="print-container">
+            <ReportPreview
+              formData={reportDataForPrint.formData}
+              reportText={reportDataForPrint.reportText}
+              uploadedImages={reportDataForPrint.uploadedImages}
+            />
+          </div>
+        </Portal>
       )}
     </>
   );
