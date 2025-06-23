@@ -73,9 +73,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
                   {reportText && (
                     <>
-                      <div className="report-date-print">
-                        {format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }).toUpperCase()}
-                      </div>
                       <div className="report-text-block">
                           {renderReportText(reportText)}
                       </div>
@@ -158,7 +155,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               height: 297mm;
               box-sizing: border-box;
               position: relative;
-              page-break-inside: avoid;
             }
 
             .print-page:not(:last-child) {
@@ -197,6 +193,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
               font-size: 10pt;
+              margin-bottom: 2.5rem;
             }
             .info-subtitle-print {
               font-weight: 700;
