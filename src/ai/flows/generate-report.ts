@@ -47,17 +47,16 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateReportInputSchema},
   output: {format: 'text'},
-  prompt: `Você é um radiologista veterinário experiente. Sua tarefa é gerar o corpo de um laudo de ultrassom em Português do Brasil, com base nos dados fornecidos.
+  prompt: `Você é um especialista em radiologia veterinária e sua tarefa é redigir a seção de achados de um laudo de ultrassom em Português do Brasil.
 
-A resposta deve ser APENAS o texto do laudo, formatado e pronto para ser inserido em um documento. Mantenha a ordem dos órgãos.
+Baseie-se nos dados brutos fornecidos abaixo. A sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 
-REGRAS:
-1.  Use o campo 'Achados Gerais do Exame' como a fonte primária de informação. A descrição de cada órgão deve refletir o que está descrito ali.
-2.  Use os campos de 'Medidas Anatômicas' para adicionar detalhes específicos (como dimensões) à descrição do órgão correspondente.
-3.  Se um campo de 'Medida Anatômica' estiver vazio, mas o órgão for mencionado nos 'Achados Gerais', baseie a descrição inteiramente nos 'Achados Gerais'.
-4.  Se tanto os 'Achados Gerais' quanto o campo de 'Medida Anatômica' de um órgão específico estiverem vazios ou não mencionarem o órgão, você DEVE gerar uma descrição padrão de normalidade para a espécie ({{{species}}}).
-5.  No final, crie um parágrafo de "Impressões Diagnósticas / Conclusões / Observações Adicionais". Se o campo 'additionalNotes' for fornecido, use-o como base para as conclusões. Caso contrário, use a frase 'Nada mais digno de nota na data da avaliação.'.
-6.  Separe a descrição de cada órgão com DUAS quebras de linha (\n\n).
+INSTRUÇÕES:
+1.  **Fundamente o Laudo:** Use o campo "Achados Gerais do Exame" como a base principal para suas descrições.
+2.  **Incorpore as Medidas:** Integre as "Medidas Anatômicas" de cada órgão na sua respectiva descrição de forma fluida e profissional.
+3.  **Lide com a Ausência de Dados:** Se para um determinado órgão não houver menção nos "Achados Gerais" nem uma "Medida Anatômica", você DEVE gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). NÃO deixe o órgão de fora.
+4.  **Conclusão:** Use as "Notas para Conclusão" para escrever o parágrafo final de "Impressões Diagnósticas". Se este campo estiver vazio, use a frase "Nada mais digno de nota na data da avaliação.".
+5.  **Formato:** Mantenha a ordem dos órgãos. Separe a descrição de cada órgão com DUAS quebras de linha (\\n\\n).
 
 DADOS BRUTOS FORNECIDOS:
 - Espécie: {{{species}}}

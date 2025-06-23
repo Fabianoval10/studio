@@ -50,11 +50,20 @@ export async function handleGenerateReportAction(
       return { success: false, error: "A IA retornou uma resposta inesperada (resultado vazio)." };
     }
   } catch (e: any) {
-    console.error("[handleGenerateReportAction] Erro capturado:", e);
+    console.error("[handleGenerateReportAction] Erro detalhado capturado:", JSON.stringify(e, null, 2));
     let errorMessage = "Ocorreu um erro desconhecido ao gerar o laudo.";
 
-    if (e instanceof Error) {
+    if (e.cause) {
+      // Handle Genkit errors which often wrap the original error in `cause`
+      const cause = e.cause as any;
+      if(cause.status && cause.message) {
+         errorMessage = `Erro da IA (${cause.status}): ${cause.message}`;
+      } else {
+         errorMessage = cause.message || e.message;
+      }
+    } else if (e instanceof Error) {
       errorMessage = e.message;
+      // Handle Zod validation errors
       if ((e as any).issues) { 
          const zodError = e as any;
          errorMessage = `Erro de validação: ${zodError.issues.map((issue: any) => `${issue.path.join('.')} - ${issue.message}`).join('; ')}`;
@@ -65,6 +74,15 @@ export async function handleGenerateReportAction(
       errorMessage = e.message;
     }
     
+    // Provide more user-friendly messages for common issues
+    if (errorMessage.includes('Deadline exceeded')) {
+      errorMessage = "A IA demorou muito para responder. Por favor, tente simplificar os achados ou tente novamente."
+    } else if (errorMessage.includes('API key not valid')) {
+      errorMessage = "A chave de API configurada não é válida. Verifique o arquivo .env."
+    } else if (errorMessage.includes('quota')) {
+      errorMessage = "Atingido o limite de uso da API. Por favor, verifique sua cota no painel da Google AI."
+    }
+
     return { success: false, error: errorMessage };
   }
 }
