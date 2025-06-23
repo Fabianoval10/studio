@@ -158,9 +158,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               height: 297mm;
               box-sizing: border-box;
               position: relative;
+              page-break-after: always;
               page-break-inside: avoid;
             }
             
+            .print-only-container > div:last-child {
+              page-break-after: auto;
+            }
+
             .print-cover-page {
                 background-image: url('/capa.jpg') !important;
                 background-size: cover !important;
