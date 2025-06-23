@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -32,6 +33,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         <p key={index}>{paragraph}</p>
       ));
     };
+
+    // Helper to chunk images into pages of 21
+    const chunk = <T,>(arr: T[], size: number): T[][] =>
+      arr.reduce((acc, _, i) => (i % size ? acc : [...acc, arr.slice(i, i + size)]), [] as T[][]);
+
+    const imagePages = chunk(uploadedImages, 21);
 
     return (
       <>
@@ -79,21 +86,21 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             </div>
 
             {/* Page 3...N: Images */}
-            {uploadedImages.length > 0 && (
-              <div className="print-page print-image-page">
+            {imagePages.map((pageOfImages, pageIndex) => (
+              <div key={`image-page-${pageIndex}`} className="print-page print-image-page">
                 <div className="print-image-grid">
-                    {uploadedImages.map((img, index) => (
-                      <div key={img.id} className="print-image-item">
-                        <img
-                          src={img.previewUrl}
-                          alt={`Imagem do exame ${index + 1}`}
-                          data-ai-hint="ultrasound medical"
-                        />
-                      </div>
-                    ))}
+                  {pageOfImages.map((img) => (
+                    <div key={img.id} className="print-image-item">
+                      <img
+                        src={img.previewUrl}
+                        alt={`Imagem do exame`}
+                        data-ai-hint="ultrasound medical"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
-            )}
+            ))}
 
             {/* Final Page */}
             <div className="print-page print-final-page">&nbsp;</div>
@@ -150,13 +157,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               width: 210mm;
               height: 297mm;
               box-sizing: border-box;
-              page-break-after: always;
-              position: relative; /* Helps with layout consistency */
+              position: relative;
+              page-break-inside: avoid;
             }
-            .print-page:last-child {
-                page-break-after: auto;
-            }
-
+            
             .print-cover-page {
                 background-image: url('/capa.jpg') !important;
                 background-size: cover !important;
@@ -222,7 +226,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               flex-direction: column;
               height: 100%;
               box-sizing: border-box;
-              padding: 2cm 2.5cm 5cm 2.5cm;
+              padding: 2cm 2.5cm 2cm 2.5cm;
             }
 
             .print-image-grid {
