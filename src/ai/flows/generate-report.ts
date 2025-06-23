@@ -2,9 +2,9 @@
 'use server';
 
 /**
- * @fileOverview Generates a structured ultrasound report from a description of findings.
+ * @fileOverview Generates a complete ultrasound report text from detailed form data.
  *
- * - generateReport - A function that handles the generation of the ultrasound report.
+ * - generateReport - A function that handles the generation of the ultrasound report text.
  * - GenerateReportInput - The input type for the generateReport function.
  * - GenerateReportOutput - The return type for the generateReport function.
  */
@@ -12,76 +12,91 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-// Input is now much simpler.
+// This input schema should reflect all the fields from the form
 const GenerateReportInputSchema = z.object({
-  animalSpecies: z.string().describe('Espécie do animal examinado.'),
-  findings: z.string().describe('Achados e medidas do exame de ultrassom fornecidos pelo usuário. A IA deve usar isso para preencher todos os campos.'),
-  additionalNotes: z.string().optional().describe('Quaisquer notas ou observações adicionais fornecidas pelo usuário para a conclusão.'),
+  species: z.string().describe("Espécie do animal."),
+  figado: z.string().optional(),
+  vesiculaBiliar: z.string().optional(),
+  pancreas: z.string().optional(),
+  estomago: z.string().optional(),
+  intestino: z.string().optional(),
+  rimDireito: z.string().optional(),
+  rimEsquerdo: z.string().optional(),
+  baco: z.string().optional(),
+  adrenais: z.string().optional(),
+  vesiculaUrinaria: z.string().optional(),
+  prostata: z.string().optional(),
+  uteroOvarios: z.string().optional(),
+  linfonodos: z.string().optional(),
+  liquidoLivre: z.string().optional(),
+  outros: z.string().optional(),
+  additionalNotes: z.string().optional().describe("Notas do usuário para a conclusão."),
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
 
-// Output is now structured. This is the key optimization.
-const GenerateReportOutputSchema = z.object({
-  figado: z.string().describe("Descrição do Fígado. Se não houver informações nos achados, descreva como normal."),
-  vesiculaBiliar: z.string().describe("Descrição da Vesícula Biliar e vias biliares. Se não houver informações, descreva como normal."),
-  pancreas: z.string().describe("Descrição do Pâncreas. Se não houver informações, descreva como normal."),
-  alcasIntestinais: z.string().describe("Descrição das Alças Intestinais (Duodeno, Jejuno, Íleo, Cólon). Se não houver informações, descreva como normal, incluindo medidas padrão."),
-  cavidadeGastrica: z.string().describe("Descrição da Cavidade Gástrica. Se não houver informações, descreva como normal."),
-  baco: z.string().describe("Descrição do Baço. Se não houver informações, descreva como normal."),
-  rins: z.string().describe("Descrição de ambos os Rins (Esquerdo e Direito). Se não houver informações, descreva como normais, incluindo medidas padrão."),
-  adrenais: z.string().describe("Descrição de ambas as Adrenais (Esquerda e Direita). Se não houver informações, descreva como normais, incluindo medidas padrão."),
-  vesiculaUrinaria: z.string().describe("Descrição da Vesícula Urinária. Se não houver informações, descreva como normal."),
-  conclusoes: z.string().describe("Conclusões e impressões diagnósticas. Se houver notas adicionais do usuário, baseie-se nelas. Caso contrário, use 'Nada mais digno de nota na data da avaliação.'"),
-});
-export type GenerateReportOutput = z.infer<typeof GenerateReportOutputSchema>;
+// The output is a single block of formatted text.
+export type GenerateReportOutput = string;
 
 export async function generateReport(input: GenerateReportInput): Promise<GenerateReportOutput> {
   return generateReportFlow(input);
 }
 
-// The prompt is now much cleaner and asks for JSON.
 const prompt = ai.definePrompt({
   name: 'generateReportPrompt',
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateReportInputSchema},
-  output: {schema: GenerateReportOutputSchema},
-  prompt: `Você é um radiologista veterinário experiente. Sua tarefa é gerar um laudo de ultrassom estruturado em Português do Brasil, preenchendo cada campo do JSON de saída.
+  output: {format: 'text'},
+  prompt: `Você é um radiologista veterinário experiente. Sua tarefa é gerar o corpo de um laudo de ultrassom em Português do Brasil, com base nos dados fornecidos.
 
-Contexto:
-- Espécie: {{{animalSpecies}}}
-- Achados do Exame (fonte principal de informação): {{{findings}}}
-{{#if additionalNotes}}
-- Notas Adicionais para Conclusão: {{{additionalNotes}}}
-{{/if}}
+A resposta deve ser APENAS o texto do laudo, formatado e pronto para ser inserido em um documento. Mantenha a ordem dos órgãos.
 
-Instruções:
-1.  Analise os 'Achados do Exame' para extrair informações e medidas para cada órgão.
-2.  Para cada órgão no JSON de saída, escreva uma descrição técnica e detalhada.
-3.  Se uma medida específica de um órgão for fornecida nos 'Achados', incorpore-a naturalmente na descrição.
-4.  Se um órgão NÃO for mencionado nos 'Achados', você DEVE preencher o campo correspondente com uma descrição padrão de normalidade para a espécie.
-5.  A resposta DEVE ser um objeto JSON válido que corresponda exatamente ao schema de saída.`,
+REGRAS:
+1.  Para cada órgão, escreva uma descrição técnica e detalhada.
+2.  Se um campo de um órgão estiver vazio ou não for fornecido, você DEVE gerar uma descrição padrão de normalidade para a espécie ({{{species}}}).
+3.  Se um campo de um órgão contiver dados, use esses dados para escrever a descrição.
+4.  No final, crie um parágrafo de "Impressões Diagnósticas / Conclusões / Observações Adicionais". Se o campo 'additionalNotes' for fornecido, use-o como base para as conclusões. Caso contrário, use a frase 'Nada mais digno de nota na data da avaliação.'.
+5.  Separe a descrição de cada órgão com DUAS quebras de linha (\n\n).
+
+DADOS BRUTOS FORNECIDOS:
+- Espécie: {{{species}}}
+{{#if figado}}- Fígado: {{{figado}}}{{/if}}
+{{#if vesiculaBiliar}}- Vesícula Biliar: {{{vesiculaBiliar}}}{{/if}}
+{{#if pancreas}}- Pâncreas: {{{pancreas}}}{{/if}}
+{{#if estomago}}- Estômago: {{{estomago}}}{{/if}}
+{{#if intestino}}- Alças Intestinais: {{{intestino}}}{{/if}}
+{{#if rimDireito}}- Rim Direito: {{{rimDireito}}}{{/if}}
+{{#if rimEsquerdo}}- Rim Esquerdo: {{{rimEsquerdo}}}{{/if}}
+{{#if baco}}- Baço: {{{baco}}}{{/if}}
+{{#if adrenais}}- Adrenais: {{{adrenais}}}{{/if}}
+{{#if vesiculaUrinaria}}- Vesícula Urinária: {{{vesiculaUrinaria}}}{{/if}}
+{{#if prostata}}- Próstata: {{{prostata}}}{{/if}}
+{{#if uteroOvarios}}- Útero e Ovários: {{{uteroOvarios}}}{{/if}}
+{{#if linfonodos}}- Linfonodos: {{{linfonodos}}}{{/if}}
+{{#if liquidoLivre}}- Líquido Livre: {{{liquidoLivre}}}{{/if}}
+{{#if outros}}- Outros Achados: {{{outros}}}{{/if}}
+{{#if additionalNotes}}- Notas para Conclusão: {{{additionalNotes}}}{{/if}}
+`,
 });
 
 const generateReportFlow = ai.defineFlow(
   {
     name: 'generateReportFlow',
     inputSchema: GenerateReportInputSchema,
-    outputSchema: GenerateReportOutputSchema,
+    outputSchema: z.string(),
   },
   async (input): Promise<GenerateReportOutput> => {
     console.log('[generateReportFlow] Input:', JSON.stringify(input, null, 2));
     try {
       const response = await prompt(input);
-      const output = response.output;
-
-      if (!output) {
-        throw new Error('A IA não retornou um resultado estruturado.');
+      const text = response.text;
+      
+      if (!text) {
+        throw new Error('A IA não retornou um texto.');
       }
       
-      console.log('[generateReportFlow] Structured output from prompt:', JSON.stringify(output, null, 2));
-
-      return output;
-    } catch (flowError: any) {
+      console.log('[generateReportFlow] Text output from prompt:', text);
+      return text;
+    } catch (flowError: any)      {
       console.error('[generateReportFlow] Error in flow execution:', flowError);
       throw new Error(`Falha no fluxo de geração de laudo: ${flowError.message}`);
     }
