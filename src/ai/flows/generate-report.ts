@@ -47,20 +47,33 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateReportInputSchema},
   output: {format: 'text'},
-  prompt: `Você é um especialista em radiologia veterinária e sua tarefa é redigir a seção de achados de um laudo de ultrassom em Português do Brasil.
+  prompt: `Você é um especialista em radiologia veterinária e sua tarefa é redigir a seção de achados e a impressão diagnóstica de um laudo de ultrassom em Português do Brasil.
 
-Baseie-se nos dados brutos fornecidos abaixo. A sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
+Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado. Siga as instruções e o formato com rigor.
 
-INSTRUÇÕES:
-1.  **Fundamente o Laudo:** Use o campo "Achados Gerais do Exame" como a base principal para suas descrições.
-2.  **Incorpore as Medidas:** Integre as "Medidas Anatômicas" de cada órgão na sua respectiva descrição de forma fluida e profissional.
-3.  **Lide com a Ausência de Dados:** Se para um determinado órgão não houver menção nos "Achados Gerais" nem uma "Medida Anatômica", você DEVE gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). NÃO deixe o órgão de fora.
-4.  **Conclusão:** Use as "Notas para Conclusão" para escrever o parágrafo final de "Impressões Diagnósticas". Se este campo estiver vazio, use a frase "Nada mais digno de nota na data da avaliação.".
-5.  **Formato:** Mantenha a ordem dos órgãos. Separe a descrição de cada órgão com DUAS quebras de linha (\\n\\n).
+**INSTRUÇÕES DE GERAÇÃO:**
 
-DADOS BRUTOS FORNECIDOS:
+1.  **FORMATAÇÃO POR ÓRGÃO:**
+    *   Para cada órgão, inicie a linha com o nome do órgão em MAIÚSCULAS, seguido por um hífen. Exemplo: "FÍGADO - ".
+    *   Mantenha a ordem dos órgãos exatamente como listado abaixo em "DADOS FORNECIDOS".
+    *   Separe a descrição de cada órgão com **DUAS** quebras de linha.
+
+2.  **CONTEÚDO DA DESCRIÇÃO:**
+    *   Baseie-se principalmente no campo "Achados Gerais do Exame".
+    *   Incorpore as "Medidas Anatômicas" de cada órgão de forma fluida e profissional na sua respectiva descrição.
+    *   Se um órgão não for mencionado nos achados e seu campo de medida estiver vazio, **VOCÊ DEVE** gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). Exemplo de um baço normal: "BAÇO - Contornos regulares, parênquima homogêneo e normoecogênico, com dimensões preservadas."
+
+3.  **IMPRESSÃO DIAGNÓSTICA (CONCLUSÃO):**
+    *   Após as descrições de todos os órgãos, adicione um parágrafo final intitulado "IMPRESSÃO DIAGNÓSTICA:".
+    *   O conteúdo deste parágrafo deve ser baseado nas "Notas para Conclusão".
+    *   Se o campo "Notas para Conclusão" estiver vazio, use a frase: "Exame ultrassonográfico abdominal sem alterações dignas de nota na data da avaliação.".
+
+**DADOS FORNECIDOS:**
 - Espécie: {{{species}}}
 - Achados Gerais do Exame: {{{examFindings}}}
+- Notas para Conclusão: {{{additionalNotes}}}
+
+--- MEDIDAS ANATÔMICAS (opcional) ---
 - Fígado: {{{figado}}}
 - Vesícula Biliar: {{{vesiculaBiliar}}}
 - Pâncreas: {{{pancreas}}}
@@ -76,7 +89,6 @@ DADOS BRUTOS FORNECIDOS:
 - Linfonodos: {{{linfonodos}}}
 - Líquido Livre: {{{liquidoLivre}}}
 - Outros Achados: {{{outros}}}
-- Notas para Conclusão: {{{additionalNotes}}}
 `,
 });
 
