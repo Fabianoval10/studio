@@ -152,10 +152,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               height: 297mm;
               box-sizing: border-box;
               position: relative;
+              page-break-inside: avoid;
             }
 
-            .print-page:not(.print-final-page) {
-              page-break-after: always;
+            .print-content-page,
+            .print-image-page,
+            .print-final-page {
+              page-break-before: always;
             }
             
             .print-cover-page {
@@ -203,13 +206,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .info-section-print > div {
               margin-bottom: 0.5rem;
             }
-            .report-date-print {
-                font-size: 9pt;
-                color: #4a4a4a;
-                text-align: right;
-                margin-bottom: 2.5rem;
-                padding-right: 0.2cm;
-            }
+
             .report-text-block {
               font-size: 10pt;
               line-height: 1.6;
