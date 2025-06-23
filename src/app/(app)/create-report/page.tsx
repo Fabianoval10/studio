@@ -19,11 +19,23 @@ export default function CreateReportPage() {
 
   useEffect(() => {
     if (reportDataForPrint) {
+      const handleAfterPrint = () => {
+        setReportDataForPrint(null);
+        window.removeEventListener('afterprint', handleAfterPrint);
+      };
+
+      window.addEventListener('afterprint', handleAfterPrint);
+
+      // A short delay to allow the ReportPreview component to render before printing.
       const timer = setTimeout(() => {
         window.print();
-        setReportDataForPrint(null); 
       }, 500);
-      return () => clearTimeout(timer);
+
+      // Cleanup function to remove the listener if the component unmounts.
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('afterprint', handleAfterPrint);
+      };
     }
   }, [reportDataForPrint]);
 
