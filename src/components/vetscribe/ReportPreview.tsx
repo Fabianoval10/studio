@@ -27,27 +27,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
 
-    const renderReportText = (text: string | null) => {
-      if (!text) return null;
-      return text.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => {
-        // Split the paragraph by the bold markers (e.g., **text**) while keeping the delimiters
-        const parts = paragraph.split(/(\*\*.*?\*\*)/g);
-        return (
-          <p key={index}>
-            {parts.map((part, i) =>
-              // If the part is a bold marker, render it as a <strong> element
-              part.startsWith('**') && part.endsWith('**') ? (
-                <strong key={i}>{part.slice(2, -2)}</strong>
-              ) : (
-                // Otherwise, render it as plain text
-                part
-              )
-            )}
-          </p>
-        );
-      });
-    };
-
     // As per user request: Limit images to a single page (21 images max)
     const imagesForOnePage = uploadedImages.slice(0, 21);
 
@@ -86,7 +65,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                   {reportText && (
                     <>
                       <div className="report-text-block">
-                          {renderReportText(reportText)}
+                          {reportText.split('\n').map((paragraph, index) => (
+                            <p key={index}>{paragraph}</p>
+                          ))}
                       </div>
                     </>
                   )}
@@ -171,13 +152,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             /* === Page Specific Backgrounds and Layout === */
 
-            body {
-                background-image: url('/timbrado.jpg') !important;
-                background-size: 210mm 297mm !important;
-                background-repeat: no-repeat !important;
-                background-position: top left;
-            }
-            
             .print-full-bg-image {
                 position: absolute;
                 top: 0;
@@ -226,9 +200,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block p {
                 margin: 0 0 0.8em 0;
                 text-align: justify;
-            }
-            .report-text-block strong {
-                font-weight: 700;
             }
 
             .print-image-page {
