@@ -64,7 +64,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                       <DetailItem label="Clínica" value={formData.clinicName} />
                       <DetailItem label="M.V. Resp." value={formData.vetName} />
                       <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
-                      <DetailItem label="Data do Exame" value={format(new Date(formData.examDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })} />
                     </div>
                   </div>
 
@@ -112,6 +111,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           }
 
           @media print {
+            /* === Basic Setup === */
             body > *:not(.print-container) {
               display: none !important;
             }
@@ -137,28 +137,34 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             html, body {
               margin: 0;
               padding: 0;
+              width: 210mm;
+              height: 297mm;
               -webkit-print-color-adjust: exact !important;
               print-color-adjust: exact !important;
             }
+
+            /* === Page Breaking Logic (The Fix) === */
+            
+            .print-page {
+              page-break-after: always; /* Create a page break AFTER each of these elements */
+              page-break-inside: avoid; /* Try not to break the content of a page itself */
+              width: 210mm;
+              box-sizing: border-box;
+              position: relative;
+            }
+
+            .print-page:last-child {
+              page-break-after: avoid; /* PREVENT a page break after the very last element */
+            }
+
+
+            /* === Page Specific Backgrounds and Layout === */
 
             body {
                 background-image: url('/timbrado.jpg') !important;
                 background-size: 210mm 297mm !important;
                 background-repeat: no-repeat !important;
-            }
-            
-            .print-page {
-              width: 210mm;
-              height: 297mm;
-              box-sizing: border-box;
-              position: relative;
-              page-break-inside: avoid;
-            }
-
-            .print-content-page,
-            .print-image-page,
-            .print-final-page {
-              page-break-before: always;
+                background-position: top left;
             }
             
             .print-cover-page {
@@ -166,6 +172,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-size: cover !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
+                height: 297mm;
             }
 
             .print-final-page {
@@ -173,14 +180,18 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-size: cover !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
+                height: 297mm;
             }
-            
+
+            .print-content-page {
+                min-height: 297mm; /* Ensure content page fills at least one sheet */
+            }
+
             .print-content-wrapper {
               padding: 2cm 2.5cm 5.0cm 2.5cm;
               color: black;
               background: transparent;
               width: 100%;
-              height: 100%;
               box-sizing: border-box;
             }
             
@@ -219,7 +230,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-image-page {
               display: flex;
               flex-direction: column;
-              height: 100%;
+              min-height: 297mm;
               box-sizing: border-box;
               padding: 2cm 2.5cm 2cm 2.5cm;
             }
