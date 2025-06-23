@@ -41,7 +41,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       <>
         <div id="printable-area" className="print-only-container">
             {/* Page 1: Cover */}
-            <div className="print-page print-cover-page">&nbsp;</div>
+            <div className="print-page">
+              <img src="/capa.jpg" alt="Capa do Laudo" className="print-full-bg-image" data-ai-hint="report cover" />
+            </div>
 
             {/* Page 2: Content (Patient Info, Exam Info, Report Text) */}
             <div className="print-page print-content-page">
@@ -96,7 +98,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             )}
 
             {/* Final Page */}
-            <div className="print-page print-final-page">&nbsp;</div>
+            <div className="print-page">
+              <img src="/fim.jpg" alt="Página Final do Laudo" className="print-full-bg-image" data-ai-hint="contact information" />
+            </div>
         </div>
 
         <style jsx global>{`
@@ -142,7 +146,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               print-color-adjust: exact !important;
             }
 
-            /* === Page Breaking Logic (Definitive Fix) === */
+            /* === Page Breaking Logic === */
             .print-page {
               page-break-inside: avoid;
               position: relative;
@@ -151,8 +155,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               box-sizing: border-box;
               overflow: hidden;
             }
-            
-            .print-page ~ .print-page {
+
+            .print-page:not(:first-child) {
                 page-break-before: always;
             }
 
@@ -166,18 +170,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 background-position: top left;
             }
             
-            .print-cover-page {
-                background-image: url('/capa.jpg') !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-repeat: no-repeat !important;
-            }
-
-            .print-final-page {
-                background-image: url('/fim.jpg') !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-repeat: no-repeat !important;
+            .print-full-bg-image {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                z-index: -1;
             }
 
             .print-content-page {
