@@ -45,33 +45,37 @@ export default function CreateReportPage() {
     setReportDataForPrint(null);
     
     try {
-      const imagePromises = images.map(file => {
-        return new Promise<UploadedImage>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            if (!event.target?.result) {
-              return reject(new Error("FileReader não retornou resultado."));
-            }
-            resolve({
-              id: crypto.randomUUID(),
-              previewUrl: event.target.result as string,
-            });
-          };
-          reader.onerror = (err) => reject(err);
-          reader.readAsDataURL(file);
-        });
-      });
-
-      const uploadedImagesForPreview = await Promise.all(imagePromises);
-
+      // 1. Call the AI first. This is the most critical and time-sensitive part.
       const result = await handleGenerateReportAction(data);
 
       if (result.success && result.reportText) {
+        // 2. If AI succeeds, then process images for preview.
+        const imagePromises = images.map(file => {
+          return new Promise<UploadedImage>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              if (!event.target?.result) {
+                return reject(new Error("FileReader não retornou resultado."));
+              }
+              resolve({
+                id: crypto.randomUUID(),
+                previewUrl: event.target.result as string,
+              });
+            };
+            reader.onerror = (err) => reject(err);
+            reader.readAsDataURL(file);
+          });
+        });
+
+        const uploadedImagesForPreview = await Promise.all(imagePromises);
+        
+        // 3. Set all data needed for printing at once.
         setReportDataForPrint({
           formData: data,
           reportText: result.reportText,
           uploadedImages: uploadedImagesForPreview,
         });
+
       } else {
         const errorMessage = result.error || "Não foi possível gerar o laudo. Por favor, tente novamente.";
         toast({
@@ -81,11 +85,11 @@ export default function CreateReportPage() {
         });
       }
     } catch (e: any) {
-        const errorMessage = e.message.includes('quota') 
-            ? "As imagens são muito grandes ou numerosas. Tente carregar menos imagens ou menores."
+        const errorMessage = (e instanceof Error && e.message.includes('FileReader'))
+            ? "Ocorreu um erro ao processar uma das imagens. Verifique se os arquivos não estão corrompidos ou são muito grandes."
             : (e instanceof Error ? e.message : "Ocorreu um erro inesperado.");
         toast({
-            title: "Erro Crítico",
+            title: "Erro Crítico no Processamento",
             description: errorMessage,
             variant: "destructive",
         });
