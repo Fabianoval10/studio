@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -189,11 +188,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
-              font-size: 11pt;
+              font-size: 10pt;
             }
             .info-subtitle-print {
               font-weight: 700;
-              font-size: 12pt;
+              font-size: 11pt;
               color: hsl(var(--primary));
               margin-bottom: 1rem;
               border-bottom: 1px solid hsl(var(--border));
@@ -203,14 +202,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               margin-bottom: 0.5rem;
             }
             .report-date-print {
-                font-size: 10pt;
+                font-size: 9pt;
                 color: #4a4a4a;
                 text-align: right;
                 margin-bottom: 2.5rem;
                 padding-right: 0.2cm;
             }
             .report-text-block {
-              font-size: 11pt;
+              font-size: 10pt;
               line-height: 1.6;
             }
             .report-text-block p {
