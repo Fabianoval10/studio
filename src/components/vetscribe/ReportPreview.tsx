@@ -194,7 +194,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             .info-subtitle-print {
               font-weight: bold;
-              font-size: 14pt;
+              font-size: 12pt;
               color: hsl(var(--primary));
               margin-bottom: 1rem;
               border-bottom: 1px solid hsl(var(--border));
@@ -203,10 +203,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .info-section-print > div {
               margin-bottom: 0.5rem;
+              font-size: 9pt;
             }
 
             .report-text-block {
               line-height: 1.4;
+              font-size: 9pt;
             }
             
             .report-text-block p {
