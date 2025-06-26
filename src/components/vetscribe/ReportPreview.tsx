@@ -27,7 +27,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
 
-    const imagesForOnePage = uploadedImages.slice(0, 21);
+    const imagesForOnePage = uploadedImages.slice(0, 24);
 
     return (
       <>
@@ -219,8 +219,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             /* --- Image Grid Styling --- */
             .print-image-grid {
               display: grid;
-              grid-template-columns: repeat(3, 1fr);
-              grid-template-rows: repeat(7, 1fr); /* 3x7 Grid */
+              grid-template-columns: repeat(4, 1fr);
+              grid-template-rows: repeat(6, 1fr); /* 4x6 Grid */
               gap: 0.4cm;
               flex-grow: 1;
             }
