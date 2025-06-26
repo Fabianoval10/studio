@@ -109,7 +109,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
           
           @media print {
             /* Hide all non-printable elements from the UI */
-            .no-print {
+            body > *:not(.print-container) {
               display: none !important;
             }
             
@@ -165,7 +165,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
                 height: 100%;
                 box-sizing: border-box;
-                padding: 2cm 2.5cm 5.0cm 2.5cm;
+                padding: 4cm 1cm 10cm 1cm;
             }
             
             .print-image-page {
@@ -175,7 +175,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 2cm 2.5cm 2cm 2.5cm;
+              padding: 4cm 1cm 2cm 1cm;
             }
 
             /* --- Report Content Styling --- */
