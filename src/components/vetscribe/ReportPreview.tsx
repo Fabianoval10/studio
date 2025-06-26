@@ -102,16 +102,23 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         </div>
 
         <style jsx global>{`
+          /* --- Print Visibility Control --- */
+          .print-container {
+            display: none; /* Hide the preview from the screen by default */
+          }
+          
           @media print {
-            /* === Basic Setup === */
-            body > *:not(#printable-area) {
+            /* Hide all non-printable elements from the UI */
+            .no-print {
               display: none !important;
             }
-
-            #printable-area {
-                display: block !important;
+            
+            /* Show the print preview container */
+            .print-container {
+              display: block !important;
             }
 
+            /* --- General Print Setup --- */
             @page {
               size: A4;
               margin: 0;
@@ -124,21 +131,16 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               print-color-adjust: exact !important;
             }
 
-            /* === Page Breaking Logic === */
+            /* --- Page Breaking Logic --- */
             .print-page {
               page-break-before: always;
+              page-break-inside: avoid;
             }
             .print-page:first-child {
               page-break-before: avoid;
             }
             
-            .print-page {
-              page-break-inside: avoid;
-            }
-
-
-            /* === Page Specific Backgrounds and Layout === */
-
+            /* --- Page Layout & Backgrounds --- */
             .print-full-bg-image {
                 position: absolute;
                 top: 0;
@@ -157,6 +159,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               overflow: hidden;
             }
             
+            /* --- Content & Image Page Layout --- */
             .print-content-page {
                 position: relative;
                 z-index: 1;
@@ -165,6 +168,17 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 padding: 2cm 2.5cm 5.0cm 2.5cm;
             }
             
+            .print-image-page {
+              position: relative;
+              z-index: 1;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              box-sizing: border-box;
+              padding: 2cm 2.5cm 2cm 2.5cm;
+            }
+
+            /* --- Report Content Styling --- */
             .info-grid-print {
               display: grid;
               grid-template-columns: 1fr 1fr;
@@ -186,6 +200,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               border-bottom: 1px solid hsl(var(--border));
               padding-bottom: 0.5rem;
             }
+            
             .info-section-print > div {
               margin-bottom: 0.5rem;
             }
@@ -193,21 +208,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block {
               line-height: 1.4;
             }
+            
             .report-text-block p {
                 margin: 0 0 0.8em 0;
                 text-align: justify;
             }
 
-            .print-image-page {
-              position: relative;
-              z-index: 1;
-              height: 100%;
-              display: flex;
-              flex-direction: column;
-              box-sizing: border-box;
-              padding: 2cm 2.5cm 2cm 2.5cm;
-            }
-
+            /* --- Image Grid Styling --- */
             .print-image-grid {
               display: grid;
               grid-template-columns: repeat(3, 1fr);
