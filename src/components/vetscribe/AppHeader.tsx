@@ -1,5 +1,4 @@
 
-import { PawPrint } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AppHeaderProps {
@@ -10,10 +9,7 @@ export function AppHeader({ className }: AppHeaderProps) {
   return (
     <header className={cn("bg-card border-b shadow-sm", className)}>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-           <div className="bg-primary text-primary-foreground p-2 rounded-md">
-             <PawPrint className="w-6 h-6" />
-           </div>
+        <div className="flex items-center">
            <h1 className="text-2xl text-primary font-bold">Baddha Ultrassonografia</h1>
         </div>
         <p className="italic text-muted-foreground">Laudos de Ultrassom Inteligentes</p>

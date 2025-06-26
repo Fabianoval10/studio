@@ -54,13 +54,13 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 **INSTRUÇÕES DE GERAÇÃO:**
 
 1.  **FORMATAÇÃO POR ÓRGÃO:**
-    *   Para cada órgão, inicie a linha com o nome do órgão em MAIÚSCULAS, seguido por um hífen. Exemplo: \`FÍGADO - \`.
+    *   Para cada órgão, inicie a linha com o nome do órgão em negrito, seguido por um hífen. Exemplo: \`*Fígado* - \`.
     *   Mantenha a ordem dos órgãos exatamente como listado abaixo em "DADOS FORNECIDOS".
-    *   Separe a descrição de cada órgão com **DUAS** quebras de linha.
+    *   Separe a descrição de cada órgão com **UMA E MEIA** quebras de linha.
 
 2.  **CONTEÚDO DA DESCRIÇÃO:**
     *   Baseie-se principalmente no campo "Achados Gerais do Exame".
-    *   Incorpore as "Medidas Anatômicas" de cada órgão de forma fluida e profissional na sua respectiva descrição. Exemplo: "...medindo 5.2 x 3.1 cm."
+    *   Incorpore as "Medidas Anatômicas" de cada órgão de forma fluida e profissional em negrito na sua respectiva descrição. Exemplo: "...medindo 5.2 x 3.1 cm."
     *   Se um órgão não for mencionado nos achados e seu campo de medida estiver vazio, **VOCÊ DEVE** gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). Exemplo de um baço normal: \`BAÇO - Contornos regulares, parênquima homogêneo e normoecogênico, com dimensões preservadas.\`
 
 3.  **IMPRESSÃO DIAGNÓSTICA (CONCLUSÃO):**

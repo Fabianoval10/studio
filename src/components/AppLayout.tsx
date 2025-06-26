@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -21,7 +20,6 @@ import {
   FilePlus2,
   ScrollText,
   Settings as SettingsIcon,
-  PawPrint,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -41,10 +39,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary text-primary-foreground p-2 rounded-md">
-              <PawPrint className="w-6 h-6" />
-            </div>
+          <div className="flex items-center">
             <h1 className="text-2xl font-headline text-primary font-bold transition-all group-data-[collapsible=icon]:-ml-8 group-data-[collapsible=icon]:opacity-0">
               VETLD
             </h1>
