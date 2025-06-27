@@ -195,7 +195,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 3cm 1cm 10cm 1cm;
+              padding: 4cm 1cm 10cm 1cm;
             }
 
             /* --- Report Content Styling --- */
@@ -218,7 +218,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-divider {
               border: none;
               height: 1px;
-              background-color: #F97316;
+              background-color: #665045;
               margin: 1.5rem 0;
             }
             
