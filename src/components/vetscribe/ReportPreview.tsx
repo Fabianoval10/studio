@@ -112,17 +112,22 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         <style jsx global>{`
           /* --- Print Visibility Control --- */
           @media screen {
-            #printable-area {
-              display: none;
+            .print-container {
+                visibility: hidden;
+                position: absolute;
+                pointer-events: none;
             }
           }
+
           @media print {
             body > *:not(.print-container),
             .no-print {
               display: none !important;
             }
+
             .print-container {
               display: block !important;
+              visibility: visible !important;
               position: absolute;
               top: 0;
               left: 0;
@@ -176,7 +181,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
                 height: 100%;
                 box-sizing: border-box;
-                padding: 4cm 1cm 10cm 1cm;
+                padding: 4cm 1cm 10cm 1cm; /* Margens definidas */
             }
             
             .print-image-page {
@@ -186,7 +191,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 4cm 1cm 2cm 1cm;
+              padding: 4cm 1cm 2cm 1cm; /* Margens definidas */
             }
 
             /* --- Report Content Styling --- */
@@ -194,12 +199,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: grid;
               grid-template-columns: repeat(3, 1fr);
               gap: 1.5rem;
-              font-size: 9pt;
+              font-size: 9pt; /* Fonte ajustada */
               color: #665045; /* Cor do texto */
             }
 
             .info-grid-print .font-semibold {
-              color: #E98157; /* Cor dos títulos */
+              color: #665045; /* Cor dos títulos */
             }
 
             .report-divider {
@@ -225,7 +230,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             .report-text-block strong {
-              color: #E98157; /* Cor dos títulos */
+              color: #665045; /* Cor dos títulos */
               font-weight: 600; /* Semi-bold */
             }
 
