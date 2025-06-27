@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { ReportFormData, UploadedImage } from "@/types";
@@ -38,6 +37,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
     return (
       <>
         <div id="printable-area">
+            {/* Page 0: Over-Cover */}
+            <div className="print-page">
+              <img src="/sobrecapa.jpg" className="print-bg-img" alt="Sobrecapa do Laudo" />
+            </div>
+
             {/* Page 1: Cover */}
             <div className="print-page">
               <img src="/capa.jpg" className="print-bg-img" alt="Capa do Laudo" />
