@@ -33,11 +33,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       <>
         <div id="printable-area">
             {/* Page 1: Cover */}
-            <div className="print-page cover-page">
+            <div className="print-page">
+              <img src="/capa.jpg" className="print-bg-img" alt="Capa do Laudo" />
             </div>
 
             {/* Page 2: Content (Patient Info, Exam Info, Report Text) */}
-            <div className="print-page content-bg-page">
+            <div className="print-page">
+              <img src="/timbrado.jpg" className="print-bg-img" alt="Papel Timbrado" />
               <div className="print-content-page">
                 <div className="report-content-group">
                   <div className="info-grid-print">
@@ -83,7 +85,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             {/* Page 3: Images (Single Page) */}
             {imagesForOnePage.length > 0 && (
-              <div className="print-page content-bg-page">
+              <div className="print-page">
+                <img src="/timbrado.jpg" className="print-bg-img" alt="Papel Timbrado" />
                 <div className="print-image-page">
                   <div className="print-image-grid">
                     {imagesForOnePage.map((img) => (
@@ -101,7 +104,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             )}
 
             {/* Final Page */}
-            <div className="print-page final-page">
+            <div className="print-page">
+              <img src="/fim.jpg" className="print-bg-img" alt="Página Final do Laudo" />
             </div>
         </div>
 
@@ -159,21 +163,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               box-sizing: border-box;
               overflow: hidden;
             }
-
-            /* --- Page Backgrounds --- */
-            .cover-page, .content-bg-page, .final-page {
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-            }
-            .cover-page {
-                background-image: url('/capa.jpg');
-            }
-            .content-bg-page {
-                background-image: url('/timbrado.jpg');
-            }
-            .final-page {
-                background-image: url('/fim.jpg');
+            
+            .print-bg-img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
             }
             
             /* --- Content & Image Page Layout --- */
