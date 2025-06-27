@@ -15,6 +15,7 @@ import {z} from 'genkit';
 // This input schema should reflect all the fields from the form
 const GenerateReportInputSchema = z.object({
   species: z.string().describe("Espécie do animal."),
+  sex: z.string().describe("Sexo do animal (Macho, Fêmea, Macho Castrado, Fêmea Castrada, Desconhecido)."),
   examFindings: z.string().optional().describe("Achados gerais do exame descritos pelo usuário."),
   figado: z.string().optional(),
   vesiculaBiliar: z.string().optional(),
@@ -69,8 +70,11 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
     *   O conteúdo deste parágrafo deve ser baseado nas "Notas para Conclusão" do usuário.
     *   Se o campo "Notas para Conclusão" estiver vazio, **E SOMENTE NESSE CASO**, use o seguinte texto: "Nada mais digno de nota na data da avaliação.".
 
+4.  **CONSIDERE O SEXO:** Se o sexo do animal for "Macho" ou "Macho Castrado", **NÃO INCLUA** a seção "Útero e Ovários" no laudo. Para todos os outros sexos, inclua a seção normalmente.
+
 **DADOS FORNECIDOS:**
 - Espécie: {{{species}}}
+- Sexo: {{{sex}}}
 - Achados Gerais do Exame: {{{examFindings}}}
 - Notas para Conclusão: {{{additionalNotes}}}
 
@@ -101,6 +105,8 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 **Rins:** Rins de dimensões preservadas, medindo **6,65 cm** o rim esquerdo e **5,53 cm** o rim direito, margens regulares, com relações e definição córtico medular preservadas, ecogenicidade mantida em cortical.
 **Adrenais:** Adrenais de dimensões e formato anatômico preservados, definição córtico medular mantida, medindo (margem cranial x margem caudal) **0,41 cm x 0,42 cm** a adrenal esquerda e **0,41 cm x 0,42 cm** a adrenal direita.
 **Vesícula Urinária:** Vesícula urinária em distensão adequada, paredes finas (**0,75 cm**) e mucosas regulares, repleta por conteúdo anecogênico.
+**Próstata:** Não visualizada.
+**Útero e Ovários:** Não visualizados.
 `,
 });
 
