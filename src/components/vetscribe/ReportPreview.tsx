@@ -187,7 +187,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
-              font-size: 12pt;
+              font-size: 9pt;
               color: #665045; /* Cor do texto */
             }
 
