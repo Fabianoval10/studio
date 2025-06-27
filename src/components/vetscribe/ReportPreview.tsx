@@ -16,7 +16,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   if (value === null || value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) return null;
   return (
     <div className={className}>
-      <span className="font-semibold">{label}: </span>
+      <span className="font-semibold">{label}: </span> 
       <span>{String(value)}</span>
     </div>
   );
@@ -33,13 +33,11 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
       <>
         <div id="printable-area">
             {/* Page 1: Cover */}
-            <div className="print-page">
-              <img src="/capa.jpg" alt="Capa do Laudo" className="print-full-bg-image" data-ai-hint="report cover" />
+            <div className="print-page cover-page">
             </div>
 
             {/* Page 2: Content (Patient Info, Exam Info, Report Text) */}
-            <div className="print-page">
-              <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-full-bg-image" data-ai-hint="letterhead document" />
+            <div className="print-page content-bg-page">
               <div className="print-content-page">
                 <div className="report-content-group">
                   <div className="info-grid-print">
@@ -85,8 +83,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             {/* Page 3: Images (Single Page) */}
             {imagesForOnePage.length > 0 && (
-              <div className="print-page">
-                <img src="/timbrado.jpg" alt="Papel Timbrado" className="print-full-bg-image" data-ai-hint="letterhead document" />
+              <div className="print-page content-bg-page">
                 <div className="print-image-page">
                   <div className="print-image-grid">
                     {imagesForOnePage.map((img) => (
@@ -104,8 +101,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             )}
 
             {/* Final Page */}
-            <div className="print-page">
-              <img src="/fim.jpg" alt="Página Final do Laudo" className="print-full-bg-image" data-ai-hint="contact information" />
+            <div className="print-page final-page">
             </div>
         </div>
 
@@ -156,23 +152,28 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               page-break-before: avoid;
             }
             
-            /* --- Page Layout & Backgrounds --- */
-            .print-full-bg-image {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                z-index: -1;
-            }
-            
             .print-page {
               position: relative;
               width: 210mm;
               height: 297mm;
               box-sizing: border-box;
               overflow: hidden;
+            }
+
+            /* --- Page Backgrounds --- */
+            .cover-page, .content-bg-page, .final-page {
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .cover-page {
+                background-image: url('/capa.jpg');
+            }
+            .content-bg-page {
+                background-image: url('/timbrado.jpg');
+            }
+            .final-page {
+                background-image: url('/fim.jpg');
             }
             
             /* --- Content & Image Page Layout --- */
@@ -181,7 +182,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
                 height: 100%;
                 box-sizing: border-box;
-                padding: 4cm 1cm 10cm 1cm; /* Margens definidas */
+                padding: 4cm 1cm 10cm 1cm;
             }
             
             .print-image-page {
@@ -191,7 +192,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 4cm 1cm 2cm 1cm; /* Margens definidas */
+              padding: 4cm 1cm 2cm 1cm;
             }
 
             /* --- Report Content Styling --- */
@@ -199,18 +200,19 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: grid;
               grid-template-columns: repeat(3, 1fr);
               gap: 1.5rem;
-              font-size: 9pt; /* Fonte ajustada */
-              color: #665045; /* Cor do texto */
+              font-size: 9pt;
+              color: #665045;
             }
 
             .info-grid-print .font-semibold {
-              color: #665045; /* Cor dos títulos */
+              color: #665045;
+              font-weight: 600;
             }
 
             .report-divider {
               border: none;
               height: 1px;
-              background-color: #F97316; /* Cor Laranja */
+              background-color: #F97316;
               margin: 1.5rem 0;
             }
             
@@ -230,8 +232,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             }
             
             .report-text-block strong {
-              color: #665045; /* Cor dos títulos */
-              font-weight: 600; /* Semi-bold */
+              color: #665045;
+              font-weight: 600;
             }
 
             /* --- Image Grid Styling --- */
