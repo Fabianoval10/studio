@@ -49,7 +49,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               <div className="print-content-page">
                 <div className="report-content-group">
                   <div className="info-grid-print">
-                     <div className="info-section-print">
+                    <div className="info-section-print">
                         <DetailItem label="Paciente" value={formData.petName} />
                         <DetailItem label="Espécie" value={formData.species} />
                         <DetailItem label="Sexo" value={formData.sex} />
@@ -57,9 +57,9 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                         <DetailItem label="Idade" value={fullAge} />
                     </div>
                     <div className="info-section-print">
-                      <DetailItem label="Tutor" value={formData.ownerName} />
-                      <DetailItem label="ID" value={formData.patientId} />
-                      <DetailItem label="Data do Exame" value={formData.examDate ? format(formData.examDate, "PPP", { locale: ptBR }) : null} />
+                        <DetailItem label="Tutor" value={formData.ownerName} />
+                        <DetailItem label="ID" value={formData.patientId} />
+                        <DetailItem label="Data do Exame" value={formData.examDate ? format(formData.examDate, "PPP", { locale: ptBR }) : null} />
                     </div>
                     <div className="info-section-print">
                       <DetailItem label="Clínica" value={formData.clinicName} />
@@ -108,11 +108,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 </div>
               </div>
             ))}
-
-            {/* Final Page */}
-            <div className="print-page">
-              <img src="/contracapa.jpg" className="print-bg-img" alt="Contracapa do Laudo" />
-            </div>
         </div>
 
         <style jsx global>{`
