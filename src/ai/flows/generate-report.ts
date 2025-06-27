@@ -30,8 +30,6 @@ const GenerateReportInputSchema = z.object({
   prostata: z.string().optional(),
   uteroOvarios: z.string().optional(),
   linfonodos: z.string().optional(),
-  liquidoLivre: z.string().optional(),
-  outros: z.string().optional(),
   additionalNotes: z.string().optional().describe("Notas do usuário para a conclusão."),
 });
 export type GenerateReportInput = z.infer<typeof GenerateReportInputSchema>;
@@ -92,8 +90,6 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 - Próstata: {{{prostata}}}
 - Útero e Ovários: {{{uteroOvarios}}}
 - Linfonodos: {{{linfonodos}}}
-- Líquido Livre: {{{liquidoLivre}}}
-- Outros Achados: {{{outros}}}
 
 --- TEXTOS PADRÃO DE NORMALIDADE (usar se não houver dados para o órgão) ---
 **Fígado:** Fígado de contornos definidos, margens regulares, bordas arredondadas, dimensões preservadas, ecotextura homogênea, ecogenicidade mantida. Arquitetura vascular preservada.

@@ -36,8 +36,6 @@ export const reportFormSchema = z.object({
   prostata: z.string().optional(),
   uteroOvarios: z.string().optional(),
   linfonodos: z.string().optional(),
-  liquidoLivre: z.string().optional(),
-  outros: z.string().optional(),
 
   // This maps to "conclusoes" for the AI
   additionalNotes: z.string().optional(),
@@ -46,7 +44,7 @@ export const reportFormSchema = z.object({
       data.figado, data.vesiculaBiliar, data.pancreas, data.estomago,
       data.intestino, data.rimDireito, data.rimEsquerdo, data.baco,
       data.adrenais, data.vesiculaUrinaria, data.prostata,
-      data.uteroOvarios, data.linfonodos, data.liquidoLivre, data.outros
+      data.uteroOvarios, data.linfonodos
     ];
     const hasGeneralFindings = data.examFindings && data.examFindings.trim().length > 0;
     const hasSpecificMeasurements = measurementFields.some(field => field && field.trim().length > 0);

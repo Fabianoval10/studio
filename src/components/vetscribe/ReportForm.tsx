@@ -242,8 +242,6 @@ export function ReportForm({ onSubmit, isLoading, initialData }: ReportFormProps
                             <FormFieldWrapper name="prostata" label="Próstata" errors={errors}><Input {...register("prostata")} placeholder="Medidas em cm"/></FormFieldWrapper>
                             <FormFieldWrapper name="uteroOvarios" label="Útero e Ovários" errors={errors}><Input {...register("uteroOvarios")} placeholder="Medidas em cm"/></FormFieldWrapper>
                             <FormFieldWrapper name="linfonodos" label="Linfonodos" errors={errors}><Input {...register("linfonodos")} placeholder="Medidas em cm"/></FormFieldWrapper>
-                            <FormFieldWrapper name="liquidoLivre" label="Líquido Livre" errors={errors}><Input {...register("liquidoLivre")} placeholder="Quantidade, aspecto"/></FormFieldWrapper>
-                            <FormFieldWrapper name="outros" label="Outros Achados" errors={errors}><Input {...register("outros")} placeholder="Outras observações"/></FormFieldWrapper>
                         </div>
                     </div>
                 </AccordionContent>

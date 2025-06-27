@@ -30,8 +30,6 @@ export async function handleGenerateReportAction(
       prostata: validatedData.prostata,
       uteroOvarios: validatedData.uteroOvarios,
       linfonodos: validatedData.linfonodos,
-      liquidoLivre: validatedData.liquidoLivre,
-      outros: validatedData.outros,
       additionalNotes: validatedData.additionalNotes,
     };
 
