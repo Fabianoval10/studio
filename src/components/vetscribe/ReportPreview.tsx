@@ -151,17 +151,17 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .print-page {
               page-break-before: always;
               page-break-inside: avoid;
-            }
-            .print-page:first-child {
-              page-break-before: avoid;
-            }
-            
-            .print-page {
               position: relative;
               width: 210mm;
               height: 297mm;
               box-sizing: border-box;
               overflow: hidden;
+            }
+            .print-page:first-child {
+              page-break-before: avoid;
+            }
+            .print-page:last-child {
+              page-break-after: avoid; /* Prevent an extra blank page */
             }
             
             .print-bg-img {
