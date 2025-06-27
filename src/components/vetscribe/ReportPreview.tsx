@@ -195,7 +195,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 2.5cm 1cm 2cm 1cm;
+              padding: 3cm 1cm 10cm 1cm;
             }
 
             /* --- Report Content Styling --- */
