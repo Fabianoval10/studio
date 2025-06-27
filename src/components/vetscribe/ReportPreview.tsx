@@ -27,7 +27,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
     const fullAge = `${formData.ageYears || 0} ano(s)${formData.ageMonths && formData.ageMonths > 0 ? ' e ' + formData.ageMonths + ' mes(es)' : '' }`;
 
-    const imagesForOnePage = uploadedImages.slice(0, 24);
+    const IMAGES_PER_PAGE = 24; // 4 columns x 6 rows
+    const imagePages = [];
+    if (uploadedImages && uploadedImages.length > 0) {
+      for (let i = 0; i < uploadedImages.length; i += IMAGES_PER_PAGE) {
+        imagePages.push(uploadedImages.slice(i, i + IMAGES_PER_PAGE));
+      }
+    }
 
     return (
       <>
@@ -83,13 +89,13 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               </div>
             </div>
 
-            {/* Page 3: Images (Single Page) */}
-            {imagesForOnePage.length > 0 && (
-              <div className="print-page">
+            {/* Image Pages - Dynamically generated */}
+            {imagePages.map((pageImages, pageIndex) => (
+              <div key={`image-page-${pageIndex}`} className="print-page">
                 <img src="/timbrado.jpg" className="print-bg-img" alt="Papel Timbrado" />
                 <div className="print-image-page">
                   <div className="print-image-grid">
-                    {imagesForOnePage.map((img) => (
+                    {pageImages.map((img) => (
                       <div key={img.id} className="print-image-item">
                         <img
                           src={img.previewUrl}
@@ -101,7 +107,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                   </div>
                 </div>
               </div>
-            )}
+            ))}
 
             {/* Final Page */}
             <div className="print-page">
@@ -189,7 +195,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 4cm 1cm 2cm 1cm;
+              padding: 2.5cm 1cm 2cm 1cm;
             }
 
             /* --- Report Content Styling --- */
@@ -198,12 +204,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: repeat(3, 1fr);
               gap: 1.5rem;
               font-size: 9pt;
-              color: #665045;
             }
 
             .info-grid-print .font-semibold {
               color: #665045;
               font-weight: 600;
+            }
+
+            .info-grid-print, .report-text-block {
+                color: #665045;
             }
 
             .report-divider {
@@ -220,7 +229,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block {
               font-size: 9pt;
               line-height: 1.4;
-              color: #665045;
             }
             
             .report-text-block p {
