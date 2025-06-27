@@ -70,12 +70,14 @@ export async function handleGenerateReportAction(
     }
     
     // Provide more user-friendly messages for common issues
-    if (errorMessage.includes('Deadline exceeded')) {
-      errorMessage = "A IA demorou muito para responder. Por favor, tente simplificar os achados ou tente novamente."
+    if (errorMessage.includes('FAILED_PRECONDITION')) {
+      errorMessage = "A chave de API do Gemini (GEMINI_API_KEY) não foi encontrada. Por favor, adicione-a ao seu arquivo .env na raiz do projeto e reinicie o servidor.";
+    } else if (errorMessage.includes('Deadline exceeded')) {
+      errorMessage = "A IA demorou muito para responder. Por favor, tente simplificar os achados ou tente novamente.";
     } else if (errorMessage.includes('API key not valid')) {
-      errorMessage = "A chave de API configurada não é válida. Verifique o arquivo .env."
+      errorMessage = "A chave de API configurada não é válida. Verifique o arquivo .env.";
     } else if (errorMessage.includes('quota')) {
-      errorMessage = "Atingido o limite de uso da API. Por favor, verifique sua cota no painel da Google AI."
+      errorMessage = "Atingido o limite de uso da API. Por favor, verifique sua cota no painel da Google AI.";
     }
 
     return { success: false, error: errorMessage };
