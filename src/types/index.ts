@@ -63,3 +63,5 @@ export interface UploadedImage {
   file?: File; // File is optional now
   previewUrl: string; // This can be a blob URL or a data URI
 }
+
+export const REPORTS_COLLECTION = 'reports';
