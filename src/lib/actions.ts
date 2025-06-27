@@ -3,36 +3,7 @@
 
 import type { ReportFormData } from "@/types";
 import { generateReport, type GenerateReportInput } from "@/ai/flows/generate-report";
-import { reportFormSchema, REPORTS_COLLECTION } from "@/types";
-import { db } from './firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
-
-export async function getReportsForDisplay() {
-  try {
-    const reportsSnapshot = await db.collection(REPORTS_COLLECTION).orderBy('createdAt', 'desc').get();
-    if (reportsSnapshot.empty) {
-      console.log('[getReportsForDisplay] No reports found in Firestore.');
-      return [];
-    }
-    
-    const reports = reportsSnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        petName: data.petName,
-        ownerName: data.ownerName,
-        species: data.species,
-        examDate: (data.examDate as Timestamp).toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-        createdAt: (data.createdAt as Timestamp).toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-      };
-    });
-
-    return reports;
-  } catch (error) {
-    console.error("[getReportsForDisplay] Error fetching reports from Firestore:", error);
-    return [];
-  }
-}
+import { reportFormSchema } from "@/types";
 
 export async function handleGenerateReportAction(
   data: ReportFormData
@@ -68,26 +39,6 @@ export async function handleGenerateReportAction(
 
     if (result) {
       const sanitizedReportText = result.replace(/<\/?[^>]+(>|$)/g, "").trim();
-
-      // --- SAVE TO FIRESTORE ---
-      try {
-        const reportToSave = {
-          ...validatedData,
-          generatedReportText: sanitizedReportText,
-          createdAt: Timestamp.now()
-        };
-        const docRef = await db.collection(REPORTS_COLLECTION).add(reportToSave);
-        console.log(`[handleGenerateReportAction] Report saved to Firestore with ID: ${docRef.id}`);
-      } catch (dbError: any) {
-        console.error("[handleGenerateReportAction] Firestore save error:", dbError.message);
-        return { 
-          success: true, 
-          reportText: sanitizedReportText, 
-          error: "Laudo gerado, mas ocorreu um erro ao salvá-lo. Verifique a configuração do Firebase no seu ambiente." 
-        };
-      }
-      // --- END SAVE TO FIRESTORE ---
-
       return { success: true, reportText: sanitizedReportText };
     } else {
       console.error('[handleGenerateReportAction] Fluxo retornou com sucesso, mas o resultado está vazio:', result);
