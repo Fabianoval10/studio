@@ -44,7 +44,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 <div className="report-content-group">
                   <div className="info-grid-print">
                     <div className="info-section-print">
-                      <h4 className="info-subtitle-print">Paciente</h4>
                       <DetailItem label="Tutor" value={formData.ownerName} />
                       <DetailItem label="Paciente" value={formData.petName} />
                       <DetailItem label="ID" value={formData.patientId} />
@@ -54,7 +53,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                       <DetailItem label="Idade" value={fullAge} />
                     </div>
                     <div className="info-section-print">
-                      <h4 className="info-subtitle-print">Exame</h4>
                       <DetailItem label="Clínica" value={formData.clinicName} />
                       <DetailItem label="M.V. Resp." value={formData.vetName} />
                       <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
@@ -190,15 +188,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               height: 1px;
               background-color: #F97316; /* Cor Laranja */
               margin: 1.5rem 0;
-            }
-
-            .info-subtitle-print {
-              font-weight: bold;
-              font-size: 12pt;
-              color: hsl(var(--primary));
-              margin-bottom: 1rem;
-              border-bottom: 1px solid hsl(var(--border));
-              padding-bottom: 0.5rem;
             }
             
             .info-section-print > div {
