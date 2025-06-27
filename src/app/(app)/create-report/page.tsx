@@ -8,6 +8,7 @@ import { handleGenerateReportAction } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { ReportPreview } from '@/components/vetscribe/ReportPreview';
 import Portal from '@/components/Portal';
+import { format } from 'date-fns';
 
 export default function CreateReportPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,8 +21,14 @@ export default function CreateReportPage() {
 
   useEffect(() => {
     if (reportDataForPrint) {
+      const originalTitle = document.title;
+      const formattedDate = format(reportDataForPrint.formData.examDate, 'dd_MM_yyyy');
+      const newTitle = `Baddha-${reportDataForPrint.formData.petName}-${formattedDate}`;
+      document.title = newTitle;
+      
       const handleAfterPrint = () => {
         setReportDataForPrint(null);
+        document.title = originalTitle;
         window.removeEventListener('afterprint', handleAfterPrint);
       };
 
@@ -35,6 +42,7 @@ export default function CreateReportPage() {
       // Cleanup function to remove the listener if the component unmounts.
       return () => {
         clearTimeout(timer);
+        document.title = originalTitle;
         window.removeEventListener('afterprint', handleAfterPrint);
       };
     }
