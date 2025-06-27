@@ -47,10 +47,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                       <DetailItem label="Tutor" value={formData.ownerName} />
                       <DetailItem label="Paciente" value={formData.petName} />
                       <DetailItem label="ID" value={formData.patientId} />
-                      <DetailItem label="Espécie" value={formData.species} />
-                      <DetailItem label="Raça" value={formData.breed} />
-                      <DetailItem label="Sexo" value={formData.sex} />
-                      <DetailItem label="Idade" value={fullAge} />
+                    </div>
+                    <div className="info-section-print">
+                       <DetailItem label="Espécie" value={formData.species} />
+                       <DetailItem label="Raça" value={formData.breed} />
+                       <DetailItem label="Sexo" value={formData.sex} />
+                       <DetailItem label="Idade" value={fullAge} />
                     </div>
                     <div className="info-section-print">
                       <DetailItem label="Clínica" value={formData.clinicName} />
@@ -109,21 +111,20 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
         <style jsx global>{`
           /* --- Print Visibility Control --- */
-           @media screen {
-            .print-container {
-              display: none;
-            }
-          }
-          
           @media print {
-            body > *:not(.print-container) {
+            body > *:not(.print-container),
+            .no-print {
               display: none !important;
             }
-            
             .print-container {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: auto;
               display: block !important;
             }
-
+            
             /* --- General Print Setup --- */
             @page {
               size: A4;
@@ -171,7 +172,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
                 height: 100%;
                 box-sizing: border-box;
-                padding: 2.5cm 1cm 10cm 1cm;
+                padding: 4cm 1cm 10cm 1cm;
             }
             
             .print-image-page {
@@ -181,18 +182,18 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 2.5cm 1cm 2cm 1cm;
+              padding: 4cm 1cm 2cm 1cm;
             }
 
             /* --- Report Content Styling --- */
             .info-grid-print {
               display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 2.5rem;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 1.5rem;
               font-size: 9pt;
             }
             
-            .info-grid-print, .report-text-block {
+            .info-grid-print {
                 color: #665045; /* Cor do texto */
             }
 
@@ -214,6 +215,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block {
               font-size: 9pt;
               line-height: 1.4;
+              color: #665045;
             }
             
             .report-text-block p {
