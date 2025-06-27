@@ -187,6 +187,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
+              font-size: 12pt;
+              color: #665045; /* Cor do texto */
+            }
+
+            .info-grid-print .font-semibold {
+              color: #E98157; /* Cor dos títulos */
             }
 
             .report-divider {
@@ -198,17 +204,21 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .info-section-print > div {
               margin-bottom: 0.5rem;
-              font-size: 9pt;
             }
 
             .report-text-block {
-              line-height: 1.4;
               font-size: 9pt;
+              line-height: 1.4;
+              color: #665045; /* Cor do texto */
             }
             
             .report-text-block p {
                 margin: 0 0 0.8em 0;
                 text-align: justify;
+            }
+            
+            .report-text-block strong {
+              color: #E98157; /* Cor dos títulos */
             }
 
             /* --- Image Grid Styling --- */
