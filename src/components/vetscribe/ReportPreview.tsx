@@ -44,21 +44,21 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 <div className="report-content-group">
                   <div className="info-grid-print">
                     <div className="info-section-print">
-                      <DetailItem label="Tutor" value={formData.ownerName} />
                       <DetailItem label="Paciente" value={formData.petName} />
-                      <DetailItem label="ID" value={formData.patientId} />
+                      <DetailItem label="Espécie" value={formData.species} />
+                      <DetailItem label="Sexo" value={formData.sex} />
+                      <DetailItem label="Raça" value={formData.breed} />
+                      <DetailItem label="Idade" value={fullAge} />
                     </div>
                     <div className="info-section-print">
-                       <DetailItem label="Espécie" value={formData.species} />
-                       <DetailItem label="Raça" value={formData.breed} />
-                       <DetailItem label="Sexo" value={formData.sex} />
-                       <DetailItem label="Idade" value={fullAge} />
+                      <DetailItem label="Tutor" value={formData.ownerName} />
+                      <DetailItem label="ID" value={formData.patientId} />
+                      <DetailItem label="Data do Exame" value={formData.examDate ? format(formData.examDate, "PPP", { locale: ptBR }) : null} />
                     </div>
                     <div className="info-section-print">
                       <DetailItem label="Clínica" value={formData.clinicName} />
                       <DetailItem label="M.V. Resp." value={formData.vetName} />
                       <DetailItem label="Vet. Solicitante" value={formData.referringVet} />
-                      <DetailItem label="Data do Exame" value={formData.examDate ? format(formData.examDate, "PPP", { locale: ptBR }) : null} />
                     </div>
                   </div>
 
@@ -111,18 +111,22 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
         <style jsx global>{`
           /* --- Print Visibility Control --- */
+          @media screen {
+            #printable-area {
+              display: none;
+            }
+          }
           @media print {
             body > *:not(.print-container),
             .no-print {
               display: none !important;
             }
             .print-container {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: auto;
               display: block !important;
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
             }
             
             /* --- General Print Setup --- */
@@ -191,10 +195,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: repeat(3, 1fr);
               gap: 1.5rem;
               font-size: 9pt;
-            }
-            
-            .info-grid-print {
-                color: #665045; /* Cor do texto */
+              color: #665045; /* Cor do texto */
             }
 
             .info-grid-print .font-semibold {
