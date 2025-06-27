@@ -49,12 +49,12 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               <div className="print-content-page">
                 <div className="report-content-group">
                   <div className="info-grid-print">
-                    <div className="info-section-print">
-                      <DetailItem label="Paciente" value={formData.petName} />
-                      <DetailItem label="Espécie" value={formData.species} />
-                      <DetailItem label="Sexo" value={formData.sex} />
-                      <DetailItem label="Raça" value={formData.breed} />
-                      <DetailItem label="Idade" value={fullAge} />
+                     <div className="info-section-print">
+                        <DetailItem label="Paciente" value={formData.petName} />
+                        <DetailItem label="Espécie" value={formData.species} />
+                        <DetailItem label="Sexo" value={formData.sex} />
+                        <DetailItem label="Raça" value={formData.breed} />
+                        <DetailItem label="Idade" value={fullAge} />
                     </div>
                     <div className="info-section-print">
                       <DetailItem label="Tutor" value={formData.ownerName} />
@@ -111,7 +111,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
             {/* Final Page */}
             <div className="print-page">
-              <img src="/fim.jpg" className="print-bg-img" alt="Página Final do Laudo" />
+              <img src="/contracapa.jpg" className="print-bg-img" alt="Contracapa do Laudo" />
             </div>
         </div>
 
@@ -167,7 +167,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               page-break-before: avoid;
             }
             .print-page:last-child {
-              page-break-after: avoid; /* Prevent an extra blank page */
+              page-break-after: avoid;
             }
             
             .print-bg-img {
@@ -206,7 +206,8 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               font-size: 9pt;
             }
 
-            .info-grid-print .font-semibold {
+            .info-grid-print .font-semibold,
+            .report-text-block strong {
               color: #665045;
               font-weight: 600;
             }
@@ -234,11 +235,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block p {
                 margin: 0 0 0.8em 0;
                 text-align: justify;
-            }
-            
-            .report-text-block strong {
-              color: #665045;
-              font-weight: 600;
             }
 
             /* --- Image Grid Styling --- */
