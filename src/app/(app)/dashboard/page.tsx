@@ -12,11 +12,11 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Bem-vindo ao VETLD</CardTitle>
           <CardDescription>
-            Este é o seu painel de controle. Mais funcionalidades em breve!
+            Funcionalidade em desenvolvimento.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="font-body">Navegue pela barra lateral para criar novos laudos ou visualizar os existentes.</p>
+          <p className="font-body">Navegue pela barra lateral para criar novos laudos.</p>
         </CardContent>
       </Card>
     </div>

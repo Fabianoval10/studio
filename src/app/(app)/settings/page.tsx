@@ -16,7 +16,7 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="font-body">Funcionalidade em desenvolvimento.</p>
+          <p className="font-body">Esta funcionalidade será implementada em breve.</p>
         </CardContent>
       </Card>
     </div>
