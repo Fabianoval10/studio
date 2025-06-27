@@ -1,6 +1,8 @@
 
 import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
+import { config } from 'dotenv';
+config();
 
 // Log para verificar se as variáveis de ambiente estão sendo lidas
 const geminiApiKeyFromEnv = process.env.GEMINI_API_KEY;
