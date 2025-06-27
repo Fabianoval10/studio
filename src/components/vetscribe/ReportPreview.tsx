@@ -16,8 +16,8 @@ const DetailItem: React.FC<{ label: string; value?: string | number | null; clas
   if (value === null || value === undefined || value === "" || (typeof value === 'number' && isNaN(value))) return null;
   return (
     <div className={className}>
-      <span className="font-semibold text-foreground/80">{label}: </span>
-      <span className="text-foreground">{String(value)}</span>
+      <span className="font-semibold">{label}: </span>
+      <span>{String(value)}</span>
     </div>
   );
 };
@@ -109,8 +109,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
 
         <style jsx global>{`
           /* --- Print Visibility Control --- */
-          .print-container {
-            display: none;
+           @media screen {
+            .print-container {
+              display: none;
+            }
           }
           
           @media print {
@@ -169,7 +171,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                 z-index: 1;
                 height: 100%;
                 box-sizing: border-box;
-                padding: 4cm 1cm 10cm 1cm;
+                padding: 2.5cm 1cm 10cm 1cm;
             }
             
             .print-image-page {
@@ -179,7 +181,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               display: flex;
               flex-direction: column;
               box-sizing: border-box;
-              padding: 4cm 1cm 2cm 1cm;
+              padding: 2.5cm 1cm 2cm 1cm;
             }
 
             /* --- Report Content Styling --- */
@@ -188,7 +190,10 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
               grid-template-columns: 1fr 1fr;
               gap: 2.5rem;
               font-size: 9pt;
-              color: #665045; /* Cor do texto */
+            }
+            
+            .info-grid-print, .report-text-block {
+                color: #665045; /* Cor do texto */
             }
 
             .info-grid-print .font-semibold {
@@ -209,7 +214,6 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             .report-text-block {
               font-size: 9pt;
               line-height: 1.4;
-              color: #665045; /* Cor do texto */
             }
             
             .report-text-block p {
@@ -219,6 +223,7 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
             
             .report-text-block strong {
               color: #E98157; /* Cor dos títulos */
+              font-weight: 600; /* Semi-bold */
             }
 
             /* --- Image Grid Styling --- */
