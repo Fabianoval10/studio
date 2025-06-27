@@ -53,21 +53,21 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 
 **INSTRUÇÕES DE GERAÇÃO:**
 
-1.  **FORMATAÇÃO POR ÓRGÃO:**
-    *   Para cada órgão, inicie a linha com o nome do órgão em negrito, seguido por um hífen. Exemplo: \`*Fígado* - \`.
+1.  **FORMATAÇÃO GERAL:**
+    *   Para cada órgão, inicie a linha com o nome do órgão em **negrito**, seguido por um hífen. Exemplo: \`**Fígado** - \`.
     *   Mantenha a ordem dos órgãos exatamente como listado abaixo em "DADOS FORNECIDOS".
-    *   Separe a descrição de cada órgão com **UMA E MEIA** quebras de linha.
+    *   Separe a descrição de cada órgão com uma quebra de linha.
+    *   Quando incluir medidas dos "Dados Fornecidos", coloque-as em **negrito** (ex: **5.2 cm** ou **5.2 x 3.1 cm**).
 
-2.  **CONTEÚDO DA DESCRIÇÃO:**
-    *   Baseie-se principalmente no campo "Achados Gerais do Exame".
-    *   Incorpore as "Medidas Anatômicas" de cada órgão de forma fluida e profissional em negrito na sua respectiva descrição. Exemplo: "...medindo 5.2 x 3.1 cm."
-    *   Se um órgão não for mencionado nos achados e seu campo de medida estiver vazio, **VOCÊ DEVE** gerar uma descrição padrão de normalidade para a espécie informada ({{{species}}}). Exemplo de um baço normal: \`BAÇO - Contornos regulares, parênquima homogêneo e normoecogênico, com dimensões preservadas.\`
+2.  **CONTEÚDO DA DESCRIÇÃO DE CADA ÓRGÃO:**
+    *   **PRIORIZE OS DADOS DO USUÁRIO:** Se o usuário descreveu o órgão nos "Achados Gerais do Exame" ou forneceu uma medida no campo anatômico específico, crie a descrição com base nesses dados.
+    *   **USE O TEXTO PADRÃO QUANDO NÃO HOUVER DADOS:** Se um órgão **NÃO** for mencionado nos achados e seu campo de medida estiver vazio, você **DEVE** usar o texto padrão correspondente da seção "TEXTOS PADRÃO DE NORMALIDADE" abaixo, sem alterações.
+    *   **INCORPORE MEDIDAS:** Se o usuário fornecer uma medida em um campo anatômico, incorpore-a de forma fluida na descrição, colocando-a em negrito. Se estiver usando um texto padrão que já contém uma medida de exemplo, substitua a medida do exemplo pela fornecida pelo usuário.
 
 3.  **IMPRESSÃO DIAGNÓSTICA (CONCLUSÃO):**
-    *   Após as descrições de todos os órgãos, adicione um parágrafo final intitulado \`IMPRESSÃO DIAGNÓSTICA:\`.
-    *   O conteúdo deste parágrafo deve ser baseado nas "Notas para Conclusão".
-    *   Se o campo "Notas para Conclusão" estiver vazio, use a frase: "Exame ultrassonográfico abdominal sem alterações dignas de nota na data da avaliação.".
-
+    *   Após as descrições de todos os órgãos, adicione um parágrafo final intitulado \`**IMPRESSÃO DIAGNÓSTICA:**\`.
+    *   O conteúdo deste parágrafo deve ser baseado nas "Notas para Conclusão" do usuário.
+    *   Se o campo "Notas para Conclusão" estiver vazio, **E SOMENTE NESSE CASO**, use o seguinte texto: "Nada mais digno de nota na data da avaliação.".
 
 **DADOS FORNECIDOS:**
 - Espécie: {{{species}}}
@@ -90,6 +90,17 @@ Sua resposta deve ser APENAS o texto do laudo, pronto para ser copiado e colado.
 - Linfonodos: {{{linfonodos}}}
 - Líquido Livre: {{{liquidoLivre}}}
 - Outros Achados: {{{outros}}}
+
+--- TEXTOS PADRÃO DE NORMALIDADE (usar se não houver dados para o órgão) ---
+**Fígado:** Fígado de contornos definidos, margens regulares, bordas arredondadas, dimensões preservadas, ecotextura homogênea, ecogenicidade mantida. Arquitetura vascular preservada.
+**Vesícula Biliar:** Vesícula biliar de paredes finas e regulares, repleta por conteúdo anecogênico homogêneo. Não existem evidências de obstrução em vias biliares intra ou extra hepáticas.
+**Pâncreas:** Pâncreas de superfícies regulares em suas porções passíveis de visualização em ramo direito, dimensões preservadas medindo **0,45 cm** de diâmetro, ecogenicidade mantida.
+**Estômago:** Cavidade gástrica de paredes finas medindo **0,19 cm** em região de corpo, estratificação de camadas mantida, repleta por conteúdo alimentar. Motilidade progressiva preservada.
+**Intestino:** Alças intestinais de distribuição topográfica habitual, paredes normoespessas (duodeno **0,18 cm**/jejuno **0,19 cm**/íleo **0,21 cm**/cólon **0,11 cm**) e com estratificação de camadas mantida. Motilidade progressiva preservada.
+**Baço:** Baço de contornos definidos e margens regulares, dimensões mantidas, ecotextura homogênea e ecogenicidade mantida.
+**Rins:** Rins de dimensões preservadas, medindo **6,65 cm** o rim esquerdo e **5,53 cm** o rim direito, margens regulares, com relações e definição córtico medular preservadas, ecogenicidade mantida em cortical.
+**Adrenais:** Adrenais de dimensões e formato anatômico preservados, definição córtico medular mantida, medindo (margem cranial x margem caudal) **0,41 cm x 0,42 cm** a adrenal esquerda e **0,41 cm x 0,42 cm** a adrenal direita.
+**Vesícula Urinária:** Vesícula urinária em distensão adequada, paredes finas (**0,75 cm**) e mucosas regulares, repleta por conteúdo anecogênico.
 `,
 });
 

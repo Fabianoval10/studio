@@ -65,7 +65,15 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
                   {reportText && (
                     <div className="report-text-block">
                         {reportText.split('\n').map((paragraph, index) => (
-                          <p key={index}>{paragraph}</p>
+                           <p key={index}>
+                            {paragraph.split(/(\*\*.*?\*\*)/g).map((part, i) =>
+                              part.startsWith('**') && part.endsWith('**') ? (
+                                <strong key={i}>{part.slice(2, -2)}</strong>
+                              ) : (
+                                part
+                              )
+                            )}
+                          </p>
                         ))}
                     </div>
                   )}
@@ -102,16 +110,14 @@ export function ReportPreview({ formData, reportText, uploadedImages }: ReportPr
         <style jsx global>{`
           /* --- Print Visibility Control --- */
           .print-container {
-            display: none; /* Hide the preview from the screen by default */
+            display: none;
           }
           
           @media print {
-            /* Hide all non-printable elements from the UI */
             body > *:not(.print-container) {
               display: none !important;
             }
             
-            /* Show the print preview container */
             .print-container {
               display: block !important;
             }
