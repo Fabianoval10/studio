@@ -10,7 +10,7 @@ export default function DashboardPage() {
       </h1>
       <Card>
         <CardHeader>
-          <CardTitle>Bem-vindo ao VETLD</CardTitle>
+          <CardTitle>Bem-vindo ao Baddha Laudos</CardTitle>
           <CardDescription>
             Funcionalidade em desenvolvimento.
           </CardDescription>

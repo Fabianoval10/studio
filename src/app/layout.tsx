@@ -11,7 +11,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'VETLD',
+  title: 'Baddha Laudos',
   description: 'AI-powered veterinary report generation',
 };
 

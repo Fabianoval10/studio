@@ -12,7 +12,7 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle>Configurações do Aplicativo</CardTitle>
           <CardDescription>
-            Gerencie suas preferências do VETLD aqui.
+            Gerencie suas preferências do Baddha Laudos aqui.
           </CardDescription>
         </CardHeader>
         <CardContent>
