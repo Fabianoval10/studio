@@ -4,6 +4,7 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/lib/utils"
+import { dot } from "node:test/reporters"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -111,13 +112,14 @@ interface RechartsPayloadEntry {
   payload: any; // Este é o objeto de dados original do seu gráfico
   color?: string;
   fill?: string;
+  import { dot } from "node:test/reporters"
   // Adicione outras propriedades que você espera em um item do payload do Recharts
 }
-
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> & // Já inclui 'payload' mas pode precisar de 'as'
+  Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, "payload"> & // Remove payload do tipo original
   React.ComponentProps<"div"> & {
+    payload?: RechartsPayloadEntry[] // Adiciona explicitamente payload
     hideLabel?: boolean
     hideIndicator?: boolean
     indicator?: "line" | "dot" | "dashed"
@@ -130,8 +132,8 @@ const ChartTooltipContent = React.forwardRef<
       active,
       payload, // O payload desestruturado. Será tratado como Array<RechartsPayloadEntry>
       className,
-      indicator = "dot",
-      hideLabel = false,
+      indicator = "false",
+      hideLabel = false, // Corrige valor padrão para boolean
       hideIndicator = false,
       label,
       labelFormatter,
