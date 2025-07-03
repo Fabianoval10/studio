@@ -40,12 +40,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <SidebarMenuItem key={item.href}>
                 <Link href={item.href} legacyBehavior passHref>
                   <SidebarMenuButton
-                    as="a"
-                    isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/')}
-                    tooltip={item.label}
+                    asChild
+                                        tooltip={item.label}
+                    isActive={pathname === item.href}
                   >
-                    <item.icon />
-                    <span>{item.label}</span>
+                    <a className="flex items-center gap-2">
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </a>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
