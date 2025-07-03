@@ -84,13 +84,13 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+                .map(([key, itemConfig]) => {
+                  const color =
+                    itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                    itemConfig.color
+                  return color ? `  --color-${key}: ${color};` : null
+                })
+                .join("\n")}
 }
 `
           )
@@ -102,21 +102,33 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
+// Definindo uma interface para o item de payload esperado do Recharts Tooltip
+// Isso reflete a estrutura onde o 'payload' real dos dados está aninhado
+interface RechartsPayloadEntry {
+  dataKey: string;
+  name: string;
+  value: any;
+  payload: any; // Este é o objeto de dados original do seu gráfico
+  color?: string;
+  fill?: string;
+  // Adicione outras propriedades que você espera em um item do payload do Recharts
+}
+
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-    React.ComponentProps<"div"> & {
-      hideLabel?: boolean
-      hideIndicator?: boolean
-      indicator?: "line" | "dot" | "dashed"
-      nameKey?: string
-      labelKey?: string
-    }
+  React.ComponentProps<typeof RechartsPrimitive.Tooltip> & // Já inclui 'payload' mas pode precisar de 'as'
+  React.ComponentProps<"div"> & {
+    hideLabel?: boolean
+    hideIndicator?: boolean
+    indicator?: "line" | "dot" | "dashed"
+    nameKey?: string
+    labelKey?: string
+  }
 >(
   (
     {
       active,
-      payload,
+      payload, // O payload desestruturado. Será tratado como Array<RechartsPayloadEntry>
       className,
       indicator = "dot",
       hideLabel = false,
@@ -134,21 +146,41 @@ const ChartTooltipContent = React.forwardRef<
     const { config } = useChart()
 
     const tooltipLabel = React.useMemo(() => {
-      if (hideLabel || !payload?.length) {
+      // Força o tipo de payload para o que esperamos do Recharts
+      const typedPayload = payload as RechartsPayloadEntry[] | undefined;
+
+      // Verifique se payload é um array e se tem itens
+      if (hideLabel || !typedPayload || typedPayload.length === 0) {
         return null
       }
 
-      const [item] = payload
-      const key = `${labelKey || item.dataKey || item.name || "value"}`
-      const itemConfig = getPayloadConfigFromPayload(config, item, key)
+      // Pega o primeiro item do array 'payload'
+      const firstPayloadItem = typedPayload[0];
+
+      // Garante que 'firstPayloadItem' existe antes de tentar acessar suas propriedades
+      if (!firstPayloadItem) {
+        return null;
+      }
+
+      // O 'item' real com os dados do gráfico está em 'firstPayloadItem.payload'
+      // Este 'item' é o objeto de dados original que você passou para o gráfico
+      const item = firstPayloadItem.payload;
+
+      // O 'key' agora é baseado no 'item' real (o objeto de dados do gráfico)
+      const key = `${labelKey || item?.dataKey || item?.name || "value"}`;
+
+      // Passa firstPayloadItem (o PayloadEntry completo do Recharts) para getPayloadConfigFromPayload
+      const itemConfig = getPayloadConfigFromPayload(config, firstPayloadItem, key);
+
       const value =
         !labelKey && typeof label === "string"
           ? config[label as keyof typeof config]?.label || label
-          : itemConfig?.label
+          : itemConfig?.label;
 
       if (labelFormatter) {
         return (
           <div className={cn("font-medium", labelClassName)}>
+            {/* Passa o payload original para o labelFormatter */}
             {labelFormatter(value, payload)}
           </div>
         )
@@ -162,7 +194,7 @@ const ChartTooltipContent = React.forwardRef<
     }, [
       label,
       labelFormatter,
-      payload,
+      payload, // Dependência de payload para o useMemo
       hideLabel,
       labelClassName,
       config,
@@ -185,21 +217,23 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map((item, index) => {
+          {/* Aqui, item é um RechartsPrimitive.Payload (PayloadEntry) */}
+          {payload.map((item) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
+            // item aqui é do tipo PayloadEntry, então item.payload contém os dados reais
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
 
             return (
               <div
-                key={item.dataKey}
+                key={item.dataKey || item.name} // Usar dataKey ou name para a key. item.value pode não ser único
                 className={cn(
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
                 )}
               >
                 {formatter && item?.value !== undefined && item.name ? (
-                  formatter(item.value, item.name, item, index, item.payload)
+                  formatter(item.value, item.name, item, item.index, item.payload)
                 ) : (
                   <>
                     {itemConfig?.icon ? (
@@ -261,10 +295,10 @@ const ChartLegend = RechartsPrimitive.Legend
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean
-      nameKey?: string
-    }
+  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    hideIcon?: boolean
+    nameKey?: string
+  }
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
@@ -291,7 +325,7 @@ const ChartLegendContent = React.forwardRef<
 
           return (
             <div
-              key={item.value}
+              key={item.value} // item.value pode ser o dataKey aqui, ou item.name
               className={cn(
                 "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
               )}
@@ -319,17 +353,18 @@ ChartLegendContent.displayName = "ChartLegend"
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
   config: ChartConfig,
-  payload: unknown,
+  payload: unknown, // O payload aqui é um 'PayloadEntry' do Recharts (o item individual)
   key: string
 ) {
   if (typeof payload !== "object" || payload === null) {
     return undefined
   }
 
+  // Verifica se o objeto payload tem uma propriedade 'payload' aninhada
   const payloadPayload =
     "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
+      typeof payload.payload === "object" &&
+      payload.payload !== null
       ? payload.payload
       : undefined
 
