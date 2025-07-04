@@ -112,14 +112,15 @@ interface RechartsPayloadEntry {
   payload: any; // Este é o objeto de dados original do seu gráfico
   color?: string;
   fill?: string;
-  import { dot } from "node:test/reporters"
+  index?: number; // <-- Adicione esta linha
   // Adicione outras propriedades que você espera em um item do payload do Recharts
 }
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, "payload"> & // Remove payload do tipo original
+  Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, "payload" | "label"> & // Remove payload e label do tipo original
   React.ComponentProps<"div"> & {
-    payload?: RechartsPayloadEntry[] // Adiciona explicitamente payload
+    payload?: RechartsPayloadEntry[]
+    label?: React.ReactNode // <-- Adicione esta linha
     hideLabel?: boolean
     hideIndicator?: boolean
     indicator?: "line" | "dot" | "dashed"
@@ -130,12 +131,12 @@ const ChartTooltipContent = React.forwardRef<
   (
     {
       active,
-      payload, // O payload desestruturado. Será tratado como Array<RechartsPayloadEntry>
+      payload,
       className,
       indicator = "false",
-      hideLabel = false, // Corrige valor padrão para boolean
+      hideLabel = false,
       hideIndicator = false,
-      label,
+      label, // Agora não dará erro
       labelFormatter,
       labelClassName,
       formatter,
@@ -183,7 +184,7 @@ const ChartTooltipContent = React.forwardRef<
         return (
           <div className={cn("font-medium", labelClassName)}>
             {/* Passa o payload original para o labelFormatter */}
-            {labelFormatter(value, payload)}
+            {labelFormatter(value, payload ?? [])}
           </div>
         )
       }
@@ -235,7 +236,7 @@ const ChartTooltipContent = React.forwardRef<
                 )}
               >
                 {formatter && item?.value !== undefined && item.name ? (
-                  formatter(item.value, item.name, item, item.index, item.payload)
+                  formatter(item.value, item.name, item, item.index ?? 0, item.payload)
                 ) : (
                   <>
                     {itemConfig?.icon ? (
@@ -291,66 +292,69 @@ const ChartTooltipContent = React.forwardRef<
   }
 )
 ChartTooltipContent.displayName = "ChartTooltip"
+const ChartLegend = RechartsPrimitive.Legend
+
+import * as React from "react"
+import * as RechartsPrimitive from "recharts"
+import { cn } from "@/lib/utils"
+import { useChart } from "./ChartContainer" // ajuste o caminho se necessário
+import { getPayloadConfigFromPayload } from "@/lib/chart-utils" // ajuste o caminho se necessário
 
 const ChartLegend = RechartsPrimitive.Legend
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+  React.ComponentProps<"div"> & {
+    payload?: RechartsPrimitive.LegendProps["payload"]
+    verticalAlign?: RechartsPrimitive.LegendProps["verticalAlign"]
     hideIcon?: boolean
     nameKey?: string
   }
->(
-  (
-    { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
-    ref
-  ) => {
-    const { config } = useChart()
+>((props, ref) => {
+  const {
+    className,
+    hideIcon = false,
+    payload,
+    verticalAlign = "bottom",
+    nameKey,
+  } = props
 
-    if (!payload?.length) {
-      return null
-    }
+  const { config } = useChart()
 
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "flex items-center justify-center gap-4",
-          verticalAlign === "top" ? "pb-3" : "pt-3",
-          className
-        )}
-      >
-        {payload.map((item) => {
-          const key = `${nameKey || item.dataKey || "value"}`
-          const itemConfig = getPayloadConfigFromPayload(config, item, key)
+  if (!payload?.length) return null
 
-          return (
-            <div
-              key={item.value} // item.value pode ser o dataKey aqui, ou item.name
-              className={cn(
-                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
-              )}
-            >
-              {itemConfig?.icon && !hideIcon ? (
-                <itemConfig.icon />
-              ) : (
-                <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
-                />
-              )}
-              {itemConfig?.label}
-            </div>
-          )
-        })}
-      </div>
-    )
-  }
-)
-ChartLegendContent.displayName = "ChartLegend"
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex items-center justify-center gap-4",
+        verticalAlign === "top" ? "pb-3" : "pt-3",
+        className
+      )}
+    >
+      {payload.map((item) => {
+        const key = `${nameKey || item.dataKey || "value"}`
+        const itemConfig = getPayloadConfigFromPayload(config, item, key)
+
+        return (
+          <div
+            key={item.value}
+            className={cn(
+              "flex items-center gap-1.5",
+              "[&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
+            )}
+          >
+            {!hideIcon && item.icon}
+            <span>{itemConfig?.label || item.value}</span>
+          </div>
+        )
+      })}
+    </div>
+  )
+})
+ChartLegendContent.displayName = "ChartLegendContent"
+
+export { ChartLegend, ChartLegendContent }
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
